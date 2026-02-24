@@ -1,0 +1,973 @@
+2025-11-25 00:00:00,012 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:00:00,014 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:00:00 CST 2025
+2025-11-25 00:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:06:00 CST 2025
+2025-11-25 00:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7475
+2025-11-25 00:06:00,010 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:06:00,014 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:06:00 CST 2025
+2025-11-25 00:06:00,014 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:12:00 CST 2025
+2025-11-25 00:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7476
+2025-11-25 00:12:00,011 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:12:00,012 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:12:00 CST 2025
+2025-11-25 00:12:00,012 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:18:00 CST 2025
+2025-11-25 00:12:00,015 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:12:00,017 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:12:00,017 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7477
+2025-11-25 00:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:18:00 CST 2025
+2025-11-25 00:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:24:00 CST 2025
+2025-11-25 00:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:18:00,022 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:18:00,022 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:18:00,022 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7478
+2025-11-25 00:24:00,011 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:24:00,011 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:24:00 CST 2025
+2025-11-25 00:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:30:00 CST 2025
+2025-11-25 00:24:00,015 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7479
+2025-11-25 00:30:00,014 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:30:00,014 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:30:00 CST 2025
+2025-11-25 00:30:00,015 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:36:00 CST 2025
+2025-11-25 00:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:30:00,019 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:30:00,019 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:30:00,019 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7480
+2025-11-25 00:36:00,013 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:36:00,014 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:36:00 CST 2025
+2025-11-25 00:36:00,014 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:42:00 CST 2025
+2025-11-25 00:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7481
+2025-11-25 00:42:00,011 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:42:00,012 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:42:00 CST 2025
+2025-11-25 00:42:00,012 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:48:00 CST 2025
+2025-11-25 00:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7482
+2025-11-25 00:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:48:00 CST 2025
+2025-11-25 00:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 00:54:00 CST 2025
+2025-11-25 00:48:00,024 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:48:00,026 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:48:00,026 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:48:00,026 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7483
+2025-11-25 00:54:00,016 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 00:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 00:54:00 CST 2025
+2025-11-25 00:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:00:00 CST 2025
+2025-11-25 00:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 00:54:00,022 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 00:54:00,022 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 00:54:00,022 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7484
+2025-11-25 01:00:00,013 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:00:00,014 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:00:00 CST 2025
+2025-11-25 01:00:00,014 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:06:00 CST 2025
+2025-11-25 01:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7485
+2025-11-25 01:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:06:00 CST 2025
+2025-11-25 01:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:12:00 CST 2025
+2025-11-25 01:06:00,021 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:06:00,023 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:06:00,023 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:06:00,023 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7486
+2025-11-25 01:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:12:00 CST 2025
+2025-11-25 01:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:18:00 CST 2025
+2025-11-25 01:12:00,023 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:12:00,024 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:12:00,024 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:12:00,024 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7487
+2025-11-25 01:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:18:00,015 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:18:00 CST 2025
+2025-11-25 01:18:00,015 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:24:00 CST 2025
+2025-11-25 01:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7488
+2025-11-25 01:24:00,015 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:24:00 CST 2025
+2025-11-25 01:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:30:00 CST 2025
+2025-11-25 01:24:00,018 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7489
+2025-11-25 01:30:00,011 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:30:00,012 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:30:00 CST 2025
+2025-11-25 01:30:00,012 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:36:00 CST 2025
+2025-11-25 01:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:30:00,019 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7490
+2025-11-25 01:36:00,016 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:36:00,017 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:36:00 CST 2025
+2025-11-25 01:36:00,017 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:42:00 CST 2025
+2025-11-25 01:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:36:00,021 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7491
+2025-11-25 01:42:00,014 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:42:00,015 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:42:00 CST 2025
+2025-11-25 01:42:00,015 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:48:00 CST 2025
+2025-11-25 01:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7492
+2025-11-25 01:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:48:00 CST 2025
+2025-11-25 01:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 01:54:00 CST 2025
+2025-11-25 01:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:48:00,025 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:48:00,025 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:48:00,025 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7493
+2025-11-25 01:54:00,014 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 01:54:00,015 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 01:54:00 CST 2025
+2025-11-25 01:54:00,015 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:00:00 CST 2025
+2025-11-25 01:54:00,020 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 01:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 01:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 01:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7494
+2025-11-25 02:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:00:00 CST 2025
+2025-11-25 02:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:06:00 CST 2025
+2025-11-25 02:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:00:00,023 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:00:00,023 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:00:00,024 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7495
+2025-11-25 02:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:06:00 CST 2025
+2025-11-25 02:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:12:00 CST 2025
+2025-11-25 02:06:00,019 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7496
+2025-11-25 02:12:00,012 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:12:00,013 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:12:00 CST 2025
+2025-11-25 02:12:00,013 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:18:00 CST 2025
+2025-11-25 02:12:00,018 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7497
+2025-11-25 02:18:00,013 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:18:00 CST 2025
+2025-11-25 02:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:24:00 CST 2025
+2025-11-25 02:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7498
+2025-11-25 02:24:00,018 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:24:00,019 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:24:00 CST 2025
+2025-11-25 02:24:00,019 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:30:00 CST 2025
+2025-11-25 02:24:00,023 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:24:00,024 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:24:00,024 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:24:00,024 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7499
+2025-11-25 02:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:30:00,021 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:30:00 CST 2025
+2025-11-25 02:30:00,021 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:36:00 CST 2025
+2025-11-25 02:30:00,024 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:30:00,026 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:30:00,026 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:30:00,026 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7500
+2025-11-25 02:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:36:00 CST 2025
+2025-11-25 02:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:42:00 CST 2025
+2025-11-25 02:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:36:00,023 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7501
+2025-11-25 02:42:00,015 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:42:00 CST 2025
+2025-11-25 02:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:48:00 CST 2025
+2025-11-25 02:42:00,020 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:42:00,021 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:42:00,021 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:42:00,022 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7502
+2025-11-25 02:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:48:00,020 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:48:00 CST 2025
+2025-11-25 02:48:00,020 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 02:54:00 CST 2025
+2025-11-25 02:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:48:00,024 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:48:00,025 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:48:00,025 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7503
+2025-11-25 02:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 02:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 02:54:00 CST 2025
+2025-11-25 02:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:00:00 CST 2025
+2025-11-25 02:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 02:54:00,022 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 02:54:00,022 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 02:54:00,022 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7504
+2025-11-25 03:00:00,011 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:00:00,012 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:00:00 CST 2025
+2025-11-25 03:00:00,012 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:06:00 CST 2025
+2025-11-25 03:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7505
+2025-11-25 03:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:06:00 CST 2025
+2025-11-25 03:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:12:00 CST 2025
+2025-11-25 03:06:00,019 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:06:00,021 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:06:00,021 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:06:00,021 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7506
+2025-11-25 03:12:00,013 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:12:00,014 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:12:00 CST 2025
+2025-11-25 03:12:00,014 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:18:00 CST 2025
+2025-11-25 03:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:12:00,018 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7507
+2025-11-25 03:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:18:00 CST 2025
+2025-11-25 03:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:24:00 CST 2025
+2025-11-25 03:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7508
+2025-11-25 03:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:24:00 CST 2025
+2025-11-25 03:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:30:00 CST 2025
+2025-11-25 03:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:24:00,021 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:24:00,022 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:24:00,022 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7509
+2025-11-25 03:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:30:00 CST 2025
+2025-11-25 03:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:36:00 CST 2025
+2025-11-25 03:30:00,021 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7510
+2025-11-25 03:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:36:00 CST 2025
+2025-11-25 03:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:42:00 CST 2025
+2025-11-25 03:36:00,023 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:36:00,024 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:36:00,025 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:36:00,025 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7511
+2025-11-25 03:42:00,013 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:42:00,014 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:42:00 CST 2025
+2025-11-25 03:42:00,014 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:48:00 CST 2025
+2025-11-25 03:42:00,017 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7512
+2025-11-25 03:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:48:00 CST 2025
+2025-11-25 03:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 03:54:00 CST 2025
+2025-11-25 03:48:00,022 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7513
+2025-11-25 03:54:00,011 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 03:54:00,012 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 03:54:00 CST 2025
+2025-11-25 03:54:00,013 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:00:00 CST 2025
+2025-11-25 03:54:00,015 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 03:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 03:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 03:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7514
+2025-11-25 04:00:00,011 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:00:00,012 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:00:00 CST 2025
+2025-11-25 04:00:00,012 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:06:00 CST 2025
+2025-11-25 04:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7515
+2025-11-25 04:06:00,017 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:06:00 CST 2025
+2025-11-25 04:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:12:00 CST 2025
+2025-11-25 04:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:06:00,022 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:06:00,022 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:06:00,022 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7516
+2025-11-25 04:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:12:00 CST 2025
+2025-11-25 04:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:18:00 CST 2025
+2025-11-25 04:12:00,023 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:12:00,025 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:12:00,025 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:12:00,025 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7517
+2025-11-25 04:18:00,015 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:18:00 CST 2025
+2025-11-25 04:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:24:00 CST 2025
+2025-11-25 04:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7518
+2025-11-25 04:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:24:00 CST 2025
+2025-11-25 04:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:30:00 CST 2025
+2025-11-25 04:24:00,019 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7519
+2025-11-25 04:30:00,015 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:30:00 CST 2025
+2025-11-25 04:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:36:00 CST 2025
+2025-11-25 04:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7520
+2025-11-25 04:36:00,014 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:36:00,015 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:36:00 CST 2025
+2025-11-25 04:36:00,015 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:42:00 CST 2025
+2025-11-25 04:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7521
+2025-11-25 04:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:42:00,017 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:42:00 CST 2025
+2025-11-25 04:42:00,017 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:48:00 CST 2025
+2025-11-25 04:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:42:00,020 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:42:00,020 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:42:00,020 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7522
+2025-11-25 04:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:48:00 CST 2025
+2025-11-25 04:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 04:54:00 CST 2025
+2025-11-25 04:48:00,020 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:48:00,021 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:48:00,021 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:48:00,022 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7523
+2025-11-25 04:54:00,015 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 04:54:00,016 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 04:54:00 CST 2025
+2025-11-25 04:54:00,016 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:00:00 CST 2025
+2025-11-25 04:54:00,019 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 04:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 04:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 04:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7524
+2025-11-25 05:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:00:00 CST 2025
+2025-11-25 05:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:06:00 CST 2025
+2025-11-25 05:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7525
+2025-11-25 05:06:00,011 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:06:00,011 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:06:00 CST 2025
+2025-11-25 05:06:00,012 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:12:00 CST 2025
+2025-11-25 05:06:00,014 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7526
+2025-11-25 05:12:00,015 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:12:00 CST 2025
+2025-11-25 05:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:18:00 CST 2025
+2025-11-25 05:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7527
+2025-11-25 05:18:00,011 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:18:00,011 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:18:00 CST 2025
+2025-11-25 05:18:00,012 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:24:00 CST 2025
+2025-11-25 05:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7528
+2025-11-25 05:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:24:00 CST 2025
+2025-11-25 05:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:30:00 CST 2025
+2025-11-25 05:24:00,015 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7529
+2025-11-25 05:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:30:00 CST 2025
+2025-11-25 05:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:36:00 CST 2025
+2025-11-25 05:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:30:00,024 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:30:00,024 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7530
+2025-11-25 05:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:36:00,020 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:36:00 CST 2025
+2025-11-25 05:36:00,021 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:42:00 CST 2025
+2025-11-25 05:36:00,024 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:36:00,026 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:36:00,026 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:36:00,026 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7531
+2025-11-25 05:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:42:00 CST 2025
+2025-11-25 05:42:00,019 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:48:00 CST 2025
+2025-11-25 05:42:00,021 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:42:00,023 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:42:00,023 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:42:00,023 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7532
+2025-11-25 05:48:00,013 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:48:00,014 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:48:00 CST 2025
+2025-11-25 05:48:00,014 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 05:54:00 CST 2025
+2025-11-25 05:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7533
+2025-11-25 05:54:00,012 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 05:54:00,013 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 05:54:00 CST 2025
+2025-11-25 05:54:00,013 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:00:00 CST 2025
+2025-11-25 05:54:00,016 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 05:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 05:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 05:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7534
+2025-11-25 06:00:00,011 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:00:00,012 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:00:00 CST 2025
+2025-11-25 06:00:00,013 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:06:00 CST 2025
+2025-11-25 06:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7535
+2025-11-25 06:06:00,010 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:06:00,011 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:06:00 CST 2025
+2025-11-25 06:06:00,012 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:12:00 CST 2025
+2025-11-25 06:06:00,014 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7536
+2025-11-25 06:12:00,015 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:12:00 CST 2025
+2025-11-25 06:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:18:00 CST 2025
+2025-11-25 06:12:00,018 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7537
+2025-11-25 06:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:18:00 CST 2025
+2025-11-25 06:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:24:00 CST 2025
+2025-11-25 06:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:18:00,021 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:18:00,021 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:18:00,021 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7538
+2025-11-25 06:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:24:00,021 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:24:00 CST 2025
+2025-11-25 06:24:00,021 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:30:00 CST 2025
+2025-11-25 06:24:00,023 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:24:00,025 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:24:00,025 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:24:00,025 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7539
+2025-11-25 06:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:30:00 CST 2025
+2025-11-25 06:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:36:00 CST 2025
+2025-11-25 06:30:00,021 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:30:00,023 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7540
+2025-11-25 06:36:00,017 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:36:00 CST 2025
+2025-11-25 06:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:42:00 CST 2025
+2025-11-25 06:36:00,021 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:36:00,022 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7541
+2025-11-25 06:42:00,010 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:42:00,011 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:42:00 CST 2025
+2025-11-25 06:42:00,011 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:48:00 CST 2025
+2025-11-25 06:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7542
+2025-11-25 06:48:00,014 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:48:00,015 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:48:00 CST 2025
+2025-11-25 06:48:00,015 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 06:54:00 CST 2025
+2025-11-25 06:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:48:00,020 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:48:00,020 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:48:00,020 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7543
+2025-11-25 06:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 06:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 06:54:00 CST 2025
+2025-11-25 06:54:00,017 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:00:00 CST 2025
+2025-11-25 06:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 06:54:00,023 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 06:54:00,024 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 06:54:00,024 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7544
+2025-11-25 07:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:00:00 CST 2025
+2025-11-25 07:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:06:00 CST 2025
+2025-11-25 07:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7545
+2025-11-25 07:06:00,010 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:06:00,011 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:06:00 CST 2025
+2025-11-25 07:06:00,011 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:12:00 CST 2025
+2025-11-25 07:06:00,013 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:06:00,015 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7546
+2025-11-25 07:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:12:00,017 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:12:00 CST 2025
+2025-11-25 07:12:00,017 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:18:00 CST 2025
+2025-11-25 07:12:00,022 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:12:00,023 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:12:00,023 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:12:00,023 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7547
+2025-11-25 07:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:18:00 CST 2025
+2025-11-25 07:18:00,020 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:24:00 CST 2025
+2025-11-25 07:18:00,024 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:18:00,025 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:18:00,026 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:18:00,026 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7548
+2025-11-25 07:24:00,015 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:24:00 CST 2025
+2025-11-25 07:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:30:00 CST 2025
+2025-11-25 07:24:00,019 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7549
+2025-11-25 07:30:00,012 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:30:00,013 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:30:00 CST 2025
+2025-11-25 07:30:00,013 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:36:00 CST 2025
+2025-11-25 07:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7550
+2025-11-25 07:36:00,018 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:36:00 CST 2025
+2025-11-25 07:36:00,019 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:42:00 CST 2025
+2025-11-25 07:36:00,024 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:36:00,025 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:36:00,026 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:36:00,026 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7551
+2025-11-25 07:42:00,017 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:42:00 CST 2025
+2025-11-25 07:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:48:00 CST 2025
+2025-11-25 07:42:00,021 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:42:00,022 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:42:00,023 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:42:00,023 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7552
+2025-11-25 07:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:48:00 CST 2025
+2025-11-25 07:48:00,019 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 07:54:00 CST 2025
+2025-11-25 07:48:00,022 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:48:00,023 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7553
+2025-11-25 07:54:00,020 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 07:54:00,020 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 07:54:00 CST 2025
+2025-11-25 07:54:00,020 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:00:00 CST 2025
+2025-11-25 07:54:00,023 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 07:54:00,024 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 07:54:00,024 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 07:54:00,024 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7554
+2025-11-25 08:00:00,020 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:00:00,020 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:00:00 CST 2025
+2025-11-25 08:00:00,020 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:06:00 CST 2025
+2025-11-25 08:00:00,025 WARN  [DefaultQuartzScheduler_Worker-1] [AbstractBatcher] exception clearing maxRows/queryTimeout
+java.sql.SQLException: Closed Statement
+	at oracle.jdbc.driver.OracleClosedStatement.getMaxRows(OracleClosedStatement.java:2236)
+	at oracle.jdbc.driver.OracleStatementWrapper.getMaxRows(OracleStatementWrapper.java:177)
+	at org.hibernate.jdbc.AbstractBatcher.closeQueryStatement(AbstractBatcher.java:276)
+	at org.hibernate.jdbc.AbstractBatcher.closeQueryStatement(AbstractBatcher.java:212)
+	at org.hibernate.loader.Loader.getResultSet(Loader.java:1801)
+	at org.hibernate.loader.Loader.doQuery(Loader.java:674)
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:236)
+	at org.hibernate.loader.Loader.doList(Loader.java:2220)
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2104)
+	at org.hibernate.loader.Loader.list(Loader.java:2099)
+	at org.hibernate.loader.criteria.CriteriaLoader.list(CriteriaLoader.java:94)
+	at org.hibernate.impl.SessionImpl.list(SessionImpl.java:1569)
+	at org.hibernate.impl.CriteriaImpl.list(CriteriaImpl.java:283)
+	at org.springframework.orm.hibernate3.HibernateTemplate$35.doInHibernate(HibernateTemplate.java:984)
+	at org.springframework.orm.hibernate3.HibernateTemplate.execute(HibernateTemplate.java:372)
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:974)
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:967)
+	at gt.gob.sat.fwk.crud.impl.FinderImpl.findByCriteria(FinderImpl.java:154)
+	at sun.reflect.GeneratedMethodAccessor213.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:296)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:177)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:144)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:107)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.interceptor.AbstractTraceInterceptor.invoke(AbstractTraceInterceptor.java:113)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at com.sun.proxy.$Proxy49.findByCriteria(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor213.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:296)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:198)
+	at com.sun.proxy.$Proxy50.findByCriteria(Unknown Source)
+	at gt.gob.sat.gft.jconsumer.services.impl.ConsumidorIntegradoSvcImpl.validarAlertas(ConsumidorIntegradoSvcImpl.java:1889)
+	at sun.reflect.GeneratedMethodAccessor260.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:296)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:177)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:144)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:107)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.interceptor.AbstractTraceInterceptor.invoke(AbstractTraceInterceptor.java:113)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at com.sun.proxy.$Proxy56.validarAlertas(Unknown Source)
+	at gt.gob.sat.gft.jconsumer.proceso.JobValidarAlertasProcesamiento.execute(JobValidarAlertasProcesamiento.java:60)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:529)
+2025-11-25 08:00:00,028 WARN  [DefaultQuartzScheduler_Worker-1] [JDBCExceptionReporter] SQL Error: 17410, SQLState: 08000
+2025-11-25 08:00:00,028 ERROR [DefaultQuartzScheduler_Worker-1] [JDBCExceptionReporter] No more data to read from socket
+2025-11-25 08:00:00,032 ERROR [DefaultQuartzScheduler_Worker-1] [JDBCTransaction] Could not toggle autocommit
+java.sql.SQLRecoverableException: Closed Connection
+	at oracle.jdbc.driver.PhysicalConnection.setAutoCommit(PhysicalConnection.java:2125)
+	at oracle.jdbc.OracleConnectionWrapper.setAutoCommit(OracleConnectionWrapper.java:139)
+	at org.hibernate.transaction.JDBCTransaction.toggleAutoCommit(JDBCTransaction.java:194)
+	at org.hibernate.transaction.JDBCTransaction.rollbackAndResetAutoCommit(JDBCTransaction.java:186)
+	at org.hibernate.transaction.JDBCTransaction.rollback(JDBCTransaction.java:162)
+	at org.springframework.orm.hibernate3.HibernateTransactionManager.doRollback(HibernateTransactionManager.java:594)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processRollback(AbstractPlatformTransactionManager.java:753)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.rollback(AbstractPlatformTransactionManager.java:730)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.completeTransactionAfterThrowing(TransactionAspectSupport.java:332)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:111)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.interceptor.AbstractTraceInterceptor.invoke(AbstractTraceInterceptor.java:113)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at com.sun.proxy.$Proxy56.validarAlertas(Unknown Source)
+	at gt.gob.sat.gft.jconsumer.proceso.JobValidarAlertasProcesamiento.execute(JobValidarAlertasProcesamiento.java:60)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:529)
+2025-11-25 08:00:00,033 ERROR [DefaultQuartzScheduler_Worker-1] [JDBCTransaction] JDBC rollback failed
+java.sql.SQLRecoverableException: Closed Connection
+	at oracle.jdbc.driver.PhysicalConnection.getAutoCommit(PhysicalConnection.java:2147)
+	at oracle.jdbc.driver.PhysicalConnection.rollback(PhysicalConnection.java:2276)
+	at oracle.jdbc.OracleConnectionWrapper.rollback(OracleConnectionWrapper.java:154)
+	at org.hibernate.transaction.JDBCTransaction.rollbackAndResetAutoCommit(JDBCTransaction.java:183)
+	at org.hibernate.transaction.JDBCTransaction.rollback(JDBCTransaction.java:162)
+	at org.springframework.orm.hibernate3.HibernateTransactionManager.doRollback(HibernateTransactionManager.java:594)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processRollback(AbstractPlatformTransactionManager.java:753)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.rollback(AbstractPlatformTransactionManager.java:730)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.completeTransactionAfterThrowing(TransactionAspectSupport.java:332)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:111)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.interceptor.AbstractTraceInterceptor.invoke(AbstractTraceInterceptor.java:113)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at com.sun.proxy.$Proxy56.validarAlertas(Unknown Source)
+	at gt.gob.sat.gft.jconsumer.proceso.JobValidarAlertasProcesamiento.execute(JobValidarAlertasProcesamiento.java:60)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:529)
+2025-11-25 08:00:00,033 ERROR [DefaultQuartzScheduler_Worker-1] [TransactionAspectSupport] Application exception overridden by rollback exception
+gt.gob.sat.gft.jconsumer.excepcion.ConsumidorException: Errororg.springframework.dao.DataAccessResourceFailureException: could not execute query; nested exception is org.hibernate.exception.JDBCConnectionException: could not execute query ( Error: 1764079200032 )
+	at gt.gob.sat.gft.jconsumer.services.impl.ConsumidorIntegradoSvcImpl.validarAlertas(ConsumidorIntegradoSvcImpl.java:1928)
+	at sun.reflect.GeneratedMethodAccessor260.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:296)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:177)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:144)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:107)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.interceptor.AbstractTraceInterceptor.invoke(AbstractTraceInterceptor.java:113)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at com.sun.proxy.$Proxy56.validarAlertas(Unknown Source)
+	at gt.gob.sat.gft.jconsumer.proceso.JobValidarAlertasProcesamiento.execute(JobValidarAlertasProcesamiento.java:60)
+	at org.quartz.core.JobRunShell.run(JobRunShell.java:202)
+	at org.quartz.simpl.SimpleThreadPool$WorkerThread.run(SimpleThreadPool.java:529)
+Caused by: gt.gob.sat.fwk.crud.FinderException: org.springframework.dao.DataAccessResourceFailureException: could not execute query; nested exception is org.hibernate.exception.JDBCConnectionException: could not execute query
+	at gt.gob.sat.fwk.crud.impl.FinderImpl.findByCriteria(FinderImpl.java:157)
+	at sun.reflect.GeneratedMethodAccessor213.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:296)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:177)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:144)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:107)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.interceptor.AbstractTraceInterceptor.invoke(AbstractTraceInterceptor.java:113)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:166)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:204)
+	at com.sun.proxy.$Proxy49.findByCriteria(Unknown Source)
+	at sun.reflect.GeneratedMethodAccessor213.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:296)
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:198)
+	at com.sun.proxy.$Proxy50.findByCriteria(Unknown Source)
+	at gt.gob.sat.gft.jconsumer.services.impl.ConsumidorIntegradoSvcImpl.validarAlertas(ConsumidorIntegradoSvcImpl.java:1889)
+	... 15 more
+Caused by: org.springframework.dao.DataAccessResourceFailureException: could not execute query; nested exception is org.hibernate.exception.JDBCConnectionException: could not execute query
+	at org.springframework.orm.hibernate3.SessionFactoryUtils.convertHibernateAccessException(SessionFactoryUtils.java:610)
+	at org.springframework.orm.hibernate3.HibernateAccessor.convertHibernateAccessException(HibernateAccessor.java:412)
+	at org.springframework.orm.hibernate3.HibernateTemplate.execute(HibernateTemplate.java:377)
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:974)
+	at org.springframework.orm.hibernate3.HibernateTemplate.findByCriteria(HibernateTemplate.java:967)
+	at gt.gob.sat.fwk.crud.impl.FinderImpl.findByCriteria(FinderImpl.java:154)
+	... 34 more
+Caused by: org.hibernate.exception.JDBCConnectionException: could not execute query
+	at org.hibernate.exception.SQLStateConverter.convert(SQLStateConverter.java:74)
+	at org.hibernate.exception.JDBCExceptionHelper.convert(JDBCExceptionHelper.java:43)
+	at org.hibernate.loader.Loader.doList(Loader.java:2223)
+	at org.hibernate.loader.Loader.listIgnoreQueryCache(Loader.java:2104)
+	at org.hibernate.loader.Loader.list(Loader.java:2099)
+	at org.hibernate.loader.criteria.CriteriaLoader.list(CriteriaLoader.java:94)
+	at org.hibernate.impl.SessionImpl.list(SessionImpl.java:1569)
+	at org.hibernate.impl.CriteriaImpl.list(CriteriaImpl.java:283)
+	at org.springframework.orm.hibernate3.HibernateTemplate$35.doInHibernate(HibernateTemplate.java:984)
+	at org.springframework.orm.hibernate3.HibernateTemplate.execute(HibernateTemplate.java:372)
+	... 37 more
+Caused by: java.sql.SQLRecoverableException: No more data to read from socket
+	at oracle.jdbc.driver.T4CMAREngineNIO.prepareForUnmarshall(T4CMAREngineNIO.java:811)
+	at oracle.jdbc.driver.T4CMAREngineNIO.unmarshalUB1(T4CMAREngineNIO.java:449)
+	at oracle.jdbc.driver.T4CTTIfun.receive(T4CTTIfun.java:410)
+	at oracle.jdbc.driver.T4CTTIfun.doRPC(T4CTTIfun.java:269)
+	at oracle.jdbc.driver.T4C8Oall.doOALL(T4C8Oall.java:655)
+	at oracle.jdbc.driver.T4CPreparedStatement.doOall8(T4CPreparedStatement.java:270)
+	at oracle.jdbc.driver.T4CPreparedStatement.doOall8(T4CPreparedStatement.java:91)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeForDescribe(T4CPreparedStatement.java:807)
+	at oracle.jdbc.driver.OracleStatement.executeMaybeDescribe(OracleStatement.java:991)
+	at oracle.jdbc.driver.OracleStatement.doExecuteWithTimeout(OracleStatement.java:1176)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeInternal(OraclePreparedStatement.java:3671)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeInternal(T4CPreparedStatement.java:1426)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeQuery(OraclePreparedStatement.java:3718)
+	at oracle.jdbc.driver.OraclePreparedStatementWrapper.executeQuery(OraclePreparedStatementWrapper.java:1167)
+	at org.hibernate.jdbc.AbstractBatcher.getResultSet(AbstractBatcher.java:186)
+	at org.hibernate.loader.Loader.getResultSet(Loader.java:1787)
+	at org.hibernate.loader.Loader.doQuery(Loader.java:674)
+	at org.hibernate.loader.Loader.doQueryAndInitializeNonLazyCollections(Loader.java:236)
+	at org.hibernate.loader.Loader.doList(Loader.java:2220)
+	... 44 more
+2025-11-25 08:00:00,035 ERROR [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] org.springframework.transaction.TransactionSystemException: Could not roll back Hibernate transaction; nested exception is org.hibernate.TransactionException: JDBC rollback failed
+2025-11-25 08:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:06:00 CST 2025
+2025-11-25 08:06:00,017 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:12:00 CST 2025
+2025-11-25 08:06:00,018 WARN  [DefaultQuartzScheduler_Worker-2] [JDBCExceptionReporter] SQL Error: 17008, SQLState: 08003
+2025-11-25 08:06:00,018 ERROR [DefaultQuartzScheduler_Worker-2] [JDBCExceptionReporter] Closed Connection: OraclePooledConnection.getConnection() - SQLException Ocurred:Invalid or Stale Connection found in the Connection Cache
+2025-11-25 08:06:00,019 WARN  [DefaultQuartzScheduler_Worker-2] [JDBCExceptionReporter] SQL Error: 17008, SQLState: 08003
+2025-11-25 08:06:00,020 ERROR [DefaultQuartzScheduler_Worker-2] [JDBCExceptionReporter] Closed Connection: OraclePooledConnection.getConnection() - SQLException Ocurred:Invalid or Stale Connection found in the Connection Cache
+2025-11-25 08:06:00,020 ERROR [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] org.springframework.transaction.CannotCreateTransactionException: Could not open Hibernate Session for transaction; nested exception is org.hibernate.exception.JDBCConnectionException: Cannot open connection
+2025-11-25 08:12:00,013 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:12:00,014 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:12:00 CST 2025
+2025-11-25 08:12:00,014 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:18:00 CST 2025
+2025-11-25 08:12:00,096 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:12:00,098 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:12:00,098 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:12:00,098 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7555
+2025-11-25 08:18:00,013 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:18:00 CST 2025
+2025-11-25 08:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:24:00 CST 2025
+2025-11-25 08:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:18:00,019 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7556
+2025-11-25 08:24:00,011 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:24:00 CST 2025
+2025-11-25 08:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:30:00 CST 2025
+2025-11-25 08:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:24:00,018 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:24:00,018 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:24:00,018 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7557
+2025-11-25 08:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:30:00,017 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:30:00 CST 2025
+2025-11-25 08:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:36:00 CST 2025
+2025-11-25 08:30:00,020 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:30:00,022 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7558
+2025-11-25 08:36:00,010 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:36:00 CST 2025
+2025-11-25 08:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:42:00 CST 2025
+2025-11-25 08:36:00,014 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:36:00,015 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:36:00,015 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:36:00,015 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7559
+2025-11-25 08:42:00,013 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:42:00,013 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:42:00 CST 2025
+2025-11-25 08:42:00,013 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:48:00 CST 2025
+2025-11-25 08:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:42:00,018 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7560
+2025-11-25 08:48:00,011 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:48:00,012 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:48:00 CST 2025
+2025-11-25 08:48:00,012 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 08:54:00 CST 2025
+2025-11-25 08:48:00,015 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7561
+2025-11-25 08:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 08:54:00,019 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 08:54:00 CST 2025
+2025-11-25 08:54:00,019 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:00:00 CST 2025
+2025-11-25 08:54:00,025 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 08:54:00,027 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 08:54:00,027 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 08:54:00,027 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7562
+2025-11-25 09:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:00:00 CST 2025
+2025-11-25 09:00:00,017 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:06:00 CST 2025
+2025-11-25 09:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:00:00,021 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7563
+2025-11-25 09:06:00,013 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:06:00,013 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:06:00 CST 2025
+2025-11-25 09:06:00,013 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:12:00 CST 2025
+2025-11-25 09:06:00,016 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7564
+2025-11-25 09:12:00,010 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:12:00,011 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:12:00 CST 2025
+2025-11-25 09:12:00,011 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:18:00 CST 2025
+2025-11-25 09:12:00,014 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:12:00,015 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7565
+2025-11-25 09:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:18:00 CST 2025
+2025-11-25 09:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:24:00 CST 2025
+2025-11-25 09:18:00,022 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:18:00,023 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:18:00,024 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:18:00,024 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7566
+2025-11-25 09:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:24:00 CST 2025
+2025-11-25 09:24:00,012 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:30:00 CST 2025
+2025-11-25 09:24:00,016 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:24:00,017 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7567
+2025-11-25 09:30:00,011 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:30:00,012 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:30:00 CST 2025
+2025-11-25 09:30:00,013 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:36:00 CST 2025
+2025-11-25 09:30:00,015 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7568
+2025-11-25 09:36:00,010 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:36:00 CST 2025
+2025-11-25 09:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:42:00 CST 2025
+2025-11-25 09:36:00,014 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:36:00,016 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:36:00,016 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:36:00,016 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7569
+2025-11-25 09:42:00,010 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:42:00,011 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:42:00 CST 2025
+2025-11-25 09:42:00,011 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:48:00 CST 2025
+2025-11-25 09:42:00,014 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:42:00,015 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:42:00,016 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7570
+2025-11-25 09:48:00,013 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:48:00,014 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:48:00 CST 2025
+2025-11-25 09:48:00,014 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 09:54:00 CST 2025
+2025-11-25 09:48:00,017 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:48:00,018 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7571
+2025-11-25 09:54:00,012 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 09:54:00,012 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 09:54:00 CST 2025
+2025-11-25 09:54:00,012 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:00:00 CST 2025
+2025-11-25 09:54:00,015 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 09:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 09:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 09:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7572
+2025-11-25 10:00:00,013 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:00:00,014 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:00:00 CST 2025
+2025-11-25 10:00:00,014 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:06:00 CST 2025
+2025-11-25 10:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7573
+2025-11-25 10:06:00,018 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:06:00,019 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:06:00 CST 2025
+2025-11-25 10:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:12:00 CST 2025
+2025-11-25 10:06:00,022 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:06:00,024 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:06:00,024 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:06:00,024 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7574
+2025-11-25 10:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:12:00 CST 2025
+2025-11-25 10:12:00,021 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:18:00 CST 2025
+2025-11-25 10:12:00,025 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:12:00,026 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:12:00,026 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:12:00,026 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7575
+2025-11-25 10:18:00,013 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:18:00 CST 2025
+2025-11-25 10:18:00,014 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:24:00 CST 2025
+2025-11-25 10:18:00,017 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:18:00,018 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7576
+2025-11-25 10:24:00,019 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:24:00 CST 2025
+2025-11-25 10:24:00,020 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:30:00 CST 2025
+2025-11-25 10:24:00,023 INFO  [DefaultQuartzScheduler_Worker-5] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:24:00,024 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:24:00,025 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:24:00,025 INFO  [DefaultQuartzScheduler_Worker-5] [JobValidarAlertasProcesamiento] Job No. 7577
+2025-11-25 10:30:00,012 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:30:00,013 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:30:00 CST 2025
+2025-11-25 10:30:00,013 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:36:00 CST 2025
+2025-11-25 10:30:00,016 INFO  [DefaultQuartzScheduler_Worker-6] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:30:00,018 INFO  [DefaultQuartzScheduler_Worker-6] [JobValidarAlertasProcesamiento] Job No. 7578
+2025-11-25 10:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:36:00 CST 2025
+2025-11-25 10:36:00,011 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:42:00 CST 2025
+2025-11-25 10:36:00,016 INFO  [DefaultQuartzScheduler_Worker-7] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:36:00,017 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:36:00,017 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:36:00,017 INFO  [DefaultQuartzScheduler_Worker-7] [JobValidarAlertasProcesamiento] Job No. 7579
+2025-11-25 10:42:00,020 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:42:00,021 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:42:00 CST 2025
+2025-11-25 10:42:00,021 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:48:00 CST 2025
+2025-11-25 10:42:00,024 INFO  [DefaultQuartzScheduler_Worker-8] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:42:00,025 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:42:00,025 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:42:00,026 INFO  [DefaultQuartzScheduler_Worker-8] [JobValidarAlertasProcesamiento] Job No. 7580
+2025-11-25 10:48:00,011 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:48:00,012 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:48:00 CST 2025
+2025-11-25 10:48:00,012 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 10:54:00 CST 2025
+2025-11-25 10:48:00,014 INFO  [DefaultQuartzScheduler_Worker-9] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:48:00,016 INFO  [DefaultQuartzScheduler_Worker-9] [JobValidarAlertasProcesamiento] Job No. 7581
+2025-11-25 10:54:00,018 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 10:54:00,019 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 10:54:00 CST 2025
+2025-11-25 10:54:00,019 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 11:00:00 CST 2025
+2025-11-25 10:54:00,021 INFO  [DefaultQuartzScheduler_Worker-10] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 10:54:00,023 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 10:54:00,023 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 10:54:00,023 INFO  [DefaultQuartzScheduler_Worker-10] [JobValidarAlertasProcesamiento] Job No. 7582
+2025-11-25 11:00:00,015 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 11:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 11:00:00 CST 2025
+2025-11-25 11:00:00,016 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 11:06:00 CST 2025
+2025-11-25 11:00:00,018 INFO  [DefaultQuartzScheduler_Worker-1] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 11:00:00,019 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 11:00:00,020 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 11:00:00,020 INFO  [DefaultQuartzScheduler_Worker-1] [JobValidarAlertasProcesamiento] Job No. 7583
+2025-11-25 11:06:00,019 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 11:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 11:06:00 CST 2025
+2025-11-25 11:06:00,020 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 11:12:00 CST 2025
+2025-11-25 11:06:00,025 INFO  [DefaultQuartzScheduler_Worker-2] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 11:06:00,026 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 11:06:00,027 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 11:06:00,027 INFO  [DefaultQuartzScheduler_Worker-2] [JobValidarAlertasProcesamiento] Job No. 7584
+2025-11-25 11:12:00,015 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 11:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 11:12:00 CST 2025
+2025-11-25 11:12:00,016 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 11:18:00 CST 2025
+2025-11-25 11:12:00,019 INFO  [DefaultQuartzScheduler_Worker-3] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 11:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 11:12:00,020 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 11:12:00,021 INFO  [DefaultQuartzScheduler_Worker-3] [JobValidarAlertasProcesamiento] Job No. 7585
+2025-11-25 11:18:00,011 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] --------------------------------------------------------------------
+2025-11-25 11:18:00,011 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Inicio validar alertas: Tue Nov 25 11:18:00 CST 2025
+2025-11-25 11:18:00,011 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Siguiente activacion validar alertas scheduled: Tue Nov 25 11:24:00 CST 2025
+2025-11-25 11:18:00,015 INFO  [DefaultQuartzScheduler_Worker-4] [ConsumidorIntegradoSvcImpl] ****************Cantidad de alertas encontradas del jConsumer de no procesamiento******************************:0
+2025-11-25 11:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Respuesta de la alerta para detener el jConsumer-------------------------->NO
+2025-11-25 11:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] ----Estado del jConsumer de aduanas, corriendo:----------------------------------------=>true
+2025-11-25 11:18:00,016 INFO  [DefaultQuartzScheduler_Worker-4] [JobValidarAlertasProcesamiento] Job No. 7586
