@@ -47,10 +47,10 @@ app.whenReady().then(() => {
 
   const profileStore = new ProfileStore();
   const sshService = new SSHService();
+  const updater = setupAutoUpdater();
 
   mainWindow = createMainWindow();
-  registerIpcHandlers(() => mainWindow, profileStore, sshService);
-  setupAutoUpdater(() => mainWindow);
+  registerIpcHandlers(() => mainWindow, profileStore, sshService, updater);
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

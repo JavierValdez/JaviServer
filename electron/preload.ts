@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC_CHANNELS } from './ipc/channels';
+import type { AppUpdateState } from '../src/types/updater';
 
 const unsubscribeOn = <T>(channel: string, listener: (payload: T) => void) => {
   const wrapped = (_event: Electron.IpcRendererEvent, payload: T) => {
@@ -71,5 +72,13 @@ contextBridge.exposeInMainWorld('api', {
     stop: (profileId: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalStop, profileId),
     onData: (listener: (payload: { profileId: string; data: string }) => void) =>
       unsubscribeOn(IPC_CHANNELS.terminalData, listener),
+  },
+  updater: {
+    getState: () => ipcRenderer.invoke(IPC_CHANNELS.updaterGetState) as Promise<AppUpdateState>,
+    checkForUpdates: () => ipcRenderer.invoke(IPC_CHANNELS.updaterCheckForUpdates) as Promise<AppUpdateState>,
+    downloadInstaller: () => ipcRenderer.invoke(IPC_CHANNELS.updaterDownloadInstaller) as Promise<AppUpdateState>,
+    revealInstaller: () => ipcRenderer.invoke(IPC_CHANNELS.updaterRevealInstaller) as Promise<boolean>,
+    onStateChange: (listener: (payload: AppUpdateState) => void) =>
+      unsubscribeOn(IPC_CHANNELS.updaterStateChanged, listener),
   },
 });

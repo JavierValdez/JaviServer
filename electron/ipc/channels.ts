@@ -25,6 +25,11 @@ export const IPC_CHANNELS = {
   terminalResize: 'terminal:resize',
   terminalStop: 'terminal:stop',
   terminalData: 'terminal:data',
+  updaterGetState: 'updater:get-state',
+  updaterCheckForUpdates: 'updater:check-for-updates',
+  updaterDownloadInstaller: 'updater:download-installer',
+  updaterRevealInstaller: 'updater:reveal-installer',
+  updaterStateChanged: 'updater:state-changed',
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];

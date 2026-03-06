@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { BrowserWindow, dialog, ipcMain, type OpenDialogOptions, type SaveDialogOptions } from 'electron';
+import type { UpdateController } from '../autoUpdater';
 import { IPC_CHANNELS } from './channels';
 import { ProfileStore, type ProfileInput } from '../services/ProfileStore';
 import { SSHService } from '../services/SSHService';
@@ -9,6 +10,7 @@ export function registerIpcHandlers(
   getMainWindow: () => BrowserWindow | null,
   profileStore: ProfileStore,
   sshService: SSHService,
+  updater: UpdateController,
 ): void {
   ipcMain.handle(IPC_CHANNELS.profilesGetAll, () => profileStore.getAll());
   ipcMain.handle(IPC_CHANNELS.profilesGet, (_event, profileId: string) => profileStore.get(profileId) ?? null);
@@ -133,6 +135,11 @@ export function registerIpcHandlers(
     return true;
   });
 
+  ipcMain.handle(IPC_CHANNELS.updaterGetState, () => updater.getState());
+  ipcMain.handle(IPC_CHANNELS.updaterCheckForUpdates, () => updater.checkForUpdates());
+  ipcMain.handle(IPC_CHANNELS.updaterDownloadInstaller, () => updater.downloadInstaller());
+  ipcMain.handle(IPC_CHANNELS.updaterRevealInstaller, () => updater.revealInstaller());
+
   sshService.on('connection-closed', (profileId: string) => {
     const mainWindow = getMainWindow();
     if (!mainWindow || mainWindow.isDestroyed()) {
@@ -158,5 +165,14 @@ export function registerIpcHandlers(
     }
 
     mainWindow.webContents.send(IPC_CHANNELS.terminalData, payload);
+  });
+
+  updater.onStateChange((state) => {
+    const mainWindow = getMainWindow();
+    if (!mainWindow || mainWindow.isDestroyed()) {
+      return;
+    }
+
+    mainWindow.webContents.send(IPC_CHANNELS.updaterStateChanged, state);
   });
 }
