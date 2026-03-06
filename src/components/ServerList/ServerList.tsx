@@ -43,9 +43,11 @@ export const ServerList: React.FC = () => {
     loadProfiles();
 
     // Escuchar desconexiones
-    window.api.ssh.onConnectionClosed((profileId) => {
+    const unsubscribe = window.api.ssh.onConnectionClosed((profileId) => {
       setConnectionStatus(profileId, { connected: false, connecting: false });
     });
+
+    return unsubscribe;
   }, []);
 
   const handleConnect = async (profile: ServerProfile) => {

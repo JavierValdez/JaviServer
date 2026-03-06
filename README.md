@@ -32,6 +32,54 @@ npm run dev
 npm run build
 ```
 
+## 🔄 Actualizaciones automáticas
+
+- La app ahora busca actualizaciones automáticamente al iniciar.
+- Si encuentra una nueva versión publicada en GitHub Releases, la descarga en segundo plano.
+- Cuando la descarga termina, muestra un diálogo para reiniciar e instalar.
+- En modo empaquetado, vuelve a revisar actualizaciones cada 6 horas.
+
+Importante:
+
+- Windows auto-update funciona con el instalador `NSIS`.
+- En macOS, el auto-update requiere que la app esté firmada. Si compilas sin certificados, el `.dmg` se genera, pero la actualización automática no quedará operativa.
+
+## 🚀 Releases en GitHub
+
+El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que publica instaladores para Windows y macOS en GitHub Releases.
+
+Flujo recomendado:
+
+1. Actualiza la versión en [`package.json`](/Users/javier/Documents/GitHub/JaviServer/package.json).
+2. Haz commit de los cambios.
+3. Crea y publica un tag con el mismo número de versión, por ejemplo `v1.0.1`.
+4. GitHub Actions construirá y subirá:
+   - `JaviServer-Mac-x.y.z-Installer.dmg`
+   - `JaviServer-Mac-x.y.z-Installer.zip`
+   - `JaviServer-Windows-x.y.z-Setup.exe`
+   - archivos `latest*.yml` y `*.blockmap` para el updater
+
+Comandos:
+
+```bash
+git add .
+git commit -m "release: 1.0.1"
+git tag v1.0.1
+git push origin main --tags
+```
+
+## 🔐 Secrets recomendados para CI
+
+Para publicar releases desde GitHub Actions no necesitas más que `GITHUB_TOKEN`, que GitHub ya inyecta en el workflow.
+
+Para que macOS quede firmado y el auto-update funcione correctamente, configura además estos secrets:
+
+- `CSC_LINK`
+- `CSC_KEY_PASSWORD`
+- `APPLE_ID`
+- `APPLE_APP_SPECIFIC_PASSWORD`
+- `APPLE_TEAM_ID`
+
 ## 📦 Estructura del Proyecto
 
 ```
@@ -80,6 +128,7 @@ javiserver/
 - La aplicación está diseñada para acceso de solo lectura
 - Los perfiles se guardan en `%APPDATA%/javiserver/server-profiles.json`
 - Compatible con servidores que usan algoritmos MAC: hmac-sha2-256, hmac-sha2-512, hmac-sha1
+- Los releases publicados en GitHub son la fuente del sistema de auto-actualización
 
 ## 🔐 Seguridad
 
