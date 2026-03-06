@@ -37,7 +37,7 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
     try {
       const result = await window.api.dialog.selectKeyfile();
       if (result.success && result.content) {
-        setFormData((prev) => ({ ...prev, credential: result.content }));
+        setFormData((prev) => ({ ...prev, credential: result.content || '' }));
         setKeyfilePath(result.path || '');
       }
     } catch (err) {

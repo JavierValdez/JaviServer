@@ -147,13 +147,15 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
       }
     };
 
-    window.api.logs.onData(handleLogData);
+    const unsubscribe = window.api.logs.onData(handleLogData);
 
     return () => {
       // Cleanup: stop tail when component unmounts
       if (tailId) {
         window.api.logs.stopTail(tailId);
       }
+
+      unsubscribe();
     };
   }, [tailId]);
 
