@@ -1,11 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ServerProfile } from '../../types';
+import { Modal } from '../ui/Modal';
 
 interface ServerFormProps {
   profile?: ServerProfile;
   onClose: () => void;
-  onSave: () => void;
+  onSave: () => void | Promise<void>;
 }
+
+const KeyIcon = () => (
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a4 4 0 11-7.446 2H3v4h4v4h5.554A4 4 0 1115 7z" />
+  </svg>
+);
+
+const PasswordIcon = () => (
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4h8z" />
+  </svg>
+);
+
+const FolderIcon = () => (
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+  </svg>
+);
 
 export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -21,46 +40,48 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (profile) {
-      setFormData({
-        name: profile.name,
-        host: profile.host,
-        port: profile.port,
-        username: profile.username,
-        authType: profile.authType,
-        credential: '', // No mostrar credenciales existentes por seguridad
-      });
+    if (!profile) {
+      return;
     }
+
+    setFormData({
+      name: profile.name,
+      host: profile.host,
+      port: profile.port,
+      username: profile.username,
+      authType: profile.authType,
+      credential: '',
+    });
+    setKeyfilePath('');
   }, [profile]);
 
   const handleSelectKeyfile = async () => {
     try {
       const result = await window.api.dialog.selectKeyfile();
       if (result.success && result.content) {
-        setFormData((prev) => ({ ...prev, credential: result.content || '' }));
+        setFormData((previous) => ({ ...previous, credential: result.content || '' }));
         setKeyfilePath(result.path || '');
       }
-    } catch (err) {
-      setError('Error al seleccionar archivo de clave');
+    } catch {
+      setError('No se pudo cargar el archivo de clave.');
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError('');
     setSaving(true);
 
     try {
       if (!formData.name || !formData.host || !formData.username) {
-        throw new Error('Nombre, host y usuario son requeridos');
+        throw new Error('Nombre, host y usuario son requeridos.');
       }
 
       if (!profile && !formData.credential) {
-        throw new Error('La contraseña o clave es requerida');
+        throw new Error('Debes indicar una credencial para crear el perfil.');
       }
 
       if (profile) {
-        // Actualizar
         const updateData: Partial<ServerProfile> = {
           name: formData.name,
           host: formData.host,
@@ -68,169 +89,164 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
           username: formData.username,
           authType: formData.authType,
         };
-        
+
         if (formData.credential) {
           updateData.credential = formData.credential;
         }
 
         await window.api.profiles.update(profile.id, updateData);
       } else {
-        // Crear nuevo
         await window.api.profiles.create(formData);
       }
 
-      onSave();
+      await onSave();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Error al guardar');
+      setError(err.message || 'Error al guardar el perfil.');
     } finally {
       setSaving(false);
     }
   };
 
+  const isPassword = formData.authType === 'password';
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn">
-      <div className="bg-ssh-dark border border-gray-700 rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold mb-4">
-          {profile ? 'Editar Servidor' : 'Nuevo Servidor'}
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Nombre */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Nombre</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-              placeholder="Producción Tomcat1"
-              className="w-full bg-ssh-darker border border-gray-600 rounded px-3 py-2 text-white focus:border-ssh-accent focus:outline-none"
-            />
-          </div>
-
-          {/* Host */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2">
-              <label className="block text-sm text-gray-400 mb-1">Host</label>
-              <input
-                type="text"
-                value={formData.host}
-                onChange={(e) => setFormData((prev) => ({ ...prev, host: e.target.value }))}
-                placeholder="10.112.0.61"
-                className="w-full bg-ssh-darker border border-gray-600 rounded px-3 py-2 text-white focus:border-ssh-accent focus:outline-none"
-              />
-            </div>
+    <Modal
+      title={profile ? 'Editar servidor' : 'Nuevo servidor'}
+      description="Configura acceso SSH, autenticacion y datos base del perfil. Las credenciales se mantienen locales."
+      onClose={onClose}
+      widthClassName="max-w-2xl"
+      footer={
+        <>
+          <button type="button" className="btn-ghost" onClick={onClose}>
+            Cancelar
+          </button>
+          <button type="submit" form="server-form" disabled={saving} className="btn-primary">
+            {saving ? 'Guardando...' : profile ? 'Guardar cambios' : 'Crear servidor'}
+          </button>
+        </>
+      }
+    >
+      <form id="server-form" onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid gap-5 md:grid-cols-[1.3fr_1fr]">
+          <div className="space-y-5">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Puerto</label>
-              <input
-                type="number"
-                value={formData.port}
-                onChange={(e) => setFormData((prev) => ({ ...prev, port: parseInt(e.target.value) || 22 }))}
-                className="w-full bg-ssh-darker border border-gray-600 rounded px-3 py-2 text-white focus:border-ssh-accent focus:outline-none"
-              />
-            </div>
-          </div>
+              <div className="section-label">Identidad</div>
+              <div className="mt-3 grid gap-4">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Nombre visible</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(event) => setFormData((previous) => ({ ...previous, name: event.target.value }))}
+                    placeholder="Produccion Tomcat"
+                    className="input"
+                  />
+                  <p className="mt-2 body-xs">Este nombre se muestra en la barra lateral y las pestañas.</p>
+                </div>
 
-          {/* Usuario */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Usuario</label>
-            <input
-              type="text"
-              value={formData.username}
-              onChange={(e) => setFormData((prev) => ({ ...prev, username: e.target.value }))}
-              placeholder="consulta"
-              className="w-full bg-ssh-darker border border-gray-600 rounded px-3 py-2 text-white focus:border-ssh-accent focus:outline-none"
-            />
-          </div>
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_7rem]">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Host o IP</label>
+                    <input
+                      type="text"
+                      value={formData.host}
+                      onChange={(event) => setFormData((previous) => ({ ...previous, host: event.target.value }))}
+                      placeholder="10.112.0.61"
+                      className="input"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Puerto</label>
+                    <input
+                      type="number"
+                      value={formData.port}
+                      onChange={(event) =>
+                        setFormData((previous) => ({ ...previous, port: Number.parseInt(event.target.value, 10) || 22 }))
+                      }
+                      className="input"
+                    />
+                  </div>
+                </div>
 
-          {/* Tipo de autenticación */}
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Autenticación</label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="authType"
-                  checked={formData.authType === 'password'}
-                  onChange={() => setFormData((prev) => ({ ...prev, authType: 'password', credential: '' }))}
-                  className="text-ssh-accent"
-                />
-                <span>Contraseña</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="authType"
-                  checked={formData.authType === 'keyfile'}
-                  onChange={() => setFormData((prev) => ({ ...prev, authType: 'keyfile', credential: '' }))}
-                  className="text-ssh-accent"
-                />
-                <span>Clave privada</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Credencial */}
-          {formData.authType === 'password' ? (
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">
-                Contraseña {profile && '(dejar vacío para mantener)'}
-              </label>
-              <input
-                type="password"
-                value={formData.credential}
-                onChange={(e) => setFormData((prev) => ({ ...prev, credential: e.target.value }))}
-                className="w-full bg-ssh-darker border border-gray-600 rounded px-3 py-2 text-white focus:border-ssh-accent focus:outline-none"
-              />
-            </div>
-          ) : (
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">Archivo de clave</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={keyfilePath}
-                  readOnly
-                  placeholder="Seleccionar archivo .pem/.ppk"
-                  className="flex-1 bg-ssh-darker border border-gray-600 rounded px-3 py-2 text-gray-400 cursor-not-allowed"
-                />
-                <button
-                  type="button"
-                  onClick={handleSelectKeyfile}
-                  className="px-4 py-2 bg-ssh-light border border-gray-600 rounded hover:bg-gray-600 transition-colors"
-                >
-                  Buscar
-                </button>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Usuario SSH</label>
+                  <input
+                    type="text"
+                    value={formData.username}
+                    onChange={(event) => setFormData((previous) => ({ ...previous, username: event.target.value }))}
+                    placeholder="consulta"
+                    className="input"
+                  />
+                </div>
               </div>
             </div>
-          )}
-
-          {/* Error */}
-          {error && (
-            <div className="text-ssh-error text-sm bg-red-500/10 border border-red-500/30 rounded px-3 py-2">
-              {error}
-            </div>
-          )}
-
-          {/* Botones */}
-          <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-4 py-2 bg-ssh-accent text-ssh-darker font-medium rounded hover:bg-blue-400 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Guardando...' : 'Guardar'}
-            </button>
           </div>
-        </form>
-      </div>
-    </div>
+
+          <div className="panel-surface px-4 py-4">
+            <div className="section-label">Autenticacion</div>
+            <div className="mt-3 segmented w-full">
+              <button
+                type="button"
+                className="segmented-item flex flex-1 items-center justify-center gap-2"
+                data-active={isPassword}
+                onClick={() => setFormData((previous) => ({ ...previous, authType: 'password', credential: '' }))}
+              >
+                <PasswordIcon />
+                Contraseña
+              </button>
+              <button
+                type="button"
+                className="segmented-item flex flex-1 items-center justify-center gap-2"
+                data-active={!isPassword}
+                onClick={() => setFormData((previous) => ({ ...previous, authType: 'keyfile', credential: '' }))}
+              >
+                <KeyIcon />
+                Clave privada
+              </button>
+            </div>
+
+            <div className="mt-4 body-xs">
+              {isPassword
+                ? 'Usa credenciales directas para servidores internos o accesos temporales.'
+                : 'Carga un archivo PEM o PPK para perfiles persistentes y accesos endurecidos.'}
+            </div>
+
+            {isPassword ? (
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">
+                  Contraseña {profile ? '(dejar vacio para mantener)' : ''}
+                </label>
+                <input
+                  type="password"
+                  value={formData.credential}
+                  onChange={(event) => setFormData((previous) => ({ ...previous, credential: event.target.value }))}
+                  className="input"
+                />
+              </div>
+            ) : (
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Archivo de clave</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={keyfilePath || (profile?.authType === 'keyfile' ? 'Clave privada almacenada' : '')}
+                    readOnly
+                    placeholder="Seleccionar archivo .pem o .ppk"
+                    className="input flex-1 cursor-default text-[var(--text-secondary)]"
+                  />
+                  <button type="button" onClick={handleSelectKeyfile} className="btn-secondary shrink-0">
+                    <FolderIcon />
+                    Buscar
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {error ? <div className="notice-danger">{error}</div> : null}
+      </form>
+    </Modal>
   );
 };

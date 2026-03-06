@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { LogPattern } from '../../types';
 
@@ -14,66 +14,64 @@ interface LogFileInfo {
 }
 
 const PlayIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
     <path d="M8 5v14l11-7z" />
   </svg>
 );
 
 const PauseIcon = () => (
-  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
   </svg>
 );
 
 const SearchIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 );
 
 const ClearIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
   </svg>
 );
 
 const FilterIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
   </svg>
 );
 
 const LoadIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
   </svg>
 );
 
 const CalendarIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
   </svg>
 );
 
-// Quick filter patterns for Tomcat and common logs
 const quickFilters = [
-  { label: 'Errores', pattern: 'ERROR|SEVERE|Exception|FATAL', color: '#ef4444' },
-  { label: 'Warnings', pattern: 'WARN|WARNING', color: '#f59e0b' },
-  { label: 'Excepciones', pattern: 'Exception|Caused by|at \\w+\\.', color: '#dc2626' },
-  { label: 'Stack Trace', pattern: 'at .*\\(.*\\.java:\\d+\\)', color: '#dc2626' },
-  { label: 'HTTP 5xx', pattern: 'HTTP.*\\s5\\d{2}|status[=:]\\s*5\\d{2}', color: '#ef4444' },
-  { label: 'HTTP 4xx', pattern: 'HTTP.*\\s4\\d{2}|status[=:]\\s*4\\d{2}', color: '#f59e0b' },
-  { label: 'Deployments', pattern: 'Deploying|deployed|undeploying|Starting|Started|Stopping|Stopped', color: '#3b82f6' },
-  { label: 'Memory', pattern: 'OutOfMemory|heap|GC|memory', color: '#8b5cf6' },
+  { label: 'Errores', pattern: 'ERROR|SEVERE|Exception|FATAL', color: '#ff8b9f' },
+  { label: 'Warnings', pattern: 'WARN|WARNING', color: '#f4c971' },
+  { label: 'Excepciones', pattern: 'Exception|Caused by|at \\w+\\.', color: '#ff8b9f' },
+  { label: 'Stack trace', pattern: 'at .*\\(.*\\.java:\\d+\\)', color: '#ff8b9f' },
+  { label: 'HTTP 5xx', pattern: 'HTTP.*\\s5\\d{2}|status[=:]\\s*5\\d{2}', color: '#ff8b9f' },
+  { label: 'HTTP 4xx', pattern: 'HTTP.*\\s4\\d{2}|status[=:]\\s*4\\d{2}', color: '#f4c971' },
+  { label: 'Deploys', pattern: 'Deploying|deployed|undeploying|Starting|Started|Stopping|Stopped', color: '#79bbff' },
+  { label: 'Memoria', pattern: 'OutOfMemory|heap|GC|memory', color: '#c6a8ff' },
 ];
 
-// Opciones de cantidad de líneas
 const lineOptions = [
-  { value: 100, label: '100 líneas' },
-  { value: 200, label: '200 líneas' },
-  { value: 500, label: '500 líneas' },
-  { value: 1000, label: '1,000 líneas' },
-  { value: 5000, label: '5,000 líneas' },
+  { value: 100, label: '100 lineas' },
+  { value: 200, label: '200 lineas' },
+  { value: 500, label: '500 lineas' },
+  { value: 1000, label: '1,000 lineas' },
+  { value: 5000, label: '5,000 lineas' },
   { value: -1, label: 'Todo el archivo' },
 ];
 
@@ -86,6 +84,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   const [autoScroll, setAutoScroll] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<string[]>([]);
+  const [searchResultLabel, setSearchResultLabel] = useState<string | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -96,12 +95,14 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   const [showDateFilter, setShowDateFilter] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const logContainerRef = useRef<HTMLDivElement>(null);
 
-  const profile = profiles.find((p) => p.id === profileId);
+  const profile = profiles.find((entry) => entry.id === profileId);
   const patterns = profile?.logPatterns || getDefaultPatterns();
+  const fileName = filePath.split('/').pop() || filePath;
+  const shownLines = liveFilter ? filteredLines : lines;
 
-  // Cargar información del archivo al montar
   useEffect(() => {
     const loadFileInfo = async () => {
       try {
@@ -111,63 +112,65 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         console.error('Error loading file info:', err);
       }
     };
-    loadFileInfo();
-  }, [profileId, filePath]);
 
-  // Auto scroll to bottom
+    void loadFileInfo();
+  }, [filePath, profileId]);
+
   useEffect(() => {
     if (autoScroll && logContainerRef.current) {
       logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
-  }, [lines, filteredLines, autoScroll]);
+  }, [autoScroll, filteredLines, lines, searchResults]);
 
-  // Filter lines based on liveFilter
   useEffect(() => {
     if (!liveFilter.trim()) {
       setFilteredLines(lines);
-    } else {
-      try {
-        const regex = new RegExp(liveFilter, 'i');
-        setFilteredLines(lines.filter(line => regex.test(line)));
-      } catch {
-        // If invalid regex, do simple string match
-        setFilteredLines(lines.filter(line => 
-          line.toLowerCase().includes(liveFilter.toLowerCase())
-        ));
-      }
+      return;
+    }
+
+    try {
+      const regex = new RegExp(liveFilter, 'i');
+      setFilteredLines(lines.filter((line) => regex.test(line)));
+    } catch {
+      setFilteredLines(lines.filter((line) => line.toLowerCase().includes(liveFilter.toLowerCase())));
     }
   }, [lines, liveFilter]);
 
-  // Listen for log data
   useEffect(() => {
     const handleLogData = (data: { tailId: string; data: string }) => {
       if (data.tailId === tailId) {
-        const newLines = data.data.split('\n').filter((l) => l.trim());
-        setLines((prev) => [...prev, ...newLines].slice(-5000)); // Keep last 5000 lines
+        const newLines = data.data.split('\n').filter((line) => line.trim());
+        setLines((previous) => [...previous, ...newLines].slice(-5000));
       }
     };
 
     const unsubscribe = window.api.logs.onData(handleLogData);
 
     return () => {
-      // Cleanup: stop tail when component unmounts
       if (tailId) {
         window.api.logs.stopTail(tailId);
       }
-
       unsubscribe();
     };
   }, [tailId]);
 
+  const clearResults = () => {
+    setSearchResults([]);
+    setSearchResultLabel(null);
+    setError(null);
+  };
+
   const startTail = async () => {
     try {
+      clearResults();
       setLines([]);
       const id = await window.api.logs.startTail(profileId, filePath, initialLines);
       setTailId(id);
       setIsStreaming(true);
+      setError(null);
     } catch (err: any) {
-      console.error('Error starting tail:', err);
-      setLines([`Error: ${err.message}`]);
+      setError(err.message || 'No se pudo iniciar el stream.');
+      setLines([]);
     }
   };
 
@@ -179,57 +182,53 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
     }
   };
 
-  // Cargar líneas del archivo (sin streaming)
   const loadLines = async (numLines: number) => {
-    // Detener el streaming primero si está activo
     if (tailId) {
       await window.api.logs.stopTail(tailId);
       setTailId(null);
       setIsStreaming(false);
     }
-    
+
     setIsLoading(true);
-    setLines([]); // Limpiar líneas anteriores
-    
+    setLines([]);
+    clearResults();
+
     try {
       const all = numLines === -1;
-      console.log('[LogViewer] loadLines called with numLines:', numLines, 'all:', all);
       const result = await window.api.logs.readLines(profileId, filePath, {
         lines: all ? undefined : numLines,
         all,
-        fromStart: false
+        fromStart: false,
       });
-      console.log('[LogViewer] readLines result length:', result?.length || 0, 'chars');
-      
-      // No filtrar líneas vacías si es el archivo completo para evitar perder líneas
+
       const loadedLines = result.split('\n');
-      // Solo filtramos las vacías al final
       while (loadedLines.length > 0 && !loadedLines[loadedLines.length - 1]) {
         loadedLines.pop();
       }
-      
-      console.log('[LogViewer] Loaded lines count:', loadedLines.length);
+
       setLines(loadedLines);
-      setSearchResults([]);
+      setError(null);
     } catch (err: any) {
-      console.error('[LogViewer] Error loading lines:', err);
-      setLines([`Error: ${err.message}`]);
+      setError(err.message || 'No se pudieron cargar las lineas.');
+      setLines([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Buscar por rango de fechas
   const searchByDateRange = async () => {
     if (!startDate || !endDate) return;
-    
+
     setIsLoading(true);
+    clearResults();
+
     try {
       const result = await window.api.logs.searchByDateRange(profileId, filePath, startDate, endDate);
-      const resultLines = result.split('\n').filter((l: string) => l.trim());
-      setSearchResults(resultLines);
+      setSearchResults(result.split('\n').filter((line: string) => line.trim()));
+      setSearchResultLabel(`Resultados entre ${startDate} y ${endDate}`);
+      setError(null);
     } catch (err: any) {
-      setSearchResults([`Error: ${err.message}`]);
+      setError(err.message || 'No se pudo buscar por rango de fechas.');
     } finally {
       setIsLoading(false);
     }
@@ -239,7 +238,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
     if (!searchQuery.trim()) return;
 
     setIsSearching(true);
-    setSearchResults([]);
+    clearResults();
 
     try {
       const results = await window.api.logs.grep(profileId, filePath, searchQuery, {
@@ -247,10 +246,11 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         context: 2,
       });
 
-      const resultLines = results.split('\n').filter((l: string) => l.trim());
-      setSearchResults(resultLines);
+      setSearchResults(results.split('\n').filter((line: string) => line.trim()));
+      setSearchResultLabel(`Resultados para "${searchQuery}"`);
+      setError(null);
     } catch (err: any) {
-      setSearchResults([`Error: ${err.message}`]);
+      setError(err.message || 'No se pudo ejecutar la busqueda.');
     } finally {
       setIsSearching(false);
     }
@@ -258,296 +258,250 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
 
   const handleClear = () => {
     setLines([]);
+    clearResults();
+    setActiveFilter(null);
   };
 
-  const highlightLine = useCallback((line: string): React.ReactNode => {
-    let highlighted = line;
-    let color = '';
+  const highlightLine = useCallback(
+    (line: string): React.ReactNode => {
+      const escaped = escapeHtml(line);
+      let highlighted = escaped;
+      let color = '';
 
-    // Find matching pattern
-    for (const pattern of patterns) {
-      if (line.toLowerCase().includes(pattern.pattern.toLowerCase())) {
-        color = pattern.color;
-        break;
+      for (const pattern of patterns) {
+        if (line.toLowerCase().includes(pattern.pattern.toLowerCase())) {
+          color = pattern.color;
+          break;
+        }
       }
-    }
 
-    // Highlight timestamps (common format: 2024-01-15 10:30:45)
-    const timestampRegex = /(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2})/g;
-    highlighted = highlighted.replace(timestampRegex, '<span class="text-gray-500">$1</span>');
+      const timestampRegex = /(\d{4}-\d{2}-\d{2}[\sT]\d{2}:\d{2}:\d{2})/g;
+      highlighted = highlighted.replace(timestampRegex, '<span class="text-[var(--text-muted)]">$1</span>');
 
-    return (
-      <span
-        style={{ color: color || 'inherit' }}
-        dangerouslySetInnerHTML={{ __html: highlighted }}
-      />
-    );
-  }, [patterns]);
+      return <span style={{ color: color || 'inherit' }} dangerouslySetInnerHTML={{ __html: highlighted }} />;
+    },
+    [patterns],
+  );
 
-  const fileName = filePath.split('/').pop() || filePath;
+  const streamBadgeClass = isStreaming ? 'badge-success' : isLoading ? 'badge-warning' : 'badge-neutral';
+  const streamLabel = isStreaming ? 'Live' : isLoading ? 'Cargando' : 'Detenido';
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-ssh-dark">
-      {/* Toolbar */}
-      <div className="p-3 border-b border-gray-700 flex items-center gap-2 flex-wrap">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-400 truncate max-w-[200px]" title={filePath}>
-            {fileName}
-          </span>
-          <span className={`px-2 py-0.5 rounded text-xs ${isStreaming ? 'bg-ssh-success/20 text-ssh-success' : 'bg-gray-600 text-gray-400'}`}>
-            {isStreaming ? 'Live' : isLoading ? 'Cargando...' : 'Detenido'}
-          </span>
-          {fileInfo && (
-            <span className="text-xs text-gray-500">
-              ({fileInfo.lines.toLocaleString()} líneas, {fileInfo.size})
-            </span>
-          )}
-        </div>
-
-        <div className="flex-1" />
-
-        {/* Selector de líneas */}
-        <div className="flex items-center gap-1">
-          <LoadIcon />
-          <select
-            value={initialLines}
-            onChange={(e) => {
-              const newValue = Number(e.target.value);
-              setInitialLines(newValue);
-              // Cargar automáticamente cuando cambia la selección
-              loadLines(newValue);
-            }}
-            className="bg-ssh-darker border border-gray-600 rounded px-2 py-1 text-xs focus:border-ssh-accent focus:outline-none"
-            disabled={isLoading}
-          >
-            {lineOptions.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
-          <button
-            onClick={() => loadLines(initialLines)}
-            disabled={isLoading}
-            className="px-2 py-1 bg-ssh-light hover:bg-gray-600 rounded text-xs transition-colors disabled:opacity-50"
-            title="Cargar líneas sin streaming"
-          >
-            {isLoading ? 'Cargando...' : 'Cargar'}
-          </button>
-        </div>
-
-        <div className="w-px h-6 bg-gray-600" />
-
-        <button
-          onClick={() => setShowDateFilter(!showDateFilter)}
-          className={`p-2 rounded transition-colors ${showDateFilter ? 'bg-ssh-warning/30 text-ssh-warning' : 'hover:bg-ssh-light text-gray-400'}`}
-          title="Filtrar por fecha"
-        >
-          <CalendarIcon />
-        </button>
-
-        <button
-          onClick={() => setShowSearch(!showSearch)}
-          className={`p-2 rounded transition-colors ${showSearch ? 'bg-ssh-accent text-ssh-darker' : 'hover:bg-ssh-light text-gray-400'}`}
-          title="Buscar"
-        >
-          <SearchIcon />
-        </button>
-
-        <button
-          onClick={handleClear}
-          className="p-2 hover:bg-ssh-light rounded transition-colors text-gray-400"
-          title="Limpiar"
-        >
-          <ClearIcon />
-        </button>
-
-        <label className="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={autoScroll}
-            onChange={(e) => setAutoScroll(e.target.checked)}
-            className="rounded"
-          />
-          Auto-scroll
-        </label>
-
-        {isStreaming ? (
-          <button
-            onClick={stopTail}
-            className="flex items-center gap-2 px-3 py-1.5 bg-ssh-error text-white rounded hover:bg-red-600 transition-colors"
-          >
-            <PauseIcon />
-            Detener
-          </button>
-        ) : (
-          <button
-            onClick={startTail}
-            disabled={isLoading}
-            className="flex items-center gap-2 px-3 py-1.5 bg-ssh-success text-ssh-darker rounded hover:bg-green-400 transition-colors disabled:opacity-50"
-          >
-            <PlayIcon />
-            Live
-          </button>
-        )}
-      </div>
-
-      {/* Date filter bar */}
-      {showDateFilter && (
-        <div className="p-3 border-b border-gray-700 bg-ssh-darker flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-gray-500">Rango de fechas:</span>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="bg-ssh-dark border border-gray-600 rounded px-2 py-1 text-xs focus:border-ssh-accent focus:outline-none"
-          />
-          <span className="text-gray-500">hasta</span>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="bg-ssh-dark border border-gray-600 rounded px-2 py-1 text-xs focus:border-ssh-accent focus:outline-none"
-          />
-          <button
-            onClick={searchByDateRange}
-            disabled={!startDate || !endDate || isLoading}
-            className="px-3 py-1 bg-ssh-warning text-ssh-darker rounded text-xs hover:bg-yellow-400 transition-colors disabled:opacity-50"
-          >
-            Buscar por fechas
-          </button>
-          <span className="text-xs text-gray-500 italic">
-            (Formato: YYYY-MM-DD en los logs)
-          </span>
-        </div>
-      )}
-
-      {/* Search bar */}
-      {showSearch && (
-        <div className="p-3 border-b border-gray-700 bg-ssh-darker">
-          <div className="flex items-center gap-2 mb-2">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-              placeholder="Buscar en el archivo (grep)..."
-              className="flex-1 bg-ssh-dark border border-gray-600 rounded px-3 py-1.5 text-sm focus:border-ssh-accent focus:outline-none"
-            />
-            <button
-              onClick={handleSearch}
-              disabled={isSearching || !searchQuery.trim()}
-              className="px-4 py-1.5 bg-ssh-accent text-ssh-darker rounded hover:bg-blue-400 transition-colors disabled:opacity-50"
-            >
-              {isSearching ? 'Buscando...' : 'Buscar'}
-            </button>
+    <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
+      <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="section-label">Log stream</div>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <div className="truncate text-lg font-semibold text-[var(--text-primary)]">{fileName}</div>
+              <span className={streamBadgeClass}>{streamLabel}</span>
+              {fileInfo ? <span className="badge-neutral">{fileInfo.lines.toLocaleString()} lineas</span> : null}
+              {fileInfo ? <span className="badge-neutral">{fileInfo.size}</span> : null}
+            </div>
+            <div className="mt-2 truncate font-mono text-xs text-[var(--text-secondary)]">{filePath}</div>
           </div>
-          
-          {/* Quick filters */}
-          <div className="flex flex-wrap gap-1.5">
-            <span className="text-xs text-gray-500 flex items-center mr-1">
-              <FilterIcon />
-              <span className="ml-1">Filtros rápidos:</span>
-            </span>
-            {quickFilters.map((filter) => (
-              <button
-                key={filter.label}
-                onClick={() => {
-                  // Aplicar filtro tanto para búsqueda como para filtro en vivo
-                  setLiveFilter(filter.pattern);
-                  setActiveFilter(filter.label);
+
+          <div className="toolbar-row">
+            <div className="muted-surface flex items-center gap-2 px-3 py-2">
+              <LoadIcon />
+              <span className="body-xs">Carga inicial</span>
+              <select
+                value={initialLines}
+                onChange={(event) => {
+                  const newValue = Number(event.target.value);
+                  setInitialLines(newValue);
+                  void loadLines(newValue);
                 }}
-                className={`px-2 py-0.5 text-xs rounded transition-colors ${
-                  activeFilter === filter.label 
-                    ? 'ring-1 ring-white' 
-                    : 'hover:opacity-80'
-                }`}
-                style={{ 
-                  backgroundColor: filter.color + '30', 
-                  color: filter.color,
-                  borderColor: filter.color
-                }}
+                className="select min-h-0 border-transparent bg-transparent px-1 py-0"
+                disabled={isLoading}
               >
-                {filter.label}
+                {lineOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button type="button" onClick={() => setShowDateFilter((previous) => !previous)} className={showDateFilter ? 'btn-secondary' : 'btn-icon'} title="Filtrar por fecha" aria-label="Filtrar por fecha">
+              <CalendarIcon />
+              {showDateFilter ? 'Fechas' : null}
+            </button>
+            <button type="button" onClick={() => setShowSearch((previous) => !previous)} className={showSearch ? 'btn-secondary' : 'btn-icon'} title="Buscar" aria-label="Buscar">
+              <SearchIcon />
+              {showSearch ? 'Buscar' : null}
+            </button>
+            <button type="button" onClick={handleClear} className="btn-icon" title="Limpiar" aria-label="Limpiar">
+              <ClearIcon />
+            </button>
+
+            <label className="muted-surface flex items-center gap-2 px-3 py-2">
+              <input
+                type="checkbox"
+                checked={autoScroll}
+                onChange={(event) => setAutoScroll(event.target.checked)}
+                className="h-4 w-4 accent-[var(--accent)]"
+              />
+              <span className="body-xs">Auto-scroll</span>
+            </label>
+
+            {isStreaming ? (
+              <button type="button" onClick={() => void stopTail()} className="btn-danger">
+                <PauseIcon />
+                Detener
               </button>
-            ))}
-            {activeFilter && (
-              <button
-                onClick={() => {
-                  setActiveFilter(null);
-                  setLiveFilter('');
-                  setSearchResults([]);
-                }}
-                className="px-2 py-0.5 text-xs bg-gray-600 text-gray-300 rounded hover:bg-gray-500"
-              >
-                Limpiar filtro
+            ) : (
+              <button type="button" onClick={() => void startTail()} disabled={isLoading} className="btn-primary">
+                <PlayIcon />
+                Live
               </button>
             )}
           </div>
         </div>
-      )}
 
-      {/* Live filter - always available */}
-      <div className="px-3 py-2 border-b border-gray-700 bg-ssh-darker/50 flex items-center gap-2">
-        <span className="text-xs text-gray-500">
-          {isStreaming ? '🔴 Filtro en vivo:' : 'Filtrar líneas:'}
-        </span>
-        <input
-          type="text"
-          value={liveFilter}
-          onChange={(e) => setLiveFilter(e.target.value)}
-          placeholder="Filtrar líneas mostradas (regex o texto)..."
-          className="flex-1 bg-ssh-dark border border-gray-600 rounded px-2 py-1 text-xs focus:border-ssh-accent focus:outline-none"
-        />
-        {liveFilter && (
-          <>
-            <span className="text-xs text-gray-400">
-              {filteredLines.length} de {lines.length} líneas
-            </span>
+        {error ? <div className="notice-danger mt-4">{error}</div> : null}
+      </div>
+
+      {showDateFilter ? (
+        <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+          <div className="section-label">Rango de fechas</div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} className="input w-auto min-w-[11rem]" />
+            <span className="body-xs">hasta</span>
+            <input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} className="input w-auto min-w-[11rem]" />
+            <button type="button" onClick={() => void searchByDateRange()} disabled={!startDate || !endDate || isLoading} className="btn-secondary">
+              Buscar por fechas
+            </button>
+            <span className="body-xs">(Formato esperado: YYYY-MM-DD)</span>
+          </div>
+        </div>
+      ) : null}
+
+      {showSearch ? (
+        <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+          <div className="section-label">Busqueda y filtros</div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onKeyDown={(event) => event.key === 'Enter' && void handleSearch()}
+              placeholder="Buscar en el archivo con grep"
+              className="input min-w-[18rem] flex-1"
+            />
+            <button type="button" onClick={() => void handleSearch()} disabled={isSearching || !searchQuery.trim()} className="btn-primary">
+              {isSearching ? 'Buscando...' : 'Buscar'}
+            </button>
+            {searchResults.length > 0 ? (
+              <button type="button" onClick={clearResults} className="btn-ghost">
+                Limpiar resultados
+              </button>
+            ) : null}
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="section-label">Filtros rapidos</span>
+            {quickFilters.map((filter) => (
+              <button
+                key={filter.label}
+                type="button"
+                onClick={() => {
+                  setLiveFilter(filter.pattern);
+                  setActiveFilter(filter.label);
+                }}
+                className="btn-chip"
+                style={{
+                  color: filter.color,
+                  borderColor: activeFilter === filter.label ? `${filter.color}55` : undefined,
+                  background: activeFilter === filter.label ? `${filter.color}22` : undefined,
+                }}
+              >
+                <FilterIcon />
+                {filter.label}
+              </button>
+            ))}
+            {activeFilter ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveFilter(null);
+                  setLiveFilter('');
+                  clearResults();
+                }}
+                className="btn-ghost"
+              >
+                Limpiar filtro
+              </button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
+      <div className="border-b border-[var(--border-subtle)] px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="section-label">{isStreaming ? 'Filtro en vivo' : 'Filtrar lineas'}</span>
+          <input
+            type="text"
+            value={liveFilter}
+            onChange={(event) => setLiveFilter(event.target.value)}
+            placeholder="Regex o texto libre"
+            className="input min-w-[16rem] flex-1"
+          />
+          {liveFilter ? <span className="badge-neutral">{filteredLines.length} de {lines.length}</span> : null}
+          {liveFilter ? (
             <button
+              type="button"
               onClick={() => {
                 setLiveFilter('');
                 setActiveFilter(null);
               }}
-              className="px-2 py-0.5 text-xs bg-gray-600 text-gray-300 rounded hover:bg-gray-500"
+              className="btn-ghost"
             >
-              ×
+              Limpiar
             </button>
-          </>
-        )}
+          ) : null}
+        </div>
       </div>
 
-      {/* Log content */}
       <div
         ref={logContainerRef}
-        className="flex-1 overflow-y-auto font-mono text-sm p-3"
-        onScroll={(e) => {
-          const target = e.currentTarget;
+        className="app-scroll flex-1 overflow-y-auto bg-[var(--surface-contrast)] px-4 py-4 font-mono text-[13px]"
+        onScroll={(event) => {
+          const target = event.currentTarget;
           const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
           if (autoScroll !== isAtBottom) {
             setAutoScroll(isAtBottom);
           }
         }}
       >
-        {showSearch && searchResults.length > 0 ? (
-          // Show search results
+        {searchResults.length > 0 ? (
           <div className="space-y-1">
-            <div className="text-gray-400 mb-2">
-              {searchResults.length} resultados para "{searchQuery}"
+            <div className="mb-3 flex flex-wrap items-center gap-2">
+              <span className="badge-accent">{searchResultLabel || 'Resultados'}</span>
+              <span className="badge-neutral">{searchResults.length} coincidencia(s)</span>
             </div>
-            {searchResults.map((line, i) => (
-              <div key={i} className="py-0.5 border-l-2 border-ssh-accent pl-2 bg-ssh-light/30">
+            {searchResults.map((line, index) => (
+              <div key={`${line}-${index}`} className="rounded-xl border border-[rgba(121,187,255,0.14)] bg-[rgba(121,187,255,0.08)] px-3 py-2">
                 {highlightLine(line)}
               </div>
             ))}
           </div>
         ) : lines.length === 0 ? (
-          <div className="text-gray-500 text-center py-8">
-            {isStreaming ? 'Esperando datos...' : 'Presiona "Iniciar" para ver logs en tiempo real'}
+          <div className="empty-state h-full">
+            <div className="empty-state-icon">
+              <SearchIcon />
+            </div>
+            <div className="text-lg font-semibold text-[var(--text-primary)]">
+              {isStreaming ? 'Esperando datos...' : 'Carga lineas o inicia el stream'}
+            </div>
+            <p className="body-sm max-w-md">
+              Usa carga inicial para revisar historial, o activa Live para seguir el archivo en tiempo real.
+            </p>
           </div>
         ) : (
-          // Show log lines (filtered if liveFilter is active)
-          <div className="space-y-0.5">
-            {(liveFilter ? filteredLines : lines).map((line, i) => (
-              <div key={i} className="py-0.5 hover:bg-ssh-light/30">
+          <div className="space-y-1">
+            {shownLines.map((line, index) => (
+              <div key={`${index}-${line.slice(0, 24)}`} className="rounded-lg px-2 py-1 hover:bg-[rgba(121,187,255,0.05)]">
                 {highlightLine(line)}
               </div>
             ))}
@@ -555,23 +509,34 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         )}
       </div>
 
-      {/* Status bar */}
-      <div className="px-3 py-2 border-t border-gray-700 text-sm text-gray-500 flex justify-between">
-        <span>{lines.length} líneas</span>
-        <span>{filePath}</span>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="badge-neutral">{lines.length} linea(s) cargadas</span>
+          {liveFilter ? <span className="badge-neutral">{filteredLines.length} visibles</span> : null}
+        </div>
+        {fileInfo?.lastModified ? <div className="body-xs">Actualizado: {fileInfo.lastModified}</div> : null}
       </div>
     </div>
   );
 };
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function getDefaultPatterns(): LogPattern[] {
   return [
-    { pattern: 'SEVERE', color: '#ef4444', label: 'Severe' },
-    { pattern: 'ERROR', color: '#ef4444', label: 'Error' },
-    { pattern: 'WARN', color: '#f59e0b', label: 'Warning' },
-    { pattern: 'WARNING', color: '#f59e0b', label: 'Warning' },
-    { pattern: 'INFO', color: '#3b82f6', label: 'Info' },
-    { pattern: 'DEBUG', color: '#6b7280', label: 'Debug' },
-    { pattern: 'Exception', color: '#dc2626', label: 'Exception' },
+    { pattern: 'SEVERE', color: '#ff8b9f', label: 'Severe' },
+    { pattern: 'ERROR', color: '#ff8b9f', label: 'Error' },
+    { pattern: 'WARN', color: '#f4c971', label: 'Warning' },
+    { pattern: 'WARNING', color: '#f4c971', label: 'Warning' },
+    { pattern: 'INFO', color: '#79bbff', label: 'Info' },
+    { pattern: 'DEBUG', color: '#93a4c5', label: 'Debug' },
+    { pattern: 'Exception', color: '#ff8b9f', label: 'Exception' },
   ];
 }
