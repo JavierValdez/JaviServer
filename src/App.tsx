@@ -1,9 +1,12 @@
+import { useEffect, useState } from 'react';
 import { useAppStore } from './store/useAppStore';
 import { ServerList } from './components/ServerList/ServerList';
 import { FileExplorer } from './components/FileExplorer/FileExplorer';
 import { LogViewer } from './components/LogViewer/LogViewer';
 import { Terminal } from './components/Terminal/Terminal';
+import { UpdateStatus } from './components/UpdateStatus/UpdateStatus';
 import { Tab, TabType } from './types';
+import type { AppUpdateState } from './types/updater';
 
 // Icons
 const FolderIcon = () => (
@@ -42,9 +45,34 @@ function App() {
     removeTab,
     setActiveTab,
   } = useAppStore();
+  const [updateState, setUpdateState] = useState<AppUpdateState | null>(null);
 
   const selectedProfile = profiles.find((p) => p.id === selectedProfileId);
   const isConnected = selectedProfileId ? connections.get(selectedProfileId)?.connected : false;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const syncInitialState = async () => {
+      const state = await window.api.updater.getState();
+      if (isMounted) {
+        setUpdateState(state);
+      }
+    };
+
+    void syncInitialState();
+
+    const unsubscribe = window.api.updater.onStateChange((state) => {
+      if (isMounted) {
+        setUpdateState(state);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
 
   const openTab = (type: TabType, title: string, data?: { path?: string; filePath?: string }) => {
     if (!selectedProfileId) return;
@@ -81,6 +109,28 @@ function App() {
     openTab('terminal', 'Terminal', { path });
   };
 
+  const handleUpdateAction = async () => {
+    if (!updateState) {
+      return;
+    }
+
+    if (updateState.status === 'available') {
+      await window.api.updater.downloadInstaller();
+      return;
+    }
+
+    if (updateState.status === 'downloaded') {
+      await window.api.updater.revealInstaller();
+      return;
+    }
+
+    if (updateState.status === 'checking' || updateState.status === 'downloading' || updateState.status === 'disabled') {
+      return;
+    }
+
+    await window.api.updater.checkForUpdates();
+  };
+
   const getTabIcon = (type: TabType) => {
     switch (type) {
       case 'explorer':
@@ -99,6 +149,19 @@ function App() {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
+        <div className="px-4 py-3 border-b border-gray-700 flex items-center justify-between gap-4 bg-ssh-darker">
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-white">JaviServer</div>
+            <div className="text-xs text-gray-500 truncate">
+              {selectedProfile
+                ? `Perfil activo: ${selectedProfile.name}`
+                : 'Administra conexiones SSH, archivos y logs desde una sola vista.'}
+            </div>
+          </div>
+
+          <UpdateStatus state={updateState} onAction={handleUpdateAction} />
+        </div>
+
         {/* Action Bar */}
         {selectedProfile && isConnected && (
           <div className="p-2 border-b border-gray-700 flex items-center gap-2 bg-ssh-darker">

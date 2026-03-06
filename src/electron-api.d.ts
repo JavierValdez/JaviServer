@@ -1,4 +1,5 @@
 import type { FileInfo, PathBookmark, ServerProfile } from './types';
+import type { AppUpdateState } from './types/updater';
 
 interface DirectorySearchMatch {
   line: number;
@@ -88,6 +89,13 @@ interface ElectronApi {
     resize: (profileId: string, cols: number, rows: number) => Promise<boolean>;
     stop: (profileId: string) => Promise<boolean>;
     onData: (listener: (payload: { profileId: string; data: string }) => void) => () => void;
+  };
+  updater: {
+    getState: () => Promise<AppUpdateState>;
+    checkForUpdates: () => Promise<AppUpdateState>;
+    downloadInstaller: () => Promise<AppUpdateState>;
+    revealInstaller: () => Promise<boolean>;
+    onStateChange: (listener: (payload: AppUpdateState) => void) => () => void;
   };
 }
 
