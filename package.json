@@ -1,7 +1,7 @@
 {
   "name": "javiserver",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Gestor SSH Multi-servidor para explorar archivos y logs de servidores",
   "author": "jasegura",
   "type": "module",
@@ -76,6 +76,31 @@
         "zip"
       ],
       "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+    },
+    "dmg": {
+      "window": {
+        "width": 640,
+        "height": 420
+      },
+      "contents": [
+        {
+          "x": 160,
+          "y": 170
+        },
+        {
+          "x": 460,
+          "y": 170,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 310,
+          "y": 320,
+          "type": "file",
+          "path": "INSTALL-MAC.txt",
+          "name": "Instrucciones.txt"
+        }
+      ]
     },
     "win": {
       "target": [

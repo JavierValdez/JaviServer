@@ -1,0 +1,20 @@
+==========================================
+  JaviServer - Instrucciones de instalacion
+==========================================
+
+Si macOS dice "JaviServer esta danado y no puede abrirse",
+debes ejecutar este comando en la Terminal:
+
+  xattr -cr /Applications/JaviServer.app
+
+Como hacerlo paso a paso:
+
+  1. Arrastra JaviServer a la carpeta Aplicaciones
+  2. Abre la app Terminal
+     Finder -> Aplicaciones -> Utilidades -> Terminal
+  3. Copia y pega este comando exactamente:
+       xattr -cr /Applications/JaviServer.app
+  4. Presiona Enter
+  5. Abre JaviServer normalmente
+
+Solo necesitas hacerlo una vez tras cada instalacion.
