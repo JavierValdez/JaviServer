@@ -1,7 +1,7 @@
 {
   "name": "javiserver",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Gestor SSH Multi-servidor para explorar archivos y logs de servidores",
   "author": "jasegura",
   "type": "module",
