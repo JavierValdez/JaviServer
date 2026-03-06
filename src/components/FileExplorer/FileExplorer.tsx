@@ -1,66 +1,72 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { FileInfo, PathBookmark } from '../../types';
+import { Modal } from '../ui/Modal';
 
-// Iconos
 const FolderIcon = () => (
-  <svg className="w-5 h-5 text-ssh-warning" fill="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4 text-[var(--warning)]" fill="currentColor" viewBox="0 0 24 24">
     <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
   </svg>
 );
 
 const FileIcon = () => (
-  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4 text-[var(--text-secondary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
   </svg>
 );
 
 const LogIcon = () => (
-  <svg className="w-5 h-5 text-ssh-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4 text-[var(--success)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
   </svg>
 );
 
 const DownloadIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
   </svg>
 );
 
 const ViewLogIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
   </svg>
 );
 
 const BookmarkIcon = ({ filled }: { filled?: boolean }) => (
-  <svg className={`w-4 h-4 ${filled ? 'text-ssh-warning fill-current' : 'text-gray-400'}`} fill={filled ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+  <svg className={`h-4 w-4 ${filled ? 'fill-current text-[var(--warning)]' : 'text-[var(--text-secondary)]'}`} fill={filled ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
   </svg>
 );
 
 const RefreshIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
   </svg>
 );
 
 const SearchIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 );
 
 const SortIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
   </svg>
 );
 
 const TerminalIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
+const ArrowUpIcon = () => (
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
   </svg>
 );
 
@@ -88,102 +94,102 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<FileInfo | null>(null);
   const [pathInput, setPathInput] = useState(initialPath);
-  
-  // Modal de bookmark
   const [showBookmarkModal, setShowBookmarkModal] = useState(false);
   const [bookmarkName, setBookmarkName] = useState('');
   const [bookmarkIsLog, setBookmarkIsLog] = useState(false);
   const [savingBookmark, setSavingBookmark] = useState(false);
-
-  // Ordenamiento
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-
-  // Búsqueda en carpeta
   const [showSearch, setShowSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  const profile = profiles.find((p) => p.id === profileId);
+  const profile = profiles.find((entry) => entry.id === profileId);
   const bookmarks = profile?.bookmarks || [];
 
-  // Ordenar archivos
-  const sortedFiles = React.useMemo(() => {
-    const sorted = [...files].sort((a, b) => {
-      // Directorios siempre primero
-      if (a.isDirectory && !b.isDirectory) return -1;
-      if (!a.isDirectory && b.isDirectory) return 1;
+  const sortedFiles = useMemo(() => {
+    const sorted = [...files].sort((left, right) => {
+      if (left.isDirectory && !right.isDirectory) return -1;
+      if (!left.isDirectory && right.isDirectory) return 1;
 
       let comparison = 0;
       switch (sortField) {
         case 'name':
-          comparison = a.name.localeCompare(b.name);
+          comparison = left.name.localeCompare(right.name);
           break;
         case 'date':
-          comparison = new Date(a.modifyTime).getTime() - new Date(b.modifyTime).getTime();
+          comparison = new Date(left.modifyTime).getTime() - new Date(right.modifyTime).getTime();
           break;
         case 'size':
-          comparison = a.size - b.size;
+          comparison = left.size - right.size;
           break;
       }
+
       return sortOrder === 'asc' ? comparison : -comparison;
     });
+
     return sorted;
   }, [files, sortField, sortOrder]);
 
-  const loadDirectory = useCallback(async (path: string) => {
-    setLoading(true);
-    setError(null);
-    setSelectedFile(null);
+  const loadDirectory = useCallback(
+    async (path: string) => {
+      setLoading(true);
+      setError(null);
+      setSelectedFile(null);
 
-    try {
-      const fileList = await window.api.sftp.listDirectory(profileId, path);
-      setFiles(fileList);
-      setCurrentPath(path);
-      setPathInput(path);
-    } catch (err: any) {
-      setError(err.message || 'Error al cargar directorio');
-      setFiles([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [profileId]);
+      try {
+        const fileList = await window.api.sftp.listDirectory(profileId, path);
+        setFiles(fileList);
+        setCurrentPath(path);
+        setPathInput(path);
+      } catch (err: any) {
+        setError(err.message || 'No se pudo cargar el directorio.');
+        setFiles([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [profileId],
+  );
 
   useEffect(() => {
-    loadDirectory(initialPath);
-  }, [profileId, initialPath, loadDirectory]);
+    void loadDirectory(initialPath);
+  }, [initialPath, loadDirectory]);
 
   const handleNavigate = (file: FileInfo) => {
     if (file.isDirectory) {
-      loadDirectory(file.path);
-    } else {
-      setSelectedFile(file);
+      void loadDirectory(file.path);
+      return;
     }
+
+    setSelectedFile(file);
   };
 
   const handleGoUp = () => {
     const parentPath = currentPath.split('/').slice(0, -1).join('/') || '/';
-    loadDirectory(parentPath);
+    void loadDirectory(parentPath);
   };
 
-  const handlePathSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePathSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     if (pathInput.trim()) {
-      loadDirectory(pathInput.trim());
+      void loadDirectory(pathInput.trim());
     }
   };
 
   const handleDownload = async (file: FileInfo) => {
+    setActionError(null);
     try {
       await window.api.sftp.download(profileId, file.path);
     } catch (err: any) {
-      alert(`Error al descargar: ${err.message}`);
+      setActionError(`No se pudo descargar "${file.name}": ${err.message}`);
     }
   };
 
   const openBookmarkModal = () => {
-    setBookmarkName(currentPath.split('/').pop() || 'Bookmark');
+    setBookmarkName(currentPath.split('/').pop() || 'Ruta');
     setBookmarkIsLog(false);
     setShowBookmarkModal(true);
   };
@@ -194,454 +200,377 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
     }
 
     setSavingBookmark(true);
+    setActionError(null);
+
     try {
-      console.log('Adding bookmark:', { name: bookmarkName, path: currentPath, isLogDirectory: bookmarkIsLog });
-      const result = await window.api.bookmarks.add(profileId, {
+      await window.api.bookmarks.add(profileId, {
         name: bookmarkName.trim(),
         path: currentPath,
         isLogDirectory: bookmarkIsLog,
       });
-      console.log('Bookmark added result:', result);
 
-      // Recargar perfil
       const updated = await window.api.profiles.get(profileId);
-      console.log('Updated profile:', updated);
       if (updated) {
         updateProfile(profileId, { bookmarks: updated.bookmarks });
       }
-      
+
       setShowBookmarkModal(false);
     } catch (err) {
-      console.error('Error adding bookmark:', err);
-      alert('Error al guardar la ruta: ' + (err as Error).message);
+      setActionError(`No se pudo guardar la ruta: ${(err as Error).message}`);
     } finally {
       setSavingBookmark(false);
     }
   };
 
   const handleRemoveBookmark = async (bookmark: PathBookmark) => {
-    await window.api.bookmarks.remove(profileId, bookmark.id);
-    
-    const updated = await window.api.profiles.get(profileId);
-    if (updated) {
-      updateProfile(profileId, { bookmarks: updated.bookmarks });
+    setActionError(null);
+    try {
+      await window.api.bookmarks.remove(profileId, bookmark.id);
+      const updated = await window.api.profiles.get(profileId);
+      if (updated) {
+        updateProfile(profileId, { bookmarks: updated.bookmarks });
+      }
+    } catch (err) {
+      setActionError(`No se pudo quitar la ruta: ${(err as Error).message}`);
     }
   };
 
-  // Buscar texto en archivos de la carpeta actual
   const handleSearchInDirectory = async () => {
     if (!searchText.trim()) return;
-    
+
     setSearching(true);
     setSearchResults([]);
-    
+    setActionError(null);
+
     try {
-      const results = await window.api.sftp.searchInDirectory(
-        profileId,
-        currentPath,
-        searchText,
-        { recursive: false, filePattern: '*' }
-      );
+      const results = await window.api.sftp.searchInDirectory(profileId, currentPath, searchText, {
+        recursive: false,
+        filePattern: '*',
+      });
       setSearchResults(results);
     } catch (err) {
-      console.error('Error searching:', err);
+      setActionError(`No se pudo buscar en la carpeta actual: ${(err as Error).message}`);
     } finally {
       setSearching(false);
     }
   };
 
-  // Toggle ordenamiento
   const toggleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
+      setSortOrder((previous) => (previous === 'asc' ? 'desc' : 'asc'));
+      return;
     }
+
+    setSortField(field);
+    setSortOrder('asc');
   };
 
-  const isCurrentPathBookmarked = bookmarks.some((b) => b.path === currentPath);
+  const isCurrentPathBookmarked = bookmarks.some((bookmark) => bookmark.path === currentPath);
 
   const formatSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    const units = ['B', 'KB', 'MB', 'GB'];
+    const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    return `${parseFloat((bytes / Math.pow(1024, index)).toFixed(1))} ${units[index]}`;
   };
 
-  const formatDate = (date: Date): string => {
-    return new Date(date).toLocaleDateString('es-ES', {
+  const formatDate = (date: Date): string =>
+    new Date(date).toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
     });
-  };
 
   const isLogFile = (name: string): boolean => {
-    // Detectar archivos que terminan en .log, .out, .err
-    // O que contienen .log. (como serverGft.log.2025-07-16-AM)
-    // O nombres típicos de Tomcat
     const logPatterns = [
-      /\.(log|out|err)$/i,                    // Termina en .log, .out, .err
-      /\.log\./i,                              // Contiene .log. (logs rotados)
-      /catalina/i,                             // Logs de Tomcat
-      /localhost/i,                            // Logs de Tomcat
-      /server.*\.log/i,                        // serverXxx.log
-      /access.*\.log/i,                        // access logs
-      /error.*\.log/i,                         // error logs
-      /\d{4}-\d{2}-\d{2}/,                    // Fecha en el nombre (logs rotados)
-      /\.txt$/i,                               // Archivos .txt (a veces son logs)
+      /\.(log|out|err)$/i,
+      /\.log\./i,
+      /catalina/i,
+      /localhost/i,
+      /server.*\.log/i,
+      /access.*\.log/i,
+      /error.*\.log/i,
+      /\d{4}-\d{2}-\d{2}/,
+      /\.txt$/i,
     ];
-    
-    return logPatterns.some(pattern => pattern.test(name));
+
+    return logPatterns.some((pattern) => pattern.test(name));
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-ssh-dark">
-      {/* Toolbar */}
-      <div className="p-3 border-b border-gray-700 flex items-center gap-2">
-        <button
-          onClick={handleGoUp}
-          disabled={currentPath === '/'}
-          className="p-2 hover:bg-ssh-light rounded transition-colors disabled:opacity-50"
-          title="Subir nivel"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-          </svg>
-        </button>
+    <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
+      <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="section-label">Explorador remoto</div>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <div className="text-lg font-semibold text-[var(--text-primary)]">Ruta activa</div>
+              <span className="badge-neutral">{sortedFiles.length} elemento(s)</span>
+              {selectedFile ? <span className="badge-accent">{selectedFile.name}</span> : null}
+            </div>
+            <div className="mt-2 body-sm truncate font-mono">{currentPath}</div>
+          </div>
 
-        <form onSubmit={handlePathSubmit} className="flex-1">
-          <input
-            type="text"
-            value={pathInput}
-            onChange={(e) => setPathInput(e.target.value)}
-            className="w-full bg-ssh-darker border border-gray-600 rounded px-3 py-1.5 text-sm focus:border-ssh-accent focus:outline-none"
-          />
-        </form>
-
-        <button
-          onClick={() => loadDirectory(currentPath)}
-          className="p-2 hover:bg-ssh-light rounded transition-colors"
-          title="Actualizar"
-        >
-          <RefreshIcon />
-        </button>
-
-        <button
-          onClick={() => setShowSearch(!showSearch)}
-          className={`p-2 rounded transition-colors ${showSearch ? 'bg-ssh-accent text-ssh-darker' : 'hover:bg-ssh-light'}`}
-          title="Buscar en archivos"
-        >
-          <SearchIcon />
-        </button>
-
-        <button
-          onClick={openBookmarkModal}
-          disabled={isCurrentPathBookmarked}
-          className={`p-2 hover:bg-ssh-light rounded transition-colors ${isCurrentPathBookmarked ? 'opacity-50' : ''}`}
-          title={isCurrentPathBookmarked ? 'Ruta guardada' : 'Guardar ruta'}
-        >
-          <BookmarkIcon filled={isCurrentPathBookmarked} />
-        </button>
-
-        {onOpenTerminal && (
-          <button
-            onClick={() => onOpenTerminal(currentPath)}
-            className="p-2 hover:bg-ssh-light rounded transition-colors text-ssh-accent"
-            title="Abrir terminal en esta ruta"
-          >
-            <TerminalIcon />
-          </button>
-        )}
-
-        {/* Ordenar */}
-        <div className="flex items-center gap-1 ml-2 border-l border-gray-600 pl-2">
-          <SortIcon />
-          <select
-            value={`${sortField}-${sortOrder}`}
-            onChange={(e) => {
-              const [field, order] = e.target.value.split('-') as [SortField, SortOrder];
-              setSortField(field);
-              setSortOrder(order);
-            }}
-            className="bg-ssh-darker border border-gray-600 rounded px-2 py-1 text-xs focus:border-ssh-accent focus:outline-none"
-          >
-            <option value="name-asc">Nombre ↑</option>
-            <option value="name-desc">Nombre ↓</option>
-            <option value="date-desc">Fecha ↓ (recientes)</option>
-            <option value="date-asc">Fecha ↑ (antiguos)</option>
-            <option value="size-desc">Tamaño ↓</option>
-            <option value="size-asc">Tamaño ↑</option>
-          </select>
+          <div className="toolbar-row">
+            <button type="button" onClick={handleGoUp} disabled={currentPath === '/'} className="btn-icon" title="Subir nivel" aria-label="Subir nivel">
+              <ArrowUpIcon />
+            </button>
+            <button type="button" onClick={() => void loadDirectory(currentPath)} className="btn-icon" title="Actualizar" aria-label="Actualizar">
+              <RefreshIcon />
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowSearch((previous) => !previous)}
+              className={showSearch ? 'btn-secondary' : 'btn-icon'}
+              title="Buscar en la carpeta"
+              aria-label="Buscar en la carpeta"
+            >
+              <SearchIcon />
+              {showSearch ? 'Ocultar busqueda' : null}
+            </button>
+            <button
+              type="button"
+              onClick={openBookmarkModal}
+              disabled={isCurrentPathBookmarked}
+              className={isCurrentPathBookmarked ? 'btn-secondary opacity-70' : 'btn-secondary'}
+              title={isCurrentPathBookmarked ? 'Ruta guardada' : 'Guardar ruta'}
+              aria-label={isCurrentPathBookmarked ? 'Ruta guardada' : 'Guardar ruta'}
+            >
+              <BookmarkIcon filled={isCurrentPathBookmarked} />
+              {isCurrentPathBookmarked ? 'Guardada' : 'Guardar ruta'}
+            </button>
+            {onOpenTerminal ? (
+              <button type="button" onClick={() => onOpenTerminal(currentPath)} className="btn-secondary">
+                <TerminalIcon />
+                Abrir terminal
+              </button>
+            ) : null}
+          </div>
         </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <form onSubmit={handlePathSubmit} className="min-w-[18rem] flex-1">
+            <input
+              type="text"
+              value={pathInput}
+              onChange={(event) => setPathInput(event.target.value)}
+              className="input font-mono"
+              placeholder="/var/log"
+            />
+          </form>
+
+          <div className="muted-surface flex items-center gap-2 px-3 py-2">
+            <SortIcon />
+            <span className="body-xs">Orden</span>
+            <select
+              value={`${sortField}-${sortOrder}`}
+              onChange={(event) => {
+                const [field, order] = event.target.value.split('-') as [SortField, SortOrder];
+                setSortField(field);
+                setSortOrder(order);
+              }}
+              className="select min-h-0 border-transparent bg-transparent px-1 py-0"
+            >
+              <option value="name-asc">Nombre A-Z</option>
+              <option value="name-desc">Nombre Z-A</option>
+              <option value="date-desc">Fecha reciente</option>
+              <option value="date-asc">Fecha antigua</option>
+              <option value="size-desc">Tamano mayor</option>
+              <option value="size-asc">Tamano menor</option>
+            </select>
+          </div>
+        </div>
+
+        {actionError ? <div className="notice-danger mt-4">{actionError}</div> : null}
       </div>
 
-      {/* Barra de búsqueda */}
-      {showSearch && (
-        <div className="p-3 border-b border-gray-700 bg-ssh-darker">
-          <div className="flex items-center gap-2">
+      {showSearch ? (
+        <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+          <div className="section-label">Busqueda en carpeta</div>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <input
               type="text"
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearchInDirectory()}
-              placeholder="Buscar texto en archivos de esta carpeta..."
-              className="flex-1 bg-ssh-dark border border-gray-600 rounded px-3 py-1.5 text-sm focus:border-ssh-accent focus:outline-none"
+              onChange={(event) => setSearchText(event.target.value)}
+              onKeyDown={(event) => event.key === 'Enter' && void handleSearchInDirectory()}
+              placeholder="Buscar texto dentro de los archivos de esta carpeta"
+              className="input min-w-[18rem] flex-1"
             />
-            <button
-              onClick={handleSearchInDirectory}
-              disabled={searching || !searchText.trim()}
-              className="px-4 py-1.5 bg-ssh-accent text-ssh-darker rounded hover:bg-blue-400 transition-colors disabled:opacity-50"
-            >
+            <button type="button" onClick={() => void handleSearchInDirectory()} disabled={searching || !searchText.trim()} className="btn-primary">
               {searching ? 'Buscando...' : 'Buscar'}
             </button>
           </div>
-          
-          {/* Resultados de búsqueda */}
-          {searchResults.length > 0 && (
-            <div className="mt-3 space-y-2 max-h-48 overflow-y-auto">
-              <div className="text-sm text-gray-400 mb-2">
-                {searchResults.length} archivo(s) encontrado(s) con "{searchText}"
-              </div>
-              {searchResults.map((result, i) => (
-                <div
-                  key={i}
-                  className="bg-ssh-dark p-2 rounded cursor-pointer hover:bg-ssh-light/50 transition-colors"
+
+          {searchResults.length > 0 ? (
+            <div className="app-scroll mt-4 max-h-52 space-y-2 overflow-y-auto">
+              <div className="body-sm">{searchResults.length} archivo(s) encontrado(s)</div>
+              {searchResults.map((result, index) => (
+                <button
+                  key={`${result.filepath}-${index}`}
+                  type="button"
+                  className="panel-surface block w-full px-4 py-3 text-left hover:border-[var(--border-strong)]"
                   onClick={() => {
                     if (onOpenLog) {
                       onOpenLog(result.filepath, result.filename);
                     }
                   }}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-ssh-accent truncate">
-                      {result.filename}
-                    </span>
-                    <span className="text-xs bg-ssh-warning/20 text-ssh-warning px-2 py-0.5 rounded">
-                      {result.matches.length} coincidencias
-                    </span>
-                  </div>
-                  {result.matches.length > 0 && (
-                    <div className="text-xs text-gray-500 mt-1 truncate font-mono">
-                      L{result.matches[0].line}: {result.matches[0].content}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-semibold text-[var(--accent-strong)]">{result.filename}</div>
+                      {result.matches.length > 0 ? (
+                        <div className="mt-1 truncate font-mono text-xs text-[var(--text-secondary)]">
+                          L{result.matches[0].line}: {result.matches[0].content}
+                        </div>
+                      ) : null}
                     </div>
-                  )}
-                </div>
+                    <span className="badge-warning shrink-0">{result.matches.length} coincidencia(s)</span>
+                  </div>
+                </button>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
-      )}
+      ) : null}
 
-      {/* Modal de Bookmark */}
-      {showBookmarkModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-ssh-darker border border-gray-600 rounded-lg p-4 w-96 shadow-xl">
-            <h3 className="text-lg font-semibold mb-4">Guardar Ruta</h3>
-            
-            <div className="mb-4">
-              <label className="block text-sm text-gray-400 mb-1">Ruta</label>
-              <div className="bg-ssh-dark px-3 py-2 rounded text-sm text-gray-300 truncate">
-                {currentPath}
+      {bookmarks.length > 0 ? (
+        <div className="border-b border-[var(--border-subtle)] px-4 py-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="section-label">Rutas guardadas</span>
+            {bookmarks.map((bookmark) => (
+              <div key={bookmark.id} className="btn-chip group">
+                {bookmark.isLogDirectory ? <LogIcon /> : <FolderIcon />}
+                <button type="button" className="truncate" onClick={() => void loadDirectory(bookmark.path)}>
+                  {bookmark.name}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleRemoveBookmark(bookmark)}
+                  className="btn-icon-quiet ml-1 h-5 w-5 opacity-0 transition-opacity group-hover:opacity-100"
+                  aria-label={`Quitar ${bookmark.name}`}
+                  title={`Quitar ${bookmark.name}`}
+                >
+                  <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-sm text-gray-400 mb-1">Nombre</label>
-              <input
-                type="text"
-                value={bookmarkName}
-                onChange={(e) => setBookmarkName(e.target.value)}
-                className="w-full bg-ssh-dark border border-gray-600 rounded px-3 py-2 text-sm focus:border-ssh-accent focus:outline-none"
-                placeholder="Nombre del bookmark"
-                autoFocus
-              />
-            </div>
-            
-            <div className="mb-6">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={bookmarkIsLog}
-                  onChange={(e) => setBookmarkIsLog(e.target.checked)}
-                  className="rounded"
-                />
-                <span className="text-sm text-gray-300">Esta ruta contiene archivos de log</span>
-              </label>
-            </div>
-            
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setShowBookmarkModal(false)}
-                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleAddBookmark}
-                disabled={!bookmarkName.trim() || savingBookmark}
-                className="px-4 py-2 bg-ssh-accent text-ssh-darker rounded hover:bg-blue-400 transition-colors disabled:opacity-50"
-              >
-                {savingBookmark ? 'Guardando...' : 'Guardar'}
-              </button>
-            </div>
+            ))}
           </div>
         </div>
-      )}
+      ) : null}
 
-      {/* Bookmarks */}
-      {bookmarks.length > 0 && (
-        <div className="px-3 py-2 border-b border-gray-700 flex flex-wrap gap-2">
-          {bookmarks.map((bookmark) => (
-            <div
-              key={bookmark.id}
-              className="group flex items-center gap-1 bg-ssh-light px-2 py-1 rounded text-sm cursor-pointer hover:bg-gray-600"
-              onClick={() => loadDirectory(bookmark.path)}
-            >
-              {bookmark.isLogDirectory ? <LogIcon /> : <FolderIcon />}
-              <span>{bookmark.name}</span>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveBookmark(bookmark);
-                }}
-                className="ml-1 text-gray-500 hover:text-ssh-error opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* File List */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="app-scroll flex-1 overflow-y-auto">
         {loading ? (
-          <div className="flex items-center justify-center h-32 text-gray-400">
-            <svg className="animate-spin w-6 h-6" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-            </svg>
-            <span className="ml-2">Cargando...</span>
+          <div className="empty-state h-full">
+            <div className="empty-state-icon">
+              <svg className="h-8 w-8 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            </div>
+            <div className="text-lg font-semibold text-[var(--text-primary)]">Cargando directorio</div>
           </div>
         ) : error ? (
-          <div className="p-4 text-center text-ssh-error">
-            <p>{error}</p>
-            <button
-              onClick={() => loadDirectory(currentPath)}
-              className="mt-2 text-ssh-accent hover:underline text-sm"
-            >
+          <div className="empty-state h-full">
+            <div className="empty-state-icon" style={{ color: 'var(--danger)', background: 'var(--danger-soft)', borderColor: 'rgba(255,149,167,0.18)' }}>
+              <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M12 8v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
+              </svg>
+            </div>
+            <div className="text-lg font-semibold text-[var(--text-primary)]">No se pudo abrir la ruta</div>
+            <p className="body-sm max-w-md">{error}</p>
+            <button type="button" onClick={() => void loadDirectory(currentPath)} className="btn-secondary">
               Reintentar
             </button>
           </div>
         ) : files.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
-            Directorio vacío
+          <div className="empty-state h-full">
+            <div className="empty-state-icon">
+              <FolderIcon />
+            </div>
+            <div className="text-lg font-semibold text-[var(--text-primary)]">Directorio vacio</div>
+            <p className="body-sm">No hay archivos visibles en esta ruta o el directorio esta vacio.</p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead className="bg-ssh-darker sticky top-0">
-              <tr className="text-left text-sm text-gray-400">
-                <th 
-                  className="px-3 py-2 font-medium cursor-pointer hover:text-gray-200"
-                  onClick={() => toggleSort('name')}
-                >
-                  <div className="flex items-center gap-1">
+          <table className="table-shell">
+            <thead className="table-head">
+              <tr>
+                <th className="table-header-cell">
+                  <button type="button" className="flex items-center gap-1" onClick={() => toggleSort('name')}>
                     Nombre
-                    {sortField === 'name' && (
-                      <span className="text-ssh-accent">{sortOrder === 'asc' ? '↑' : '↓'}</span>
-                    )}
-                  </div>
+                    {sortField === 'name' ? <span className="text-[var(--accent)]">{sortOrder === 'asc' ? '↑' : '↓'}</span> : null}
+                  </button>
                 </th>
-                <th 
-                  className="px-3 py-2 font-medium w-24 cursor-pointer hover:text-gray-200"
-                  onClick={() => toggleSort('size')}
-                >
-                  <div className="flex items-center gap-1">
-                    Tamaño
-                    {sortField === 'size' && (
-                      <span className="text-ssh-accent">{sortOrder === 'asc' ? '↑' : '↓'}</span>
-                    )}
-                  </div>
+                <th className="table-header-cell w-28">
+                  <button type="button" className="flex items-center gap-1" onClick={() => toggleSort('size')}>
+                    Tamano
+                    {sortField === 'size' ? <span className="text-[var(--accent)]">{sortOrder === 'asc' ? '↑' : '↓'}</span> : null}
+                  </button>
                 </th>
-                <th 
-                  className="px-3 py-2 font-medium w-40 cursor-pointer hover:text-gray-200"
-                  onClick={() => toggleSort('date')}
-                >
-                  <div className="flex items-center gap-1">
+                <th className="table-header-cell w-44">
+                  <button type="button" className="flex items-center gap-1" onClick={() => toggleSort('date')}>
                     Modificado
-                    {sortField === 'date' && (
-                      <span className="text-ssh-accent">{sortOrder === 'asc' ? '↑' : '↓'}</span>
-                    )}
-                  </div>
+                    {sortField === 'date' ? <span className="text-[var(--accent)]">{sortOrder === 'asc' ? '↑' : '↓'}</span> : null}
+                  </button>
                 </th>
-                <th className="px-3 py-2 font-medium w-16">Permisos</th>
-                <th className="px-3 py-2 font-medium w-20"></th>
+                <th className="table-header-cell w-20">Permisos</th>
+                <th className="table-header-cell w-28 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {sortedFiles.map((file) => (
                 <tr
                   key={file.path}
-                  className={`
-                    border-b border-gray-700/50 hover:bg-ssh-light/50 cursor-pointer
-                    ${selectedFile?.path === file.path ? 'bg-ssh-light' : ''}
-                  `}
+                  className="table-row cursor-pointer"
+                  data-selected={selectedFile?.path === file.path}
                   onClick={() => setSelectedFile(file)}
                   onDoubleClick={() => handleNavigate(file)}
                 >
-                  <td className="px-3 py-2">
-                    <div className="flex items-center gap-2">
-                      {file.isDirectory ? (
-                        <FolderIcon />
-                      ) : isLogFile(file.name) ? (
-                        <LogIcon />
-                      ) : (
-                        <FileIcon />
-                      )}
-                      <span className="truncate">{file.name}</span>
+                  <td className="table-cell">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-xl border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.03)] p-2">
+                        {file.isDirectory ? <FolderIcon /> : isLogFile(file.name) ? <LogIcon /> : <FileIcon />}
+                      </div>
+                      <span className="truncate text-[var(--text-primary)]">{file.name}</span>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-sm text-gray-400">
-                    {file.isDirectory ? '-' : formatSize(file.size)}
-                  </td>
-                  <td className="px-3 py-2 text-sm text-gray-400">
-                    {formatDate(file.modifyTime)}
-                  </td>
-                  <td className="px-3 py-2 text-sm text-gray-500 font-mono">
-                    {file.permissions}
-                  </td>
-                  <td className="px-3 py-2">
-                    {!file.isDirectory && (
-                      <div className="flex items-center gap-1">
-                        {isLogFile(file.name) && onOpenLog && (
+                  <td className="table-cell text-[var(--text-secondary)]">{file.isDirectory ? '-' : formatSize(file.size)}</td>
+                  <td className="table-cell text-[var(--text-secondary)]">{formatDate(file.modifyTime)}</td>
+                  <td className="table-cell font-mono text-[var(--text-muted)]">{file.permissions}</td>
+                  <td className="table-cell">
+                    {!file.isDirectory ? (
+                      <div className="flex items-center justify-end gap-1">
+                        {isLogFile(file.name) && onOpenLog ? (
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
                               onOpenLog(file.path, file.name);
                             }}
-                            className="p-1 hover:bg-ssh-success/20 rounded text-gray-400 hover:text-ssh-success"
-                            title="Ver log en tiempo real"
+                            className="btn-icon-quiet"
+                            title="Abrir log"
+                            aria-label={`Abrir log ${file.name}`}
                           >
                             <ViewLogIcon />
                           </button>
-                        )}
+                        ) : null}
                         <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDownload(file);
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            void handleDownload(file);
                           }}
-                          className="p-1 hover:bg-ssh-accent/20 rounded text-gray-400 hover:text-ssh-accent"
+                          className="btn-icon-quiet"
                           title="Descargar"
+                          aria-label={`Descargar ${file.name}`}
                         >
                           <DownloadIcon />
                         </button>
                       </div>
-                    )}
+                    ) : null}
                   </td>
                 </tr>
               ))}
@@ -650,15 +579,73 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
         )}
       </div>
 
-      {/* Status bar */}
-      <div className="px-3 py-2 border-t border-gray-700 text-sm text-gray-500 flex justify-between">
-        <span>{sortedFiles.length} elementos</span>
-        {selectedFile && !selectedFile.isDirectory && (
-          <span>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="badge-neutral">{sortedFiles.length} elemento(s)</span>
+          <span className="badge-neutral font-mono">{currentPath}</span>
+        </div>
+        {selectedFile && !selectedFile.isDirectory ? (
+          <div className="body-sm">
             {selectedFile.name} • {formatSize(selectedFile.size)}
-          </span>
-        )}
+          </div>
+        ) : null}
       </div>
+
+      {showBookmarkModal ? (
+        <Modal
+          title="Guardar ruta"
+          description="Crea un acceso rapido para volver a esta carpeta desde cualquier sesion."
+          onClose={() => setShowBookmarkModal(false)}
+          widthClassName="max-w-lg"
+          footer={
+            <>
+              <button type="button" className="btn-ghost" onClick={() => setShowBookmarkModal(false)}>
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleAddBookmark()}
+                disabled={!bookmarkName.trim() || savingBookmark}
+                className="btn-primary"
+              >
+                {savingBookmark ? 'Guardando...' : 'Guardar ruta'}
+              </button>
+            </>
+          }
+        >
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Ruta actual</label>
+              <div className="muted-surface px-4 py-3 font-mono text-sm text-[var(--text-secondary)]">{currentPath}</div>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">Nombre del acceso</label>
+              <input
+                type="text"
+                value={bookmarkName}
+                onChange={(event) => setBookmarkName(event.target.value)}
+                className="input"
+                placeholder="Logs tomcat"
+                autoFocus
+              />
+            </div>
+
+            <label className="muted-surface flex cursor-pointer items-center justify-between gap-3 px-4 py-3">
+              <div>
+                <div className="text-sm font-medium text-[var(--text-primary)]">Esta ruta contiene logs</div>
+                <div className="mt-1 body-xs">Se mostrara como acceso rapido para exploracion de logs.</div>
+              </div>
+              <input
+                type="checkbox"
+                checked={bookmarkIsLog}
+                onChange={(event) => setBookmarkIsLog(event.target.checked)}
+                className="h-4 w-4 accent-[var(--accent)]"
+              />
+            </label>
+          </div>
+        </Modal>
+      ) : null}
     </div>
   );
 };

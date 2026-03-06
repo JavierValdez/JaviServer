@@ -7,7 +7,7 @@ interface UpdateStatusProps {
 
 function getButtonLabel(state: AppUpdateState | null): string {
   if (!state) {
-    return 'Cargando update';
+    return 'Cargando';
   }
 
   switch (state.status) {
@@ -16,28 +16,26 @@ function getButtonLabel(state: AppUpdateState | null): string {
     case 'checking':
       return 'Buscando...';
     case 'downloading':
-      return state.downloadProgress !== null
-        ? `Descargando ${state.downloadProgress}%`
-        : 'Descargando...';
+      return state.downloadProgress !== null ? `Descargando ${state.downloadProgress}%` : 'Descargando...';
     case 'downloaded':
-      return 'Mostrar en Descargas';
+      return 'Ver instalador';
     case 'disabled':
       return 'Solo app instalada';
     default:
-      return 'Revisar updates';
+      return 'Buscar updates';
   }
 }
 
 function getStatusCopy(state: AppUpdateState | null): string {
   if (!state) {
-    return 'Sincronizando estado...';
+    return 'Sincronizando estado del updater';
   }
 
   switch (state.status) {
     case 'available':
-      return `Update ${state.latestVersion ?? ''} disponible`;
+      return `Version ${state.latestVersion ?? ''} disponible`;
     case 'up-to-date':
-      return 'Sin updates pendientes';
+      return 'Aplicacion al dia';
     case 'checking':
       return 'Buscando nueva version';
     case 'downloading':
@@ -47,54 +45,68 @@ function getStatusCopy(state: AppUpdateState | null): string {
     case 'error':
       return state.message;
     case 'disabled':
-      return 'Updates solo en la app instalada';
+      return 'Disponible solo en app instalada';
     default:
       return state.message;
   }
 }
 
-function getButtonClass(state: AppUpdateState | null): string {
-  if (!state || state.status === 'checking' || state.status === 'downloading' || state.status === 'disabled') {
-    return 'bg-gray-700 text-gray-400 cursor-not-allowed';
+function getBadgeClass(state: AppUpdateState | null): string {
+  if (!state) {
+    return 'badge-neutral';
   }
 
   if (state.status === 'available') {
-    return 'bg-ssh-success/90 text-white hover:bg-ssh-success';
-  }
-
-  if (state.status === 'downloaded') {
-    return 'bg-ssh-warning/20 text-ssh-warning hover:bg-ssh-warning/30 border border-ssh-warning/30';
+    return 'badge-success';
   }
 
   if (state.status === 'error') {
-    return 'bg-red-500/20 text-red-200 hover:bg-red-500/30 border border-red-500/30';
+    return 'badge-danger';
   }
 
-  return 'bg-ssh-light text-gray-100 hover:bg-gray-600';
+  if (state.status === 'checking' || state.status === 'downloading') {
+    return 'badge-warning';
+  }
+
+  return 'badge-neutral';
+}
+
+function getButtonClass(state: AppUpdateState | null): string {
+  if (!state || state.status === 'checking' || state.status === 'downloading' || state.status === 'disabled') {
+    return 'btn-secondary opacity-70';
+  }
+
+  if (state.status === 'available') {
+    return 'btn-primary';
+  }
+
+  if (state.status === 'downloaded') {
+    return 'btn-secondary';
+  }
+
+  if (state.status === 'error') {
+    return 'btn-danger';
+  }
+
+  return 'btn-secondary';
 }
 
 export function UpdateStatus({ state, onAction }: UpdateStatusProps) {
   const isDisabled = !state || state.status === 'checking' || state.status === 'downloading' || state.status === 'disabled';
 
   return (
-    <div className="flex items-center gap-3 shrink-0">
-      <div className="text-right">
-        <div className="text-[10px] uppercase tracking-[0.24em] text-gray-500">Version</div>
-        <div className="text-sm font-semibold text-white">v{state?.currentVersion ?? '--'}</div>
+    <div className="panel-surface shrink-0 px-4 py-3">
+      <div className="section-label">Release</div>
+      <div className="mt-2 flex flex-wrap items-center gap-2">
+        <div className="text-sm font-semibold text-[var(--text-primary)]">v{state?.currentVersion ?? '--'}</div>
+        <span className={getBadgeClass(state)}>{getStatusCopy(state)}</span>
       </div>
 
-      <div className="hidden lg:block text-right max-w-[280px]">
-        <div className="text-xs text-gray-300 truncate">{getStatusCopy(state)}</div>
-        {state?.latestVersion && state.latestVersion !== state.currentVersion && (
-          <div className="text-[11px] text-gray-500">Nueva version: v{state.latestVersion}</div>
-        )}
-      </div>
+      {state?.latestVersion && state.latestVersion !== state.currentVersion ? (
+        <div className="mt-2 body-xs">Nueva version: v{state.latestVersion}</div>
+      ) : null}
 
-      <button
-        onClick={onAction}
-        disabled={isDisabled}
-        className={`px-3 py-2 rounded text-sm font-medium transition-colors ${getButtonClass(state)}`}
-      >
+      <button type="button" onClick={onAction} disabled={isDisabled} className={`${getButtonClass(state)} mt-3 w-full`}>
         {getButtonLabel(state)}
       </button>
     </div>

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { FitAddon } from '@xterm/addon-fit';
 import { Terminal as XTerm } from '@xterm/xterm';
 
 interface TerminalProps {
@@ -8,55 +9,63 @@ interface TerminalProps {
   isActive?: boolean;
 }
 
+const TerminalIcon = () => (
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+);
+
 export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, currentPath, isActive }) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerm | null>(null);
+  const fitAddonRef = useRef<FitAddon | null>(null);
   const initializedRef = useRef(false);
   const lastSyncedPath = useRef<string | undefined>(initialPath);
+  const [status, setStatus] = useState<'connecting' | 'ready' | 'error'>('connecting');
+  const [statusMessage, setStatusMessage] = useState('Preparando terminal SSH');
 
-  // Sync path when active
   useEffect(() => {
-    if (isActive && currentPath && currentPath !== lastSyncedPath.current) {
-      if (xtermRef.current) {
-        xtermRef.current.writeln(`\x1b[36mSyncing path: ${currentPath}\x1b[0m`);
-        window.api.terminal.write(profileId, `cd "${currentPath}"\n`);
-        lastSyncedPath.current = currentPath;
-      }
+    if (isActive && currentPath && currentPath !== lastSyncedPath.current && xtermRef.current) {
+      window.api.terminal.write(profileId, `cd "${currentPath}"\n`);
+      lastSyncedPath.current = currentPath;
     }
-  }, [isActive, currentPath, profileId]);
+  }, [currentPath, isActive, profileId]);
 
   useEffect(() => {
-    if (!terminalRef.current || initializedRef.current) return;
+    if (!terminalRef.current || initializedRef.current) {
+      return;
+    }
 
     initializedRef.current = true;
 
-    // Create terminal
+    const fitAddon = new FitAddon();
     const term = new XTerm({
       theme: {
-        background: '#1a1b26',
-        foreground: '#c0caf5',
-        cursor: '#c0caf5',
-        cursorAccent: '#1a1b26',
-        selectionBackground: '#33467c',
-        black: '#15161e',
-        red: '#f7768e',
-        green: '#9ece6a',
-        yellow: '#e0af68',
-        blue: '#7aa2f7',
-        magenta: '#bb9af7',
-        cyan: '#7dcfff',
-        white: '#a9b1d6',
-        brightBlack: '#414868',
-        brightRed: '#f7768e',
-        brightGreen: '#9ece6a',
-        brightYellow: '#e0af68',
-        brightBlue: '#7aa2f7',
-        brightMagenta: '#bb9af7',
-        brightCyan: '#7dcfff',
-        brightWhite: '#c0caf5',
+        background: '#050c18',
+        foreground: '#edf3fb',
+        cursor: '#79bbff',
+        cursorAccent: '#09111f',
+        selectionBackground: '#1d3c60',
+        black: '#08111f',
+        red: '#ff8b9f',
+        green: '#68d8aa',
+        yellow: '#f4c971',
+        blue: '#79bbff',
+        magenta: '#c6a8ff',
+        cyan: '#7ce2ff',
+        white: '#dfe7f5',
+        brightBlack: '#51627e',
+        brightRed: '#ff9cac',
+        brightGreen: '#7ae3b6',
+        brightYellow: '#ffd88d',
+        brightBlue: '#9dd0ff',
+        brightMagenta: '#d5beff',
+        brightCyan: '#9be8ff',
+        brightWhite: '#f8fbff',
       },
-      fontSize: 14,
-      fontFamily: 'Consolas, "Courier New", monospace',
+      fontSize: 13,
+      lineHeight: 1.3,
+      fontFamily: '"SF Mono", "IBM Plex Mono", Consolas, monospace',
       cursorBlink: true,
       cursorStyle: 'block',
       scrollback: 5000,
@@ -64,83 +73,106 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
       rows: 24,
     });
 
+    fitAddonRef.current = fitAddon;
+    term.loadAddon(fitAddon);
     term.open(terminalRef.current);
-    term.writeln('\x1b[33mInitializing terminal interface...\x1b[0m');
-    
+    fitAddon.fit();
     term.focus();
 
     xtermRef.current = term;
 
-    // Start shell and handle data
+    const syncSize = () => {
+      if (!xtermRef.current || !fitAddonRef.current) {
+        return;
+      }
+
+      fitAddonRef.current.fit();
+      window.api.terminal.resize(profileId, xtermRef.current.cols, xtermRef.current.rows);
+    };
+
     const startShell = async () => {
       try {
-        term.writeln('\x1b[33mConnecting to SSH shell...\x1b[0m');
+        setStatus('connecting');
+        setStatusMessage('Conectando shell remota');
         await window.api.terminal.start(profileId);
-        term.writeln('\x1b[32mShell session established.\x1b[0m');
-        
+
         if (initialPath) {
-           term.writeln(`\x1b[36mNavigating to: ${initialPath}\x1b[0m`);
-           window.api.terminal.write(profileId, `cd "${initialPath}"\n`);
-           lastSyncedPath.current = initialPath;
+          window.api.terminal.write(profileId, `cd "${initialPath}"\n`);
+          lastSyncedPath.current = initialPath;
         }
 
-        // Resize after shell starts
-        setTimeout(() => {
-          window.api.terminal.resize(profileId, 80, 24);
-        }, 500);
+        setStatus('ready');
+        setStatusMessage('Sesion interactiva lista');
+
+        window.requestAnimationFrame(() => {
+          syncSize();
+        });
       } catch (err) {
-        term.writeln(`\r\n\x1b[31mError al iniciar terminal: ${err}\x1b[0m`);
+        setStatus('error');
+        setStatusMessage(`Error al iniciar terminal: ${String(err)}`);
       }
     };
 
-    startShell();
+    void startShell();
 
-    // Handle data from server
     const removeListener = window.api.terminal.onData((data: { profileId: string; data: string }) => {
-      console.log('Terminal received data:', data.data.length, 'chars');
       if (data.profileId === profileId && xtermRef.current) {
         xtermRef.current.write(data.data);
       }
     });
 
-    // Handle user input
     term.onData((data: string) => {
       window.api.terminal.write(profileId, data);
     });
 
-    // Handle resize
     const handleResize = () => {
-      // Resize logic if needed
+      syncSize();
     };
 
     window.addEventListener('resize', handleResize);
 
-    // ResizeObserver for container changes
     const resizeObserver = new ResizeObserver(() => {
-      handleResize();
+      syncSize();
     });
 
-    if (terminalRef.current) {
-      resizeObserver.observe(terminalRef.current);
-    }
+    resizeObserver.observe(terminalRef.current);
 
     return () => {
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
       term.dispose();
       removeListener();
+      fitAddonRef.current = null;
+      xtermRef.current = null;
       window.api.terminal.stop(profileId);
     };
-  }, [profileId]);
+  }, [initialPath, profileId]);
+
+  const statusClass = status === 'ready' ? 'badge-success' : status === 'error' ? 'badge-danger' : 'badge-warning';
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-ssh-darker">
-      <div className="p-2 border-b border-gray-700 text-sm text-gray-400">
-        Terminal SSH
+    <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
+      <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="section-label">Terminal SSH</div>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <div className="text-lg font-semibold text-[var(--text-primary)]">Sesion interactiva</div>
+              <span className={statusClass}>{statusMessage}</span>
+            </div>
+            <div className="mt-2 body-sm truncate font-mono">{currentPath || initialPath || '~'}</div>
+          </div>
+
+          <div className="muted-surface flex items-center gap-2 px-3 py-2">
+            <TerminalIcon />
+            <span className="body-xs">Ajuste automatico activo</span>
+          </div>
+        </div>
       </div>
+
       <div
         ref={terminalRef}
-        className="flex-1 p-2 bg-black"
+        className="flex-1 bg-[var(--surface-contrast)]"
         style={{ minHeight: '300px' }}
       />
     </div>
