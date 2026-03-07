@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { clipboard, contextBridge, ipcRenderer } from 'electron';
 import { IPC_CHANNELS } from './ipc/channels';
 import type { AppUpdateState } from '../src/types/updater';
 
@@ -21,6 +21,10 @@ contextBridge.exposeInMainWorld('api', {
   },
   dialog: {
     selectKeyfile: () => ipcRenderer.invoke(IPC_CHANNELS.dialogSelectKeyfile),
+  },
+  clipboard: {
+    readText: () => clipboard.readText(),
+    writeText: (text: string) => clipboard.writeText(text),
   },
   ssh: {
     connect: (profileId: string) => ipcRenderer.invoke(IPC_CHANNELS.sshConnect, profileId),
@@ -69,6 +73,10 @@ contextBridge.exposeInMainWorld('api', {
     write: (profileId: string, data: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalWrite, profileId, data),
     resize: (profileId: string, cols: number, rows: number) =>
       ipcRenderer.invoke(IPC_CHANNELS.terminalResize, profileId, cols, rows),
+    getSuggestions: (
+      profileId: string,
+      request: { mode: 'command' | 'path'; query: string; currentPath?: string; directoryOnly?: boolean },
+    ) => ipcRenderer.invoke(IPC_CHANNELS.terminalSuggestions, profileId, request),
     stop: (profileId: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalStop, profileId),
     onData: (listener: (payload: { profileId: string; data: string }) => void) =>
       unsubscribeOn(IPC_CHANNELS.terminalData, listener),

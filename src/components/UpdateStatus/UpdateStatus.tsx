@@ -95,20 +95,24 @@ export function UpdateStatus({ state, onAction }: UpdateStatusProps) {
   const isDisabled = !state || state.status === 'checking' || state.status === 'downloading' || state.status === 'disabled';
 
   return (
-    <div className="panel-surface shrink-0 px-4 py-3">
-      <div className="section-label">Release</div>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <div className="text-sm font-semibold text-[var(--text-primary)]">v{state?.currentVersion ?? '--'}</div>
-        <span className={getBadgeClass(state)}>{getStatusCopy(state)}</span>
+    <div className="muted-surface shrink-0 px-3 py-2">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-0">
+          <div className="section-label">Release</div>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <div className="text-sm font-semibold text-[var(--text-primary)]">v{state?.currentVersion ?? '--'}</div>
+            <span className={getBadgeClass(state)}>{getStatusCopy(state)}</span>
+          </div>
+        </div>
+
+        <button type="button" onClick={onAction} disabled={isDisabled} className={`${getButtonClass(state)} ml-auto shrink-0`}>
+          {getButtonLabel(state)}
+        </button>
       </div>
 
       {state?.latestVersion && state.latestVersion !== state.currentVersion ? (
-        <div className="mt-2 body-xs">Nueva version: v{state.latestVersion}</div>
+        <div className="mt-1 body-xs">Nueva version: v{state.latestVersion}</div>
       ) : null}
-
-      <button type="button" onClick={onAction} disabled={isDisabled} className={`${getButtonClass(state)} mt-3 w-full`}>
-        {getButtonLabel(state)}
-      </button>
     </div>
   );
 }

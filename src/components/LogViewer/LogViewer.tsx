@@ -288,12 +288,12 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
 
   return (
     <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
-      <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="section-label">Log stream</div>
             <div className="mt-1 flex flex-wrap items-center gap-2">
-              <div className="truncate text-lg font-semibold text-[var(--text-primary)]">{fileName}</div>
+              <div className="truncate text-base font-semibold text-[var(--text-primary)]">{fileName}</div>
               <span className={streamBadgeClass}>{streamLabel}</span>
               {fileInfo ? <span className="badge-neutral">{fileInfo.lines.toLocaleString()} lineas</span> : null}
               {fileInfo ? <span className="badge-neutral">{fileInfo.size}</span> : null}
@@ -359,11 +359,11 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
           </div>
         </div>
 
-        {error ? <div className="notice-danger mt-4">{error}</div> : null}
+        {error ? <div className="notice-danger mt-3">{error}</div> : null}
       </div>
 
       {showDateFilter ? (
-        <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+        <div className="border-b border-[var(--border-subtle)] px-3 py-3">
           <div className="section-label">Rango de fechas</div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} className="input w-auto min-w-[11rem]" />
@@ -378,7 +378,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
       ) : null}
 
       {showSearch ? (
-        <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+        <div className="border-b border-[var(--border-subtle)] px-3 py-3">
           <div className="section-label">Busqueda y filtros</div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <input
@@ -437,7 +437,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         </div>
       ) : null}
 
-      <div className="border-b border-[var(--border-subtle)] px-4 py-3">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="section-label">{isStreaming ? 'Filtro en vivo' : 'Filtrar lineas'}</span>
           <input
@@ -465,7 +465,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
 
       <div
         ref={logContainerRef}
-        className="app-scroll flex-1 overflow-y-auto bg-[var(--surface-contrast)] px-4 py-4 font-mono text-[13px]"
+        className="app-scroll flex-1 overflow-y-auto bg-[var(--surface-contrast)] px-3 py-3 font-mono text-[13px]"
         onScroll={(event) => {
           const target = event.currentTarget;
           const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
@@ -491,7 +491,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
             <div className="empty-state-icon">
               <SearchIcon />
             </div>
-            <div className="text-lg font-semibold text-[var(--text-primary)]">
+            <div className="text-base font-semibold text-[var(--text-primary)]">
               {isStreaming ? 'Esperando datos...' : 'Carga lineas o inicia el stream'}
             </div>
             <p className="body-sm max-w-md">
@@ -509,7 +509,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-3 py-2.5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="badge-neutral">{lines.length} linea(s) cargadas</span>
           {liveFilter ? <span className="badge-neutral">{filteredLines.length} visibles</span> : null}

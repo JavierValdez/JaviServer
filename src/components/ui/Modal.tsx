@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 interface ModalProps {
   title: string;
@@ -23,10 +24,14 @@ export function Modal({
   widthClassName = 'max-w-xl',
   children,
 }: ModalProps) {
-  return (
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(
     <div className="modal-backdrop animate-fadeIn" onClick={onClose}>
       <div
-        className={`modal-card ${widthClassName}`}
+        className={`modal-card mx-auto w-full ${widthClassName}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -48,6 +53,7 @@ export function Modal({
 
         {footer ? <div className="modal-footer">{footer}</div> : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

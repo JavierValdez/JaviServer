@@ -155,36 +155,24 @@ function App() {
       <div className="workbench-shell">
         <div className="workbench-header">
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="min-w-0">
-                <div className="section-label">SSH Workbench</div>
-                <div className="mt-1 flex flex-wrap items-center gap-3">
-                  <div className="text-xl font-semibold tracking-tight text-[var(--text-primary)]">JaviServer</div>
-                  <span className={connectionBadgeClass}>{connectionBadgeLabel}</span>
-                  {selectedProfile ? (
-                    <span className="badge-neutral max-w-full truncate">{selectedProfile.username}@{selectedProfile.host}</span>
-                  ) : null}
-                </div>
-              </div>
-
-              {selectedProfile ? (
-                <div className="min-w-0">
-                  <div className="section-label">Perfil activo</div>
-                  <div className="mt-1 body-sm truncate">{selectedProfile.name}</div>
-                </div>
-              ) : null}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span className="section-label">SSH Workbench</span>
+              <div className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">JaviServer</div>
+              <span className={connectionBadgeClass}>{connectionBadgeLabel}</span>
+              {selectedProfile ? <span className="badge-neutral max-w-full truncate">{selectedProfile.username}@{selectedProfile.host}</span> : null}
+              {selectedProfile ? <span className="body-xs truncate">{selectedProfile.name}</span> : null}
             </div>
 
-            <div className="mt-2 body-sm max-w-3xl">
+            <div className="mt-1 body-xs max-w-2xl">
               {selectedProfile
                 ? isConnected
-                  ? 'Accede a archivos, logs y terminal desde una superficie compacta y continua.'
-                  : 'Conecta este perfil desde la barra lateral para abrir explorador, terminal y analisis de logs.'
+                  ? 'Archivos, logs y terminal en una sola superficie.'
+                  : 'Conecta este perfil desde la barra lateral.'
                 : 'Administra conexiones SSH, inspecciona archivos remotos y analiza logs desde una sola vista.'}
             </div>
 
             {selectedProfile && isConnected ? (
-              <div className="toolbar-row mt-4">
+              <div className="toolbar-row mt-3">
                 <button onClick={() => openTab('explorer', 'Explorador', { path: '/' })} className="btn-secondary">
                   <FolderIcon />
                   Explorar archivos
@@ -241,11 +229,11 @@ function App() {
           </div>
         ) : null}
 
-        <div className="relative flex-1 min-h-0 p-4">
+        <div className="relative flex-1 min-h-0 p-3">
           {tabs.map((tab) => (
             <div
               key={tab.id}
-              className="absolute inset-4 flex flex-col overflow-hidden"
+              className="absolute inset-3 flex flex-col overflow-hidden"
               style={{
                 visibility: activeTabId === tab.id ? 'visible' : 'hidden',
                 zIndex: activeTabId === tab.id ? 10 : 0,

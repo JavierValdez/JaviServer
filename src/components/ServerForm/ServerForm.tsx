@@ -115,7 +115,7 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
       title={profile ? 'Editar servidor' : 'Nuevo servidor'}
       description="Configura acceso SSH, autenticacion y datos base del perfil. Las credenciales se mantienen locales."
       onClose={onClose}
-      widthClassName="max-w-2xl"
+      widthClassName="max-w-4xl"
       footer={
         <>
           <button type="button" className="btn-ghost" onClick={onClose}>
@@ -127,8 +127,8 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
         </>
       }
     >
-      <form id="server-form" onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid gap-5 md:grid-cols-[1.3fr_1fr]">
+      <form id="server-form" onSubmit={handleSubmit} className="space-y-5">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(20rem,0.95fr)]">
           <div className="space-y-5">
             <div>
               <div className="section-label">Identidad</div>

@@ -130,6 +130,11 @@ export function registerIpcHandlers(
     sshService.resizeTerminal(profileId, cols, rows);
     return true;
   });
+  ipcMain.handle(
+    IPC_CHANNELS.terminalSuggestions,
+    (_event, profileId: string, request: { mode: 'command' | 'path'; query: string; currentPath?: string; directoryOnly?: boolean }) =>
+      sshService.getTerminalSuggestions(profileId, request),
+  );
   ipcMain.handle(IPC_CHANNELS.terminalStop, (_event, profileId: string) => {
     sshService.stopTerminal(profileId);
     return true;
