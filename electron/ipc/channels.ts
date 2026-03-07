@@ -23,6 +23,7 @@ export const IPC_CHANNELS = {
   terminalStart: 'terminal:start',
   terminalWrite: 'terminal:write',
   terminalResize: 'terminal:resize',
+  terminalSuggestions: 'terminal:suggestions',
   terminalStop: 'terminal:stop',
   terminalData: 'terminal:data',
   updaterGetState: 'updater:get-state',

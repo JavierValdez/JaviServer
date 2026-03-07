@@ -1,4 +1,10 @@
-import type { FileInfo, PathBookmark, ServerProfile } from './types';
+import type {
+  FileInfo,
+  PathBookmark,
+  ServerProfile,
+  TerminalSuggestion,
+  TerminalSuggestionRequest,
+} from './types';
 import type { AppUpdateState } from './types/updater';
 
 interface DirectorySearchMatch {
@@ -46,6 +52,10 @@ interface ElectronApi {
   dialog: {
     selectKeyfile: () => Promise<{ success: boolean; path?: string; content?: string }>;
   };
+  clipboard: {
+    readText: () => Promise<string> | string;
+    writeText: (text: string) => Promise<void> | void;
+  };
   ssh: {
     connect: (profileId: string) => Promise<boolean>;
     disconnect: (profileId: string) => Promise<void>;
@@ -87,6 +97,7 @@ interface ElectronApi {
     start: (profileId: string) => Promise<void>;
     write: (profileId: string, data: string) => Promise<boolean>;
     resize: (profileId: string, cols: number, rows: number) => Promise<boolean>;
+    getSuggestions: (profileId: string, request: TerminalSuggestionRequest) => Promise<TerminalSuggestion[]>;
     stop: (profileId: string) => Promise<boolean>;
     onData: (listener: (payload: { profileId: string; data: string }) => void) => () => void;
   };

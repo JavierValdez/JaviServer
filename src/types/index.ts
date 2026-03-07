@@ -32,6 +32,21 @@ export interface FileInfo {
   permissions: string;
 }
 
+export interface TerminalSuggestion {
+  type: 'command' | 'path';
+  label: string;
+  insertText: string;
+  detail?: string;
+  isDirectory?: boolean;
+}
+
+export interface TerminalSuggestionRequest {
+  mode: 'command' | 'path';
+  query: string;
+  currentPath?: string;
+  directoryOnly?: boolean;
+}
+
 export interface ConnectionStatus {
   profileId: string;
   connected: boolean;

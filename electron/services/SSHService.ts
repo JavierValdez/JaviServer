@@ -10,7 +10,12 @@ import {
   type SFTPWrapper,
   type Stats,
 } from 'ssh2';
-import type { ServerProfile, FileInfo } from '../../src/types';
+import type {
+  ServerProfile,
+  FileInfo,
+  TerminalSuggestion,
+  TerminalSuggestionRequest,
+} from '../../src/types';
 
 interface SearchMatch {
   line: number;
@@ -39,6 +44,8 @@ interface ConnectionContext {
   profile: ServerProfile;
   sftp?: SFTPWrapper;
   shell?: ClientChannel;
+  homeDirectory?: string;
+  commandCache?: string[];
 }
 
 interface ExecOptions {
@@ -81,6 +88,41 @@ const LEGACY_SSH_ALGORITHMS: Algorithms = {
     remove: [],
   },
 };
+
+const MAX_TERMINAL_SUGGESTIONS = 12;
+const COMMON_TERMINAL_COMMANDS = [
+  'cd',
+  'ls',
+  'pwd',
+  'cat',
+  'tail',
+  'grep',
+  'find',
+  'less',
+  'head',
+  'vim',
+  'nano',
+  'mkdir',
+  'rm',
+  'mv',
+  'cp',
+  'chmod',
+  'chown',
+  'du',
+  'df',
+  'ps',
+  'top',
+  'systemctl',
+  'journalctl',
+  'docker',
+  'docker-compose',
+  'git',
+  'npm',
+  'node',
+  'pm2',
+  'clear',
+  'exit',
+];
 
 function shellQuote(value: string): string {
   return `'${value.replace(/'/g, `'\"'\"'`)}'`;
@@ -415,6 +457,24 @@ export class SSHService extends EventEmitter {
     return this.execCommand(profileId, command, { allowedExitCodes: [0, 1] });
   }
 
+  async getTerminalSuggestions(
+    profileId: string,
+    request: TerminalSuggestionRequest,
+  ): Promise<TerminalSuggestion[]> {
+    const query = request.query.trim();
+
+    if (request.mode === 'command') {
+      return this.getCommandSuggestions(profileId, query);
+    }
+
+    return this.getPathSuggestions(
+      profileId,
+      query,
+      request.currentPath,
+      request.directoryOnly ?? false,
+    );
+  }
+
   async startTerminal(profileId: string): Promise<void> {
     const connection = this.getConnection(profileId);
     if (connection.shell) {
@@ -577,6 +637,184 @@ export class SSHService extends EventEmitter {
 
     connection.sftp = sftp;
     return sftp;
+  }
+
+  private async getCommandSuggestions(profileId: string, query: string): Promise<TerminalSuggestion[]> {
+    const prefix = query.toLowerCase();
+    const commands = await this.getCommandCache(profileId);
+    const baseCommands = prefix
+      ? commands.filter((command) => command.toLowerCase().startsWith(prefix))
+      : COMMON_TERMINAL_COMMANDS;
+
+    return baseCommands
+      .slice(0, MAX_TERMINAL_SUGGESTIONS)
+      .map((command) => ({
+        type: 'command' as const,
+        label: command,
+        insertText: `${command} `,
+        detail: 'Comando disponible',
+      }));
+  }
+
+  private async getPathSuggestions(
+    profileId: string,
+    query: string,
+    currentPath?: string,
+    directoryOnly = false,
+  ): Promise<TerminalSuggestion[]> {
+    const connection = this.getConnection(profileId);
+    const homeDirectory = await this.getHomeDirectory(profileId);
+    const activePath = currentPath?.trim() || connection.homeDirectory || '/';
+    const normalizedCurrentPath = activePath === '~' ? homeDirectory : activePath;
+    const resolution = this.resolveSuggestionPath(query, normalizedCurrentPath, homeDirectory);
+
+    try {
+      const entries = await this.listDirectory(profileId, resolution.lookupDirectory);
+
+      return entries
+        .filter((entry) => !directoryOnly || entry.isDirectory)
+        .filter((entry) => entry.name.toLowerCase().startsWith(resolution.partial.toLowerCase()))
+        .sort((left, right) => {
+          if (left.isDirectory !== right.isDirectory) {
+            return left.isDirectory ? -1 : 1;
+          }
+
+          return left.name.localeCompare(right.name);
+        })
+        .slice(0, MAX_TERMINAL_SUGGESTIONS)
+        .map((entry) => ({
+          type: 'path' as const,
+          label: `${entry.name}${entry.isDirectory ? '/' : ''}`,
+          insertText: `${resolution.insertBase}${entry.name}${entry.isDirectory ? '/' : ' '}`,
+          detail: entry.path,
+          isDirectory: entry.isDirectory,
+        }));
+    } catch {
+      return [];
+    }
+  }
+
+  private resolveSuggestionPath(
+    query: string,
+    currentPath: string,
+    homeDirectory: string,
+  ): { lookupDirectory: string; insertBase: string; partial: string } {
+    if (!query) {
+      return {
+        lookupDirectory: currentPath,
+        insertBase: '',
+        partial: '',
+      };
+    }
+
+    const endsWithSlash = query.endsWith('/');
+    const withoutTrailingSlash = endsWithSlash && query.length > 1 ? query.slice(0, -1) : query;
+    let rawBase = '';
+    let partial = '';
+
+    if (query === '~') {
+      rawBase = '~';
+    } else if (endsWithSlash) {
+      rawBase = withoutTrailingSlash;
+    } else {
+      const separatorIndex = withoutTrailingSlash.lastIndexOf('/');
+      rawBase = separatorIndex >= 0 ? withoutTrailingSlash.slice(0, separatorIndex) : '';
+      partial = separatorIndex >= 0 ? withoutTrailingSlash.slice(separatorIndex + 1) : withoutTrailingSlash;
+    }
+
+    if (query.startsWith('/')) {
+      const basePath = rawBase || '/';
+      const normalizedBase = path.posix.normalize(basePath);
+
+      return {
+        lookupDirectory: normalizedBase,
+        insertBase: normalizedBase === '/' ? '/' : `${normalizedBase}/`,
+        partial,
+      };
+    }
+
+    if (rawBase === '~' || rawBase.startsWith('~/')) {
+      const relativeBase = rawBase === '~' ? '' : rawBase.slice(2);
+      const lookupDirectory = relativeBase
+        ? path.posix.normalize(path.posix.join(homeDirectory, relativeBase))
+        : homeDirectory;
+
+      return {
+        lookupDirectory,
+        insertBase: rawBase === '~' ? '~/' : `${rawBase}/`,
+        partial,
+      };
+    }
+
+    if (query === '~') {
+      return {
+        lookupDirectory: homeDirectory,
+        insertBase: '~/',
+        partial: '',
+      };
+    }
+
+    if (!rawBase) {
+      return {
+        lookupDirectory: currentPath,
+        insertBase: '',
+        partial,
+      };
+    }
+
+    const lookupDirectory = path.posix.normalize(path.posix.join(currentPath, rawBase));
+
+    return {
+      lookupDirectory,
+      insertBase: `${rawBase}/`,
+      partial,
+    };
+  }
+
+  private async getHomeDirectory(profileId: string): Promise<string> {
+    const connection = this.getConnection(profileId);
+    if (connection.homeDirectory) {
+      return connection.homeDirectory;
+    }
+
+    const homeDirectory = (await this.execCommand(profileId, 'printf %s "$HOME"')).trim() || '/';
+    connection.homeDirectory = homeDirectory;
+    return homeDirectory;
+  }
+
+  private async getCommandCache(profileId: string): Promise<string[]> {
+    const connection = this.getConnection(profileId);
+    if (connection.commandCache) {
+      return connection.commandCache;
+    }
+
+    const commandScript = [
+      'if command -v bash >/dev/null 2>&1; then',
+      '  bash -lc \'compgen -c\';',
+      'elif command -v zsh >/dev/null 2>&1; then',
+      '  zsh -lc \'print -l ${(ko)commands}\';',
+      'else',
+      `  printf '%s\\n' ${COMMON_TERMINAL_COMMANDS.map((command) => shellQuote(command)).join(' ')};`,
+      'fi',
+    ].join(' ');
+
+    try {
+      const stdout = await this.execCommand(profileId, `sh -lc ${shellQuote(commandScript)}`, {
+        allowedExitCodes: [0, 1],
+      });
+
+      const cachedCommands = [...new Set(stdout
+        .split('\n')
+        .map((item) => item.trim())
+        .filter(Boolean))]
+        .sort((left, right) => left.localeCompare(right));
+
+      connection.commandCache = cachedCommands.length > 0 ? cachedCommands : [...COMMON_TERMINAL_COMMANDS];
+    } catch {
+      connection.commandCache = [...COMMON_TERMINAL_COMMANDS];
+    }
+
+    return connection.commandCache;
   }
 
   private async execCommand(profileId: string, command: string, options: ExecOptions = {}): Promise<string> {

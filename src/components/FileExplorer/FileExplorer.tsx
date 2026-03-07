@@ -301,12 +301,12 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
 
   return (
     <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
-      <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="section-label">Explorador remoto</div>
             <div className="mt-1 flex flex-wrap items-center gap-2">
-              <div className="text-lg font-semibold text-[var(--text-primary)]">Ruta activa</div>
+              <div className="text-base font-semibold text-[var(--text-primary)]">Ruta activa</div>
               <span className="badge-neutral">{sortedFiles.length} elemento(s)</span>
               {selectedFile ? <span className="badge-accent">{selectedFile.name}</span> : null}
             </div>
@@ -383,11 +383,11 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
           </div>
         </div>
 
-        {actionError ? <div className="notice-danger mt-4">{actionError}</div> : null}
+        {actionError ? <div className="notice-danger mt-3">{actionError}</div> : null}
       </div>
 
       {showSearch ? (
-        <div className="border-b border-[var(--border-subtle)] px-4 py-4">
+        <div className="border-b border-[var(--border-subtle)] px-3 py-3">
           <div className="section-label">Busqueda en carpeta</div>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <input
@@ -404,7 +404,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
           </div>
 
           {searchResults.length > 0 ? (
-            <div className="app-scroll mt-4 max-h-52 space-y-2 overflow-y-auto">
+            <div className="app-scroll mt-3 max-h-52 space-y-2 overflow-y-auto">
               <div className="body-sm">{searchResults.length} archivo(s) encontrado(s)</div>
               {searchResults.map((result, index) => (
                 <button
@@ -436,7 +436,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
       ) : null}
 
       {bookmarks.length > 0 ? (
-        <div className="border-b border-[var(--border-subtle)] px-4 py-3">
+        <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="section-label">Rutas guardadas</span>
             {bookmarks.map((bookmark) => (
@@ -471,7 +471,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
             </div>
-            <div className="text-lg font-semibold text-[var(--text-primary)]">Cargando directorio</div>
+            <div className="text-base font-semibold text-[var(--text-primary)]">Cargando directorio</div>
           </div>
         ) : error ? (
           <div className="empty-state h-full">
@@ -480,7 +480,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M12 8v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
               </svg>
             </div>
-            <div className="text-lg font-semibold text-[var(--text-primary)]">No se pudo abrir la ruta</div>
+            <div className="text-base font-semibold text-[var(--text-primary)]">No se pudo abrir la ruta</div>
             <p className="body-sm max-w-md">{error}</p>
             <button type="button" onClick={() => void loadDirectory(currentPath)} className="btn-secondary">
               Reintentar
@@ -491,7 +491,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
             <div className="empty-state-icon">
               <FolderIcon />
             </div>
-            <div className="text-lg font-semibold text-[var(--text-primary)]">Directorio vacio</div>
+            <div className="text-base font-semibold text-[var(--text-primary)]">Directorio vacio</div>
             <p className="body-sm">No hay archivos visibles en esta ruta o el directorio esta vacio.</p>
           </div>
         ) : (
@@ -579,7 +579,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({ profileId, initialPa
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-3 py-2.5">
         <div className="flex flex-wrap items-center gap-2">
           <span className="badge-neutral">{sortedFiles.length} elemento(s)</span>
           <span className="badge-neutral font-mono">{currentPath}</span>
