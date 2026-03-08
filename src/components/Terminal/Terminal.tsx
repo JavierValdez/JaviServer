@@ -8,6 +8,7 @@ interface TerminalProps {
   initialPath?: string;
   currentPath?: string;
   isActive?: boolean;
+  onPathChange?: (path: string) => void;
 }
 
 interface AutocompleteContext {
@@ -44,11 +45,26 @@ const PATH_FRIENDLY_COMMANDS = new Set([
 const isMacPlatform =
   typeof navigator !== 'undefined' && /(mac|iphone|ipad)/i.test(navigator.platform || navigator.userAgent);
 
-const TerminalIcon = () => (
-  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-  </svg>
-);
+const TERMINAL_CWD_MARKER_PREFIX = '\u001b]633;JaviServerCwd=';
+const TERMINAL_CWD_MARKER_SUFFIX = '\u0007';
+const TERMINAL_CWD_PROBE = `; printf '\\033]633;JaviServerCwd=%s\\007' "$PWD"`;
+
+function quoteShellPath(pathValue: string): string {
+  if (pathValue === '~') {
+    return '"$HOME"';
+  }
+
+  if (pathValue.startsWith('~/')) {
+    const relativePath = pathValue.slice(2).replace(/["\\$`]/g, '\\$&');
+    return `"${'$'}HOME/${relativePath}"`;
+  }
+
+  return `'${pathValue.replace(/'/g, `'\"'\"'`)}'`;
+}
+
+function buildChangeDirectoryCommand(pathValue: string): string {
+  return `cd ${quoteShellPath(pathValue)}${TERMINAL_CWD_PROBE}\n`;
+}
 
 const CopyIcon = () => (
   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,59 +128,12 @@ const ControlButton = ({
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-[var(--text-primary)] transition hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-40"
+    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[var(--text-primary)] transition hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-40"
   >
     {icon}
     <span>{label}</span>
   </button>
 );
-
-function normalizePosixPath(pathValue: string): string {
-  const isAbsolute = pathValue.startsWith('/');
-  const segments = pathValue.split('/').filter(Boolean);
-  const stack: string[] = [];
-
-  for (const segment of segments) {
-    if (segment === '.') {
-      continue;
-    }
-
-    if (segment === '..') {
-      if (stack.length > 0) {
-        stack.pop();
-      }
-      continue;
-    }
-
-    stack.push(segment);
-  }
-
-  if (!isAbsolute) {
-    return stack.join('/');
-  }
-
-  return stack.length > 0 ? `/${stack.join('/')}` : '/';
-}
-
-function resolveRelativeRemotePath(basePath: string, targetPath: string): string {
-  if (!targetPath) {
-    return basePath;
-  }
-
-  if (targetPath.startsWith('/')) {
-    return normalizePosixPath(targetPath);
-  }
-
-  if (targetPath.startsWith('~/') || targetPath === '~') {
-    return targetPath;
-  }
-
-  if (!basePath || basePath === '~') {
-    return targetPath;
-  }
-
-  return normalizePosixPath(`${basePath.replace(/\/+$/, '')}/${targetPath}`);
-}
 
 function deriveAutocompleteContext(buffer: string): AutocompleteContext | null {
   const trimmedStart = buffer.trimStart();
@@ -273,29 +242,6 @@ function replaceTrailingToken(buffer: string, rawToken: string, replacement: str
   return `${buffer.slice(0, tokenIndex)}${replacement}${buffer.slice(tokenIndex + rawToken.length)}`;
 }
 
-function resolveNextWorkingPath(command: string, currentPath: string): string | null {
-  const match = command.match(/^cd(?:\s+(.+))?$/);
-  if (!match) {
-    return null;
-  }
-
-  const rawTarget = match[1]?.trim() ?? '';
-  if (!rawTarget || rawTarget === '~') {
-    return '~';
-  }
-
-  if (rawTarget === '-') {
-    return currentPath;
-  }
-
-  const targetPath = rawTarget.replace(/^['"]|['"]$/g, '');
-  if (!targetPath) {
-    return currentPath;
-  }
-
-  return resolveRelativeRemotePath(currentPath, targetPath);
-}
-
 function formatSuggestionInsertText(
   suggestion: TerminalSuggestion,
   context: AutocompleteContext,
@@ -342,7 +288,89 @@ function isPasteShortcut(event: KeyboardEvent): boolean {
   return (event.ctrlKey && key === 'v') || (event.shiftKey && key === 'insert');
 }
 
-export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, currentPath, isActive }) => {
+function shouldProbeWorkingPath(command: string): boolean {
+  return /^(cd|pushd|popd)(?:\s|$)/.test(command.trim());
+}
+
+function buildTerminalWritePayload(currentBuffer: string, data: string): string {
+  if (!data || data.startsWith('\u001b')) {
+    return data;
+  }
+
+  let buffer = currentBuffer;
+  let outbound = '';
+
+  for (const char of data) {
+    if (char === '\r' || char === '\n') {
+      const committedCommand = buffer.trim();
+      if (committedCommand && shouldProbeWorkingPath(committedCommand)) {
+        outbound += TERMINAL_CWD_PROBE;
+      }
+      outbound += char;
+      buffer = '';
+      continue;
+    }
+
+    if (char === '\u007f' || char === '\b') {
+      buffer = buffer.slice(0, -1);
+      outbound += char;
+      continue;
+    }
+
+    if (char === '\u0003' || char === '\u0015') {
+      buffer = '';
+      outbound += char;
+      continue;
+    }
+
+    outbound += char;
+
+    if (char >= ' ') {
+      buffer += char;
+    }
+  }
+
+  return outbound;
+}
+
+function extractTerminalPathMetadata(chunk: string, pending: string): { text: string; path?: string; pending: string } {
+  const combined = `${pending}${chunk}`;
+  let cursor = 0;
+  let cleanText = '';
+  let detectedPath: string | undefined;
+
+  while (cursor < combined.length) {
+    const markerStart = combined.indexOf(TERMINAL_CWD_MARKER_PREFIX, cursor);
+    if (markerStart === -1) {
+      cleanText += combined.slice(cursor);
+      return { text: cleanText, path: detectedPath, pending: '' };
+    }
+
+    cleanText += combined.slice(cursor, markerStart);
+
+    const markerEnd = combined.indexOf(TERMINAL_CWD_MARKER_SUFFIX, markerStart + TERMINAL_CWD_MARKER_PREFIX.length);
+    if (markerEnd === -1) {
+      return {
+        text: cleanText,
+        path: detectedPath,
+        pending: combined.slice(markerStart),
+      };
+    }
+
+    detectedPath = combined.slice(markerStart + TERMINAL_CWD_MARKER_PREFIX.length, markerEnd);
+    cursor = markerEnd + TERMINAL_CWD_MARKER_SUFFIX.length;
+  }
+
+  return { text: cleanText, path: detectedPath, pending: '' };
+}
+
+export const Terminal: React.FC<TerminalProps> = ({
+  profileId,
+  initialPath,
+  currentPath,
+  isActive,
+  onPathChange,
+}) => {
   const terminalRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<XTerm | null>(null);
@@ -351,6 +379,9 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
   const resizeFrameRef = useRef<number | null>(null);
   const resizeTimeoutRef = useRef<number | null>(null);
   const scheduleFitRef = useRef<() => void>(() => undefined);
+  const copySelectionRef = useRef<() => Promise<void>>(() => Promise.resolve());
+  const pasteClipboardRef = useRef<() => Promise<void>>(() => Promise.resolve());
+  const outputMetadataBufferRef = useRef('');
   const lastSyncedPath = useRef<string | undefined>(initialPath);
   const terminalPathRef = useRef(currentPath || initialPath || '~');
   const inputBufferRef = useRef('');
@@ -383,10 +414,8 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
 
   useEffect(() => {
     if (isActive && currentPath && currentPath !== lastSyncedPath.current && xtermRef.current) {
-      void window.api.terminal.write(profileId, `cd "${currentPath}"\n`);
       lastSyncedPath.current = currentPath;
-      terminalPathRef.current = currentPath;
-      setTerminalPath(currentPath);
+      void window.api.terminal.write(profileId, buildChangeDirectoryCommand(currentPath));
       scheduleFitRef.current();
     }
   }, [currentPath, isActive, profileId]);
@@ -515,14 +544,6 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
     term.focus();
     scheduleFit();
 
-    const commitCommand = (command: string) => {
-      const nextPath = resolveNextWorkingPath(command, terminalPathRef.current);
-      if (nextPath) {
-        terminalPathRef.current = nextPath;
-        setTerminalPath(nextPath);
-      }
-    };
-
     const copySelection = async () => {
       if (!term.hasSelection()) {
         return;
@@ -534,15 +555,62 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
       term.focus();
     };
 
+    const sendTerminalInput = async (data: string) => {
+      if (!data) {
+        return;
+      }
+
+      const payload = buildTerminalWritePayload(inputBufferRef.current, data);
+      setInputBuffer((previousBuffer) => applyTypedData(previousBuffer, data, () => undefined));
+      try {
+        await window.api.terminal.write(profileId, payload);
+      } catch (error) {
+        console.error('No se pudo escribir en la terminal remota', error);
+      }
+      term.focus();
+    };
+
+    const pasteText = (text: string) => {
+      if (!text) {
+        return;
+      }
+
+      term.paste(text);
+      term.focus();
+    };
+
+    const readClipboardText = async () => {
+      try {
+        const nativeText = await Promise.resolve(window.api.clipboard.readText());
+        if (nativeText) {
+          return nativeText;
+        }
+      } catch (error) {
+        console.warn('No se pudo leer el portapapeles desde Electron', error);
+      }
+
+      if (typeof navigator !== 'undefined' && navigator.clipboard?.readText) {
+        try {
+          return await navigator.clipboard.readText();
+        } catch (error) {
+          console.warn('No se pudo leer el portapapeles desde navigator.clipboard', error);
+        }
+      }
+
+      return '';
+    };
+
     const pasteClipboard = async () => {
-      const clipboardText = await Promise.resolve(window.api.clipboard.readText());
+      const clipboardText = await readClipboardText();
       if (!clipboardText) {
         return;
       }
 
-      term.paste(clipboardText);
-      term.focus();
+      pasteText(clipboardText);
     };
+
+    copySelectionRef.current = copySelection;
+    pasteClipboardRef.current = pasteClipboard;
 
     const moveSuggestionSelection = (direction: 1 | -1) => {
       const availableSuggestions = suggestionsRef.current;
@@ -593,9 +661,7 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
       }
 
       if (isPasteShortcut(event)) {
-        event.preventDefault();
-        void pasteClipboard();
-        return false;
+        return true;
       }
 
       if (isCopyShortcut(event, term)) {
@@ -649,10 +715,16 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
         await window.api.terminal.start(profileId);
 
         if (initialPath) {
-          await window.api.terminal.write(profileId, `cd "${initialPath}"\n`);
           lastSyncedPath.current = initialPath;
-          terminalPathRef.current = initialPath;
-          setTerminalPath(initialPath);
+          await window.api.terminal.write(profileId, buildChangeDirectoryCommand(initialPath));
+        } else {
+          lastSyncedPath.current = terminalPathRef.current;
+          onPathChange?.(terminalPathRef.current);
+          setTerminalPath(terminalPathRef.current);
+        }
+
+        if (initialPath) {
+          lastSyncedPath.current = initialPath;
         }
 
         setStatus('ready');
@@ -668,7 +740,19 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
 
     const removeListener = window.api.terminal.onData((data: { profileId: string; data: string }) => {
       if (data.profileId === profileId && xtermRef.current) {
-        xtermRef.current.write(data.data);
+        const parsed = extractTerminalPathMetadata(data.data, outputMetadataBufferRef.current);
+        outputMetadataBufferRef.current = parsed.pending;
+
+        if (parsed.path && parsed.path !== terminalPathRef.current) {
+          lastSyncedPath.current = parsed.path;
+          terminalPathRef.current = parsed.path;
+          setTerminalPath(parsed.path);
+          onPathChange?.(parsed.path);
+        }
+
+        if (parsed.text) {
+          xtermRef.current.write(parsed.text);
+        }
       }
     });
 
@@ -678,23 +762,11 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
     });
 
     term.onData((data: string) => {
-      setInputBuffer((previousBuffer) => applyTypedData(previousBuffer, data, commitCommand));
-      void window.api.terminal.write(profileId, data);
+      void sendTerminalInput(data);
     });
 
     const handleResize = () => {
       scheduleFit();
-    };
-
-    const handlePaste = (event: ClipboardEvent) => {
-      const clipboardText = event.clipboardData?.getData('text');
-      if (!clipboardText) {
-        return;
-      }
-
-      event.preventDefault();
-      term.paste(clipboardText);
-      term.focus();
     };
 
     window.addEventListener('resize', handleResize);
@@ -704,7 +776,6 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
     });
 
     resizeObserver.observe(viewportRef.current);
-    viewportRef.current.addEventListener('paste', handlePaste);
 
     const fontSet = document.fonts;
     void fontSet?.ready.then(() => {
@@ -714,7 +785,6 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
     return () => {
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
-      viewportRef.current?.removeEventListener('paste', handlePaste);
 
       if (resizeFrameRef.current) {
         window.cancelAnimationFrame(resizeFrameRef.current);
@@ -728,9 +798,12 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
       removeListener();
       fitAddonRef.current = null;
       xtermRef.current = null;
+      copySelectionRef.current = () => Promise.resolve();
+      pasteClipboardRef.current = () => Promise.resolve();
+      outputMetadataBufferRef.current = '';
       void window.api.terminal.stop(profileId);
     };
-  }, [initialPath, profileId]);
+  }, [initialPath, onPathChange, profileId]);
 
   useEffect(() => {
     if (!isActive || status !== 'ready') {
@@ -743,56 +816,27 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
 
   const statusClass = status === 'ready' ? 'badge-success' : status === 'error' ? 'badge-danger' : 'badge-warning';
   const activeSuggestion = suggestions[activeSuggestionIndex];
-  const shortcutCopy = isMacPlatform ? 'Cmd+C' : 'Ctrl+C';
-  const shortcutPaste = isMacPlatform ? 'Cmd+V' : 'Ctrl+V';
 
   return (
     <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
-      <div className="border-b border-[var(--border-subtle)] px-4 py-4">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="section-label">Terminal SSH</div>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
-              <div className="text-lg font-semibold text-[var(--text-primary)]">Consola operativa</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="section-label">Terminal SSH</div>
+              <div className="text-base font-semibold text-[var(--text-primary)]">Consola operativa</div>
               <span className={statusClass}>{statusMessage}</span>
-              <span className="badge-neutral">{suggestions.length > 0 ? `${suggestions.length} sugerencias` : 'Autocompletado activo'}</span>
+              {suggestions.length > 0 ? <span className="badge-neutral">{`${suggestions.length} sugerencias`}</span> : null}
             </div>
-            <div className="mt-2 body-sm truncate font-mono">{terminalPath || currentPath || initialPath || '~'}</div>
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-[var(--text-secondary)]">
-              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1">Tab autocompleta</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1">Rutas del servidor</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1">{shortcutCopy} copiar</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-1">{shortcutPaste} pegar</span>
-            </div>
+            <div className="mt-1 truncate font-mono text-xs text-[var(--text-secondary)]">{terminalPath || currentPath || initialPath || '~'}</div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <ControlButton icon={<CopyIcon />} label="Copiar" onClick={() => {
-              const term = xtermRef.current;
-              if (!term || !term.hasSelection()) {
-                return;
-              }
-
-              void Promise.resolve(window.api.clipboard.writeText(term.getSelection())).then(() => {
-                term.clearSelection();
-                setHasSelection(false);
-                term.focus();
-              });
+              void copySelectionRef.current();
             }} disabled={!hasSelection} />
             <ControlButton icon={<PasteIcon />} label="Pegar" onClick={() => {
-              const term = xtermRef.current;
-              if (!term) {
-                return;
-              }
-
-              void Promise.resolve(window.api.clipboard.readText()).then((clipboardText) => {
-                if (!clipboardText) {
-                  return;
-                }
-
-                term.paste(clipboardText);
-                term.focus();
-              });
+              void pasteClipboardRef.current();
             }} />
             <ControlButton icon={<ClearIcon />} label="Limpiar" onClick={() => {
               xtermRef.current?.clear();
@@ -802,10 +846,6 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
               scheduleFitRef.current();
               xtermRef.current?.focus();
             }} />
-            <div className="muted-surface flex items-center gap-2 px-3 py-2">
-              <TerminalIcon />
-              <span className="body-xs">Responde al cambio de tamano</span>
-            </div>
           </div>
         </div>
       </div>
@@ -894,7 +934,7 @@ export const Terminal: React.FC<TerminalProps> = ({ profileId, initialPath, curr
           </div>
         ) : null}
 
-        <div ref={viewportRef} className="relative h-full w-full p-3">
+        <div ref={viewportRef} className="relative h-full w-full p-2.5">
           <div
             className="h-full overflow-hidden rounded-2xl border border-white/10 bg-[rgba(5,12,24,0.88)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_18px_40px_rgba(0,0,0,0.35)]"
             onClick={() => xtermRef.current?.focus()}

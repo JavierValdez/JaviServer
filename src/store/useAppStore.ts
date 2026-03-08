@@ -1,74 +1,56 @@
 import { create } from 'zustand';
-import { ServerProfile, ConnectionStatus, Tab, FileInfo } from '../types';
+import { ServerProfile, ConnectionStatus, Tab } from '../types';
 
 interface AppState {
-  // Profiles
   profiles: ServerProfile[];
   selectedProfileId: string | null;
-  
-  // Connections
   connections: Map<string, ConnectionStatus>;
-  
-  // Tabs
   tabs: Tab[];
   activeTabId: string | null;
-  
-  // File Explorer
-  currentPath: string;
-  files: FileInfo[];
-  loadingFiles: boolean;
-  
-  // Actions
   setProfiles: (profiles: ServerProfile[]) => void;
   addProfile: (profile: ServerProfile) => void;
   updateProfile: (id: string, data: Partial<ServerProfile>) => void;
   removeProfile: (id: string) => void;
   setSelectedProfileId: (id: string | null) => void;
-  
   setConnectionStatus: (profileId: string, status: Partial<ConnectionStatus>) => void;
-  
   addTab: (tab: Tab) => void;
   removeTab: (tabId: string) => void;
+  updateTabData: (tabId: string, data: NonNullable<Tab['data']>) => void;
   setActiveTab: (tabId: string) => void;
-  
-  setCurrentPath: (path: string) => void;
-  setFiles: (files: FileInfo[]) => void;
-  setLoadingFiles: (loading: boolean) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  // Initial state
   profiles: [],
   selectedProfileId: null,
   connections: new Map(),
   tabs: [],
   activeTabId: null,
-  currentPath: '/',
-  files: [],
-  loadingFiles: false,
-  
-  // Profile actions
   setProfiles: (profiles) => set({ profiles }),
-  
   addProfile: (profile) =>
     set((state) => ({ profiles: [...state.profiles, profile] })),
-  
   updateProfile: (id, data) =>
     set((state) => ({
       profiles: state.profiles.map((p) =>
         p.id === id ? { ...p, ...data } : p
       ),
     })),
-  
   removeProfile: (id) =>
-    set((state) => ({
-      profiles: state.profiles.filter((p) => p.id !== id),
-      selectedProfileId: state.selectedProfileId === id ? null : state.selectedProfileId,
-    })),
-  
+    set((state) => {
+      const remainingTabs = state.tabs.filter((tab) => tab.profileId !== id);
+      return {
+        profiles: state.profiles.filter((p) => p.id !== id),
+        selectedProfileId: state.selectedProfileId === id ? null : state.selectedProfileId,
+        connections: new Map([...state.connections].filter(([profileId]) => profileId !== id)),
+        tabs: remainingTabs,
+        activeTabId:
+          state.activeTabId && remainingTabs.some((tab) => tab.id === state.activeTabId)
+            ? state.activeTabId
+            : remainingTabs.length > 0
+              ? remainingTabs[remainingTabs.length - 1].id
+              : null,
+      };
+    }),
   setSelectedProfileId: (id) => set({ selectedProfileId: id }),
-  
-  // Connection actions
   setConnectionStatus: (profileId, status) =>
     set((state) => {
       const newConnections = new Map(state.connections);
@@ -77,17 +59,24 @@ export const useAppStore = create<AppState>((set) => ({
         connected: false,
         connecting: false,
       };
-      newConnections.set(profileId, { ...existing, ...status });
+      const nextStatus: ConnectionStatus = { ...existing, ...status };
+
+      if ('error' in status) {
+        if (!status.error) {
+          delete nextStatus.error;
+        }
+      } else if ('connected' in status || 'connecting' in status) {
+        delete nextStatus.error;
+      }
+
+      newConnections.set(profileId, nextStatus);
       return { connections: newConnections };
     }),
-  
-  // Tab actions
   addTab: (tab) =>
     set((state) => ({
       tabs: [...state.tabs, tab],
       activeTabId: tab.id,
     })),
-  
   removeTab: (tabId) =>
     set((state) => {
       const newTabs = state.tabs.filter((t) => t.id !== tabId);
@@ -99,11 +88,20 @@ export const useAppStore = create<AppState>((set) => ({
           : state.activeTabId;
       return { tabs: newTabs, activeTabId: newActiveTabId };
     }),
-  
+
+  updateTabData: (tabId, data) =>
+    set((state) => ({
+      tabs: state.tabs.map((tab) =>
+        tab.id === tabId
+          ? {
+              ...tab,
+              data: {
+                ...tab.data,
+                ...data,
+              },
+            }
+          : tab,
+      ),
+    })),
   setActiveTab: (tabId) => set({ activeTabId: tabId }),
-  
-  // File explorer actions
-  setCurrentPath: (path) => set({ currentPath: path }),
-  setFiles: (files) => set({ files }),
-  setLoadingFiles: (loading) => set({ loadingFiles: loading }),
 }));

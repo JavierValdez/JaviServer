@@ -97,6 +97,8 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   const [endDate, setEndDate] = useState('');
   const [error, setError] = useState<string | null>(null);
   const logContainerRef = useRef<HTMLDivElement>(null);
+  const streamBufferRef = useRef('');
+  const tailIdRef = useRef<string | null>(null);
 
   const profile = profiles.find((entry) => entry.id === profileId);
   const patterns = profile?.logPatterns || getDefaultPatterns();
@@ -137,22 +139,28 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   }, [lines, liveFilter]);
 
   useEffect(() => {
+    tailIdRef.current = tailId;
+  }, [tailId]);
+
+  useEffect(() => {
     const handleLogData = (data: { tailId: string; data: string }) => {
-      if (data.tailId === tailId) {
-        const newLines = data.data.split('\n').filter((line) => line.trim());
-        setLines((previous) => [...previous, ...newLines].slice(-5000));
+      if (data.tailId === tailIdRef.current) {
+        const normalizedChunk = data.data.replace(/\r\n/g, '\n');
+        const chunks = `${streamBufferRef.current}${normalizedChunk}`.split('\n');
+        streamBufferRef.current = chunks.pop() ?? '';
+        setLines((previous) => [...previous, ...chunks].slice(-5000));
       }
     };
 
     const unsubscribe = window.api.logs.onData(handleLogData);
 
     return () => {
-      if (tailId) {
-        window.api.logs.stopTail(tailId);
+      if (tailIdRef.current) {
+        void window.api.logs.stopTail(tailIdRef.current);
       }
       unsubscribe();
     };
-  }, [tailId]);
+  }, []);
 
   const clearResults = () => {
     setSearchResults([]);
@@ -164,7 +172,9 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
     try {
       clearResults();
       setLines([]);
+      streamBufferRef.current = '';
       const id = await window.api.logs.startTail(profileId, filePath, initialLines);
+      tailIdRef.current = id;
       setTailId(id);
       setIsStreaming(true);
       setError(null);
@@ -177,20 +187,24 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   const stopTail = async () => {
     if (tailId) {
       await window.api.logs.stopTail(tailId);
+      tailIdRef.current = null;
       setTailId(null);
       setIsStreaming(false);
+      streamBufferRef.current = '';
     }
   };
 
   const loadLines = async (numLines: number) => {
     if (tailId) {
       await window.api.logs.stopTail(tailId);
+      tailIdRef.current = null;
       setTailId(null);
       setIsStreaming(false);
     }
 
     setIsLoading(true);
     setLines([]);
+    streamBufferRef.current = '';
     clearResults();
 
     try {
@@ -258,6 +272,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
 
   const handleClear = () => {
     setLines([]);
+    streamBufferRef.current = '';
     clearResults();
     setActiveFilter(null);
   };
@@ -288,21 +303,21 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
 
   return (
     <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
-      <div className="border-b border-[var(--border-subtle)] px-3 py-3">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
+        <div className="flex flex-wrap items-start justify-between gap-2">
           <div className="min-w-0">
-            <div className="section-label">Log stream</div>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
-              <div className="truncate text-base font-semibold text-[var(--text-primary)]">{fileName}</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="section-label">Log stream</div>
+              <div className="truncate text-sm font-semibold text-[var(--text-primary)]">{fileName}</div>
               <span className={streamBadgeClass}>{streamLabel}</span>
               {fileInfo ? <span className="badge-neutral">{fileInfo.lines.toLocaleString()} lineas</span> : null}
               {fileInfo ? <span className="badge-neutral">{fileInfo.size}</span> : null}
             </div>
-            <div className="mt-2 truncate font-mono text-xs text-[var(--text-secondary)]">{filePath}</div>
+            <div className="mt-1 truncate font-mono text-xs text-[var(--text-secondary)]">{filePath}</div>
           </div>
 
           <div className="toolbar-row">
-            <div className="muted-surface flex items-center gap-2 px-3 py-2">
+            <div className="muted-surface flex items-center gap-2 px-2.5 py-1.5">
               <LoadIcon />
               <span className="body-xs">Carga inicial</span>
               <select
@@ -335,7 +350,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
               <ClearIcon />
             </button>
 
-            <label className="muted-surface flex items-center gap-2 px-3 py-2">
+            <label className="muted-surface flex items-center gap-2 px-2.5 py-1.5">
               <input
                 type="checkbox"
                 checked={autoScroll}
@@ -359,13 +374,13 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
           </div>
         </div>
 
-        {error ? <div className="notice-danger mt-3">{error}</div> : null}
+        {error ? <div className="notice-danger mt-2.5">{error}</div> : null}
       </div>
 
       {showDateFilter ? (
-        <div className="border-b border-[var(--border-subtle)] px-3 py-3">
+        <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
           <div className="section-label">Rango de fechas</div>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} className="input w-auto min-w-[11rem]" />
             <span className="body-xs">hasta</span>
             <input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} className="input w-auto min-w-[11rem]" />
@@ -378,9 +393,9 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
       ) : null}
 
       {showSearch ? (
-        <div className="border-b border-[var(--border-subtle)] px-3 py-3">
+        <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
           <div className="section-label">Busqueda y filtros</div>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             <input
               type="text"
               value={searchQuery}
@@ -399,7 +414,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
             ) : null}
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <span className="section-label">Filtros rapidos</span>
             {quickFilters.map((filter) => (
               <button
@@ -437,7 +452,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         </div>
       ) : null}
 
-      <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
+      <div className="border-b border-[var(--border-subtle)] px-3 py-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="section-label">{isStreaming ? 'Filtro en vivo' : 'Filtrar lineas'}</span>
           <input
@@ -509,7 +524,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-3 py-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] px-3 py-2">
         <div className="flex flex-wrap items-center gap-2">
           <span className="badge-neutral">{lines.length} linea(s) cargadas</span>
           {liveFilter ? <span className="badge-neutral">{filteredLines.length} visibles</span> : null}
