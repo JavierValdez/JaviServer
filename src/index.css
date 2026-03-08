@@ -104,7 +104,7 @@
   }
 
   .workbench-header {
-    @apply flex flex-wrap items-start justify-between gap-3 border-b px-4 py-3;
+    @apply flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--surface-panel-strong);
     border-color: var(--border-subtle);
   }
@@ -151,7 +151,7 @@
 
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-3 py-1.5 text-sm font-medium transition-all duration-150;
-    min-height: 2.125rem;
+    min-height: 2rem;
   }
 
   .btn-primary {
@@ -202,8 +202,8 @@
 
   .btn-icon {
     @apply inline-flex items-center justify-center rounded-xl border transition-all duration-150;
-    width: 2rem;
-    height: 2rem;
+    width: 1.875rem;
+    height: 1.875rem;
     color: var(--text-secondary);
     background: rgba(27, 39, 59, 0.76);
     border-color: var(--border-subtle);
@@ -288,8 +288,8 @@
   }
 
   .badge {
-    @apply inline-flex items-center rounded-full px-2 py-1 text-[11px] font-semibold;
-    min-height: 1.5rem;
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold;
+    min-height: 1.375rem;
   }
 
   .badge-neutral {
@@ -338,14 +338,14 @@
   }
 
   .tab-strip {
-    @apply flex items-center gap-2 overflow-x-auto border-b px-3 py-1.5;
+    @apply flex items-center gap-1.5 overflow-x-auto border-b px-2.5 py-1;
     background: rgba(10, 18, 32, 0.72);
     border-color: var(--border-subtle);
   }
 
   .tab-item {
-    @apply flex min-w-0 items-center gap-2 rounded-xl border px-3 py-1.5 transition-all duration-150;
-    min-height: 2.25rem;
+    @apply flex min-w-0 items-center gap-2 rounded-xl border px-2.5 py-1 transition-all duration-150;
+    min-height: 2rem;
     color: var(--text-secondary);
     background: rgba(22, 32, 49, 0.74);
     border-color: transparent;
@@ -388,7 +388,7 @@
   }
 
   .table-header-cell {
-    @apply px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.18em];
+    @apply px-4 py-2.5 text-left text-[11px] font-semibold uppercase tracking-[0.18em];
     color: var(--text-muted);
     border-bottom: 1px solid var(--border-subtle);
   }
@@ -407,7 +407,7 @@
   }
 
   .table-cell {
-    @apply px-4 py-3 text-sm align-middle;
+    @apply px-4 py-2.5 text-sm align-middle;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
 
