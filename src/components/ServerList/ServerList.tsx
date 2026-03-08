@@ -71,7 +71,15 @@ function getStatusMeta(status: 'connected' | 'connecting' | 'disconnected') {
 }
 
 export const ServerList: React.FC = () => {
-  const { profiles, setProfiles, selectedProfileId, setSelectedProfileId, connections, setConnectionStatus } = useAppStore();
+  const {
+    profiles,
+    setProfiles,
+    selectedProfileId,
+    setSelectedProfileId,
+    connections,
+    setConnectionStatus,
+    removeProfile,
+  } = useAppStore();
   const [showForm, setShowForm] = useState(false);
   const [editingProfile, setEditingProfile] = useState<ServerProfile | undefined>();
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; profile: ServerProfile } | null>(null);
@@ -86,7 +94,7 @@ export const ServerList: React.FC = () => {
     void loadProfiles();
 
     const unsubscribe = window.api.ssh.onConnectionClosed((profileId) => {
-      setConnectionStatus(profileId, { connected: false, connecting: false });
+      setConnectionStatus(profileId, { connected: false, connecting: false, error: undefined });
     });
 
     return unsubscribe;
@@ -98,17 +106,17 @@ export const ServerList: React.FC = () => {
     if (status?.connected) {
       try {
         await window.api.ssh.disconnect(profile.id);
-        setConnectionStatus(profile.id, { connected: false, connecting: false });
+        setConnectionStatus(profile.id, { connected: false, connecting: false, error: undefined });
       } catch (err) {
         console.error('Error disconnecting:', err);
       }
       return;
     }
 
-    setConnectionStatus(profile.id, { connected: false, connecting: true });
+    setConnectionStatus(profile.id, { connected: false, connecting: true, error: undefined });
     try {
       await window.api.ssh.connect(profile.id);
-      setConnectionStatus(profile.id, { connected: true, connecting: false });
+      setConnectionStatus(profile.id, { connected: true, connecting: false, error: undefined });
       setSelectedProfileId(profile.id);
     } catch (err: any) {
       setConnectionStatus(profile.id, {
@@ -146,6 +154,7 @@ export const ServerList: React.FC = () => {
     }
 
     await window.api.profiles.delete(deleteCandidate.id);
+    removeProfile(deleteCandidate.id);
     setDeleteCandidate(null);
     setContextMenu(null);
     await loadProfiles();
@@ -304,7 +313,10 @@ export const ServerList: React.FC = () => {
             <button
               type="button"
               className="btn-ghost w-full justify-start"
-              onClick={() => void handleConnect(contextMenu.profile)}
+              onClick={() => {
+                setContextMenu(null);
+                void handleConnect(contextMenu.profile);
+              }}
             >
               <PlugIcon />
               {connections.get(contextMenu.profile.id)?.connected ? 'Desconectar' : 'Conectar'}

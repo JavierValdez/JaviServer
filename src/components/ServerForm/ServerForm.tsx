@@ -73,12 +73,18 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
     setSaving(true);
 
     try {
+      const authTypeChanged = Boolean(profile && formData.authType !== profile.authType);
+
       if (!formData.name || !formData.host || !formData.username) {
         throw new Error('Nombre, host y usuario son requeridos.');
       }
 
       if (!profile && !formData.credential) {
         throw new Error('Debes indicar una credencial para crear el perfil.');
+      }
+
+      if (authTypeChanged && !formData.credential) {
+        throw new Error('Debes indicar una credencial nueva al cambiar el tipo de autenticacion.');
       }
 
       if (profile) {
@@ -109,6 +115,7 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
   };
 
   const isPassword = formData.authType === 'password';
+  const authTypeChanged = Boolean(profile && formData.authType !== profile.authType);
 
   return (
     <Modal
@@ -215,7 +222,7 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
             {isPassword ? (
               <div className="mt-4">
                 <label className="mb-2 block text-sm font-medium text-[var(--text-primary)]">
-                  Contraseña {profile ? '(dejar vacio para mantener)' : ''}
+                  Contraseña {profile && !authTypeChanged ? '(dejar vacio para mantener)' : ''}
                 </label>
                 <input
                   type="password"
@@ -240,6 +247,9 @@ export const ServerForm: React.FC<ServerFormProps> = ({ profile, onClose, onSave
                     Buscar
                   </button>
                 </div>
+                {authTypeChanged ? (
+                  <p className="mt-2 body-xs">Debes cargar una clave nueva para cambiar este perfil a autenticacion por archivo.</p>
+                ) : null}
               </div>
             )}
           </div>

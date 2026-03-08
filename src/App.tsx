@@ -39,16 +39,15 @@ function App() {
     connections,
     tabs,
     activeTabId,
-    currentPath,
     addTab,
     removeTab,
+    updateTabData,
     setActiveTab,
   } = useAppStore();
   const [updateState, setUpdateState] = useState<AppUpdateState | null>(null);
 
   const selectedProfile = profiles.find((profile) => profile.id === selectedProfileId);
   const isConnected = selectedProfileId ? connections.get(selectedProfileId)?.connected : false;
-  const quickLogBookmarks = selectedProfile?.bookmarks.filter((bookmark) => bookmark.isLogDirectory).slice(0, 3) ?? [];
 
   useEffect(() => {
     let isMounted = true;
@@ -74,12 +73,21 @@ function App() {
     };
   }, []);
 
-  const openTab = (type: TabType, title: string, data?: { path?: string; filePath?: string }) => {
-    if (!selectedProfileId) return;
+  const getProfileWorkingPath = (profileId: string): string => {
+    const activeTab = tabs.find((tab) => tab.id === activeTabId && tab.profileId === profileId);
+    if (activeTab?.data?.path) {
+      return activeTab.data.path;
+    }
+
+    return [...tabs].reverse().find((tab) => tab.profileId === profileId && tab.data?.path)?.data?.path || '/';
+  };
+
+  const openTab = (profileId: string, type: TabType, title: string, data?: { path?: string; filePath?: string }) => {
+    if (!profileId) return;
 
     const existingTab = tabs.find(
       (tab) =>
-        tab.profileId === selectedProfileId &&
+        tab.profileId === profileId &&
         tab.type === type &&
         (type === 'explorer'
           ? tab.data?.path === data?.path
@@ -89,6 +97,9 @@ function App() {
     );
 
     if (existingTab) {
+      if (type === 'terminal' && data?.path && existingTab.data?.path !== data.path) {
+        updateTabData(existingTab.id, { path: data.path });
+      }
       setActiveTab(existingTab.id);
       return;
     }
@@ -97,19 +108,19 @@ function App() {
       id: `${type}-${Date.now()}`,
       type,
       title,
-      profileId: selectedProfileId,
+      profileId,
       data,
     };
 
     addTab(newTab);
   };
 
-  const handleOpenLog = (filePath: string, fileName: string) => {
-    openTab('logs', fileName, { filePath });
+  const handleOpenLog = (profileId: string, filePath: string, fileName: string) => {
+    openTab(profileId, 'logs', fileName, { filePath });
   };
 
-  const handleOpenTerminal = (path: string) => {
-    openTab('terminal', 'Terminal', { path });
+  const handleOpenTerminal = (profileId: string, path: string) => {
+    openTab(profileId, 'terminal', 'Terminal', { path });
   };
 
   const handleUpdateAction = async () => {
@@ -147,6 +158,7 @@ function App() {
 
   const connectionBadgeClass = isConnected ? 'badge-success' : selectedProfile ? 'badge-accent' : 'badge-neutral';
   const connectionBadgeLabel = isConnected ? 'Sesion activa' : selectedProfile ? 'Perfil listo' : 'Sin conexion';
+  const selectedProfileWorkingPath = selectedProfileId ? getProfileWorkingPath(selectedProfileId) : '/';
 
   return (
     <div className="app-shell">
@@ -154,51 +166,43 @@ function App() {
 
       <div className="workbench-shell">
         <div className="workbench-header">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+          <div className="min-w-0 flex flex-1 flex-wrap items-center gap-x-3 gap-y-1">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
               <span className="section-label">SSH Workbench</span>
-              <div className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">JaviServer</div>
+              <div className="text-base font-semibold tracking-tight text-[var(--text-primary)]">JaviServer</div>
               <span className={connectionBadgeClass}>{connectionBadgeLabel}</span>
               {selectedProfile ? <span className="badge-neutral max-w-full truncate">{selectedProfile.username}@{selectedProfile.host}</span> : null}
-              {selectedProfile ? <span className="body-xs truncate">{selectedProfile.name}</span> : null}
+              {selectedProfile ? <span className="body-xs max-w-[14rem] truncate">{selectedProfile.name}</span> : null}
             </div>
 
-            <div className="mt-1 body-xs max-w-2xl">
-              {selectedProfile
-                ? isConnected
-                  ? 'Archivos, logs y terminal en una sola superficie.'
-                  : 'Conecta este perfil desde la barra lateral.'
-                : 'Administra conexiones SSH, inspecciona archivos remotos y analiza logs desde una sola vista.'}
-            </div>
-
-            {selectedProfile && isConnected ? (
-              <div className="toolbar-row mt-3">
-                <button onClick={() => openTab('explorer', 'Explorador', { path: '/' })} className="btn-secondary">
-                  <FolderIcon />
-                  Explorar archivos
-                </button>
-                <button onClick={() => openTab('terminal', 'Terminal', { path: currentPath })} className="btn-secondary">
-                  <TerminalIcon />
-                  Abrir terminal
-                </button>
-
-                {quickLogBookmarks.length > 0 ? <div className="toolbar-divider" /> : null}
-                {quickLogBookmarks.length > 0 ? <span className="section-label">Accesos log</span> : null}
-                {quickLogBookmarks.map((bookmark) => (
-                  <button
-                    key={bookmark.id}
-                    onClick={() => openTab('explorer', bookmark.name, { path: bookmark.path })}
-                    className="btn-chip"
-                  >
-                    <LogIcon />
-                    {bookmark.name}
-                  </button>
-                ))}
+            {!selectedProfile || !isConnected ? (
+              <div className="body-xs min-w-0 truncate">
+                {selectedProfile
+                  ? 'Conecta este perfil desde la barra lateral.'
+                  : 'Administra conexiones SSH, archivos remotos y logs desde una sola vista.'}
               </div>
             ) : null}
           </div>
 
-          <UpdateStatus state={updateState} onAction={handleUpdateAction} />
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            {selectedProfile && isConnected ? (
+              <>
+                <button onClick={() => openTab(selectedProfile.id, 'explorer', 'Explorador', { path: '/' })} className="btn-secondary">
+                  <FolderIcon />
+                  Explorador
+                </button>
+                <button
+                  onClick={() => openTab(selectedProfile.id, 'terminal', 'Terminal', { path: selectedProfileWorkingPath })}
+                  className="btn-secondary"
+                >
+                  <TerminalIcon />
+                  Terminal
+                </button>
+              </>
+            ) : null}
+
+            <UpdateStatus state={updateState} onAction={handleUpdateAction} />
+          </div>
         </div>
 
         {tabs.length > 0 ? (
@@ -210,8 +214,8 @@ function App() {
                   <button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={() => setActiveTab(tab.id)}>
                     <span className="text-[var(--accent)]">{getTabIcon(tab.type)}</span>
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-medium text-[var(--text-primary)]">{tab.title}</div>
-                      {tabProfile ? <div className="truncate text-[11px] text-[var(--text-muted)]">{tabProfile.name}</div> : null}
+                      <div className="truncate text-sm font-medium leading-tight text-[var(--text-primary)]">{tab.title}</div>
+                      {tabProfile ? <div className="truncate text-[10px] leading-tight text-[var(--text-muted)]">{tabProfile.name}</div> : null}
                     </div>
                   </button>
                   <button
@@ -229,11 +233,11 @@ function App() {
           </div>
         ) : null}
 
-        <div className="relative flex-1 min-h-0 p-3">
+        <div className="relative flex-1 min-h-0 p-2.5">
           {tabs.map((tab) => (
             <div
               key={tab.id}
-              className="absolute inset-3 flex flex-col overflow-hidden"
+              className="absolute inset-2.5 flex flex-col overflow-hidden"
               style={{
                 visibility: activeTabId === tab.id ? 'visible' : 'hidden',
                 zIndex: activeTabId === tab.id ? 10 : 0,
@@ -248,8 +252,9 @@ function App() {
                       <FileExplorer
                         profileId={tab.profileId}
                         initialPath={tab.data?.path || '/'}
-                        onOpenLog={handleOpenLog}
-                        onOpenTerminal={handleOpenTerminal}
+                        onOpenLog={(filePath, fileName) => handleOpenLog(tab.profileId, filePath, fileName)}
+                        onOpenTerminal={(path) => handleOpenTerminal(tab.profileId, path)}
+                        onPathChange={(path) => updateTabData(tab.id, { path })}
                       />
                     );
                   case 'logs':
@@ -265,8 +270,9 @@ function App() {
                       <Terminal
                         profileId={tab.profileId}
                         initialPath={tab.data?.path}
-                        currentPath={currentPath}
+                        currentPath={tab.data?.path}
                         isActive={isActive}
+                        onPathChange={(path) => updateTabData(tab.id, { path })}
                       />
                     );
                   default:
