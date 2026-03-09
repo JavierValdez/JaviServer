@@ -271,6 +271,7 @@ function App() {
                         profileId={tab.profileId}
                         initialPath={tab.data?.path}
                         currentPath={tab.data?.path}
+                        isConnected={Boolean(connections.get(tab.profileId)?.connected)}
                         isActive={isActive}
                         onPathChange={(path) => updateTabData(tab.id, { path })}
                       />

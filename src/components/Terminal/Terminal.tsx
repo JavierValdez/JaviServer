@@ -7,6 +7,7 @@ interface TerminalProps {
   profileId: string;
   initialPath?: string;
   currentPath?: string;
+  isConnected?: boolean;
   isActive?: boolean;
   onPathChange?: (path: string) => void;
 }
@@ -368,6 +369,7 @@ export const Terminal: React.FC<TerminalProps> = ({
   profileId,
   initialPath,
   currentPath,
+  isConnected = false,
   isActive,
   onPathChange,
 }) => {
@@ -381,20 +383,31 @@ export const Terminal: React.FC<TerminalProps> = ({
   const scheduleFitRef = useRef<() => void>(() => undefined);
   const copySelectionRef = useRef<() => Promise<void>>(() => Promise.resolve());
   const pasteClipboardRef = useRef<() => Promise<void>>(() => Promise.resolve());
+  const startShellRef = useRef<() => Promise<void>>(() => Promise.resolve());
+  const pendingShellStartRef = useRef<Promise<void> | null>(null);
+  const initialPathRef = useRef(initialPath);
+  const onPathChangeRef = useRef(onPathChange);
   const outputMetadataBufferRef = useRef('');
   const lastSyncedPath = useRef<string | undefined>(initialPath);
   const terminalPathRef = useRef(currentPath || initialPath || '~');
   const inputBufferRef = useRef('');
+  const isConnectedRef = useRef(isConnected);
+  const previousConnectionRef = useRef(isConnected);
   const suggestionsRef = useRef<TerminalSuggestion[]>([]);
   const activeSuggestionIndexRef = useRef(0);
-  const [status, setStatus] = useState<'connecting' | 'ready' | 'error'>('connecting');
-  const [statusMessage, setStatusMessage] = useState('Preparando terminal SSH');
+  const [status, setStatus] = useState<'connecting' | 'ready' | 'disconnected' | 'error'>(
+    isConnected ? 'connecting' : 'disconnected',
+  );
+  const [statusMessage, setStatusMessage] = useState(
+    isConnected ? 'Preparando terminal SSH' : 'Conecta el perfil para iniciar la terminal',
+  );
   const [terminalPath, setTerminalPath] = useState(currentPath || initialPath || '~');
   const [inputBuffer, setInputBuffer] = useState('');
   const [suggestions, setSuggestions] = useState<TerminalSuggestion[]>([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
   const [isSuggestionLoading, setIsSuggestionLoading] = useState(false);
   const [hasSelection, setHasSelection] = useState(false);
+  const statusRef = useRef(status);
 
   useEffect(() => {
     terminalPathRef.current = terminalPath;
@@ -405,6 +418,22 @@ export const Terminal: React.FC<TerminalProps> = ({
   }, [inputBuffer]);
 
   useEffect(() => {
+    isConnectedRef.current = isConnected;
+  }, [isConnected]);
+
+  useEffect(() => {
+    statusRef.current = status;
+  }, [status]);
+
+  useEffect(() => {
+    initialPathRef.current = initialPath;
+  }, [initialPath]);
+
+  useEffect(() => {
+    onPathChangeRef.current = onPathChange;
+  }, [onPathChange]);
+
+  useEffect(() => {
     suggestionsRef.current = suggestions;
   }, [suggestions]);
 
@@ -413,12 +442,29 @@ export const Terminal: React.FC<TerminalProps> = ({
   }, [activeSuggestionIndex]);
 
   useEffect(() => {
-    if (isActive && currentPath && currentPath !== lastSyncedPath.current && xtermRef.current) {
+    if (isActive && status === 'ready' && currentPath && currentPath !== lastSyncedPath.current && xtermRef.current) {
       lastSyncedPath.current = currentPath;
       void window.api.terminal.write(profileId, buildChangeDirectoryCommand(currentPath));
       scheduleFitRef.current();
     }
-  }, [currentPath, isActive, profileId]);
+  }, [currentPath, isActive, profileId, status]);
+
+  useEffect(() => {
+    const unsubscribe = window.api.ssh.onConnectionClosed((closedProfileId) => {
+      if (closedProfileId !== profileId) {
+        return;
+      }
+
+      pendingShellStartRef.current = null;
+      setSuggestions([]);
+      setActiveSuggestionIndex(0);
+      setIsSuggestionLoading(false);
+      setStatus('disconnected');
+      setStatusMessage('Sesion SSH cerrada. Vuelve a conectar el perfil.');
+    });
+
+    return unsubscribe;
+  }, [profileId]);
 
   useEffect(() => {
     const context = isActive && status === 'ready' ? deriveAutocompleteContext(inputBuffer) : null;
@@ -557,6 +603,12 @@ export const Terminal: React.FC<TerminalProps> = ({
 
     const sendTerminalInput = async (data: string) => {
       if (!data) {
+        return;
+      }
+
+      if (!isConnectedRef.current || statusRef.current !== 'ready') {
+        setStatus('disconnected');
+        setStatusMessage('Conecta el perfil para continuar usando la terminal.');
         return;
       }
 
@@ -709,33 +761,53 @@ export const Terminal: React.FC<TerminalProps> = ({
     };
 
     const startShell = async () => {
-      try {
-        setStatus('connecting');
-        setStatusMessage('Conectando shell remota');
-        await window.api.terminal.start(profileId);
-
-        if (initialPath) {
-          lastSyncedPath.current = initialPath;
-          await window.api.terminal.write(profileId, buildChangeDirectoryCommand(initialPath));
-        } else {
-          lastSyncedPath.current = terminalPathRef.current;
-          onPathChange?.(terminalPathRef.current);
-          setTerminalPath(terminalPathRef.current);
-        }
-
-        if (initialPath) {
-          lastSyncedPath.current = initialPath;
-        }
-
-        setStatus('ready');
-        setStatusMessage('Sesion interactiva lista');
-        scheduleFit();
-      } catch (error) {
-        setStatus('error');
-        setStatusMessage(`Error al iniciar terminal: ${String(error)}`);
+      if (!isConnectedRef.current) {
+        setStatus('disconnected');
+        setStatusMessage('Conecta el perfil para iniciar la terminal.');
+        return;
       }
+
+      if (pendingShellStartRef.current) {
+        await pendingShellStartRef.current;
+        return;
+      }
+
+      const bootPromise = (async () => {
+        try {
+          setStatus('connecting');
+          setStatusMessage('Conectando shell remota');
+          await window.api.terminal.start(profileId);
+
+          const startupPath = initialPathRef.current;
+          if (startupPath) {
+            lastSyncedPath.current = startupPath;
+            await window.api.terminal.write(profileId, buildChangeDirectoryCommand(startupPath));
+          } else {
+            lastSyncedPath.current = terminalPathRef.current;
+            onPathChangeRef.current?.(terminalPathRef.current);
+            setTerminalPath(terminalPathRef.current);
+          }
+
+          if (startupPath) {
+            lastSyncedPath.current = startupPath;
+          }
+
+          setStatus('ready');
+          setStatusMessage('Sesion interactiva lista');
+          scheduleFit();
+        } catch (error) {
+          setStatus('error');
+          setStatusMessage(`Error al iniciar terminal: ${String(error)}`);
+        } finally {
+          pendingShellStartRef.current = null;
+        }
+      })();
+
+      pendingShellStartRef.current = bootPromise;
+      await bootPromise;
     };
 
+    startShellRef.current = startShell;
     void startShell();
 
     const removeListener = window.api.terminal.onData((data: { profileId: string; data: string }) => {
@@ -747,7 +819,7 @@ export const Terminal: React.FC<TerminalProps> = ({
           lastSyncedPath.current = parsed.path;
           terminalPathRef.current = parsed.path;
           setTerminalPath(parsed.path);
-          onPathChange?.(parsed.path);
+          onPathChangeRef.current?.(parsed.path);
         }
 
         if (parsed.text) {
@@ -800,10 +872,22 @@ export const Terminal: React.FC<TerminalProps> = ({
       xtermRef.current = null;
       copySelectionRef.current = () => Promise.resolve();
       pasteClipboardRef.current = () => Promise.resolve();
+      startShellRef.current = () => Promise.resolve();
+      pendingShellStartRef.current = null;
+      initializedRef.current = false;
       outputMetadataBufferRef.current = '';
       void window.api.terminal.stop(profileId);
     };
-  }, [initialPath, onPathChange, profileId]);
+  }, [profileId]);
+
+  useEffect(() => {
+    const wasConnected = previousConnectionRef.current;
+    previousConnectionRef.current = isConnected;
+
+    if (!wasConnected && isConnected && status === 'disconnected' && xtermRef.current) {
+      void startShellRef.current();
+    }
+  }, [isConnected, status]);
 
   useEffect(() => {
     if (!isActive || status !== 'ready') {
@@ -814,7 +898,14 @@ export const Terminal: React.FC<TerminalProps> = ({
     xtermRef.current?.focus();
   }, [isActive, status]);
 
-  const statusClass = status === 'ready' ? 'badge-success' : status === 'error' ? 'badge-danger' : 'badge-warning';
+  const statusClass =
+    status === 'ready'
+      ? 'badge-success'
+      : status === 'error'
+        ? 'badge-danger'
+        : status === 'disconnected'
+          ? 'badge-neutral'
+          : 'badge-warning';
   const activeSuggestion = suggestions[activeSuggestionIndex];
 
   return (
