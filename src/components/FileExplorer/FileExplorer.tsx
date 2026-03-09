@@ -96,6 +96,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 }) => {
   const { profiles, updateProfile } = useAppStore();
   const [currentPath, setCurrentPath] = useState(initialPath);
+  const [requestedPath, setRequestedPath] = useState(initialPath);
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,9 +113,17 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const onPathChangeRef = React.useRef(onPathChange);
+  const lastLoadedPathRef = React.useRef<string | null>(null);
+  const lastSyncedPathRef = React.useRef(initialPath);
+  const requestCounterRef = React.useRef(0);
 
   const profile = profiles.find((entry) => entry.id === profileId);
   const bookmarks = profile?.bookmarks || [];
+
+  useEffect(() => {
+    onPathChangeRef.current = onPathChange;
+  }, [onPathChange]);
 
   const sortedFiles = useMemo(() => {
     const sorted = [...files].sort((left, right) => {
@@ -141,30 +150,61 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   }, [files, sortField, sortOrder]);
 
   const loadDirectory = useCallback(
-    async (path: string) => {
+    async (path: string, options: { syncParent?: boolean } = {}) => {
+      const { syncParent = true } = options;
+      const requestId = requestCounterRef.current + 1;
+      requestCounterRef.current = requestId;
+
       setLoading(true);
       setError(null);
       setSelectedFile(null);
+      setRequestedPath(path);
+      setSearchResults([]);
 
       try {
         const fileList = await window.api.sftp.listDirectory(profileId, path);
+        if (requestId !== requestCounterRef.current) {
+          return;
+        }
+
         setFiles(fileList);
         setCurrentPath(path);
         setPathInput(path);
-        onPathChange?.(path);
+        lastLoadedPathRef.current = path;
+
+        if (syncParent && path !== lastSyncedPathRef.current) {
+          lastSyncedPathRef.current = path;
+          onPathChangeRef.current?.(path);
+        }
       } catch (err: any) {
+        if (requestId !== requestCounterRef.current) {
+          return;
+        }
+
         setError(err.message || 'No se pudo cargar el directorio.');
         setFiles([]);
       } finally {
-        setLoading(false);
+        if (requestId === requestCounterRef.current) {
+          setLoading(false);
+        }
       }
     },
-    [onPathChange, profileId],
+    [profileId],
   );
 
   useEffect(() => {
-    void loadDirectory(initialPath);
-  }, [initialPath, loadDirectory]);
+    const needsInitialLoad = lastLoadedPathRef.current === null;
+    const isExternalPathChange =
+      initialPath !== lastLoadedPathRef.current &&
+      initialPath !== requestedPath;
+
+    if (!needsInitialLoad && !isExternalPathChange) {
+      return;
+    }
+
+    lastSyncedPathRef.current = initialPath;
+    void loadDirectory(initialPath, { syncParent: false });
+  }, [initialPath, loadDirectory, requestedPath]);
 
   const handleNavigate = (file: FileInfo) => {
     if (file.isDirectory) {
@@ -487,7 +527,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
             </div>
             <div className="text-base font-semibold text-[var(--text-primary)]">No se pudo abrir la ruta</div>
             <p className="body-sm max-w-md">{error}</p>
-            <button type="button" onClick={() => void loadDirectory(currentPath)} className="btn-secondary">
+            <button type="button" onClick={() => void loadDirectory(requestedPath)} className="btn-secondary">
               Reintentar
             </button>
           </div>

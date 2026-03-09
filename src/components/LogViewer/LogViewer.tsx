@@ -104,18 +104,40 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   const patterns = profile?.logPatterns || getDefaultPatterns();
   const fileName = filePath.split('/').pop() || filePath;
   const shownLines = liveFilter ? filteredLines : lines;
+  const initialLoadLinesRef = useRef(initialLines);
+
+  const clearResults = useCallback(() => {
+    setSearchResults([]);
+    setSearchResultLabel(null);
+    setError(null);
+  }, []);
+
+  const resetTailState = useCallback(() => {
+    tailIdRef.current = null;
+    setTailId(null);
+    setIsStreaming(false);
+    streamBufferRef.current = '';
+  }, []);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const loadFileInfo = async () => {
       try {
         const info = await window.api.logs.getFileInfo(profileId, filePath);
-        setFileInfo(info);
+        if (!isCancelled) {
+          setFileInfo(info);
+        }
       } catch (err) {
         console.error('Error loading file info:', err);
       }
     };
 
     void loadFileInfo();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [filePath, profileId]);
 
   useEffect(() => {
@@ -143,6 +165,59 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   }, [tailId]);
 
   useEffect(() => {
+    let isCancelled = false;
+
+    const loadInitialLines = async () => {
+      const activeTailId = tailIdRef.current;
+      if (activeTailId) {
+        await window.api.logs.stopTail(activeTailId);
+      }
+
+      resetTailState();
+      setLines([]);
+      setActiveFilter(null);
+      setLiveFilter('');
+      clearResults();
+      setIsLoading(true);
+
+      try {
+        const result = await window.api.logs.readLines(profileId, filePath, {
+          lines: initialLoadLinesRef.current,
+          all: false,
+          fromStart: false,
+        });
+
+        if (isCancelled) {
+          return;
+        }
+
+        const loadedLines = result.split('\n');
+        while (loadedLines.length > 0 && !loadedLines[loadedLines.length - 1]) {
+          loadedLines.pop();
+        }
+
+        setLines(loadedLines);
+        setError(null);
+      } catch (err: any) {
+        if (!isCancelled) {
+          setError(err.message || 'No se pudieron cargar las lineas.');
+          setLines([]);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadInitialLines();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [clearResults, filePath, profileId, resetTailState]);
+
+  useEffect(() => {
     const handleLogData = (data: { tailId: string; data: string }) => {
       if (data.tailId === tailIdRef.current) {
         const normalizedChunk = data.data.replace(/\r\n/g, '\n');
@@ -158,15 +233,23 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
       if (tailIdRef.current) {
         void window.api.logs.stopTail(tailIdRef.current);
       }
+      resetTailState();
       unsubscribe();
     };
-  }, []);
+  }, [resetTailState]);
 
-  const clearResults = () => {
-    setSearchResults([]);
-    setSearchResultLabel(null);
-    setError(null);
-  };
+  useEffect(() => {
+    const unsubscribe = window.api.ssh.onConnectionClosed((closedProfileId) => {
+      if (closedProfileId !== profileId || !tailIdRef.current) {
+        return;
+      }
+
+      resetTailState();
+      setError('La conexion SSH se cerro. Vuelve a conectar el perfil para reanudar el stream.');
+    });
+
+    return unsubscribe;
+  }, [profileId, resetTailState]);
 
   const startTail = async () => {
     try {
@@ -185,26 +268,22 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
   };
 
   const stopTail = async () => {
-    if (tailId) {
-      await window.api.logs.stopTail(tailId);
-      tailIdRef.current = null;
-      setTailId(null);
-      setIsStreaming(false);
-      streamBufferRef.current = '';
+    const activeTailId = tailIdRef.current;
+    if (activeTailId) {
+      await window.api.logs.stopTail(activeTailId);
+      resetTailState();
     }
   };
 
   const loadLines = async (numLines: number) => {
-    if (tailId) {
-      await window.api.logs.stopTail(tailId);
-      tailIdRef.current = null;
-      setTailId(null);
-      setIsStreaming(false);
+    const activeTailId = tailIdRef.current;
+    if (activeTailId) {
+      await window.api.logs.stopTail(activeTailId);
+      resetTailState();
     }
 
     setIsLoading(true);
     setLines([]);
-    streamBufferRef.current = '';
     clearResults();
 
     try {
