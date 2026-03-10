@@ -269,6 +269,16 @@ function formatSuggestionInsertText(
   return suggestion.insertText;
 }
 
+function getSuggestionKey(suggestion: TerminalSuggestion): string {
+  return [
+    suggestion.type,
+    suggestion.label,
+    suggestion.insertText,
+    suggestion.detail ?? '',
+    suggestion.isDirectory ? 'dir' : 'file',
+  ].join('::');
+}
+
 function isCopyShortcut(event: KeyboardEvent, term: XTerm): boolean {
   const key = event.key.toLowerCase();
 
@@ -487,8 +497,27 @@ export const Terminal: React.FC<TerminalProps> = ({
         });
 
         if (!isCancelled) {
+          const previousSuggestions = suggestionsRef.current;
+          const previousIndex = activeSuggestionIndexRef.current;
+          const previousSelection = previousSuggestions[previousIndex];
+          const preservedIndex = previousSelection
+            ? nextSuggestions.findIndex(
+                (suggestion) => getSuggestionKey(suggestion) === getSuggestionKey(previousSelection),
+              )
+            : -1;
+
           setSuggestions(nextSuggestions);
-          setActiveSuggestionIndex(0);
+          setActiveSuggestionIndex(() => {
+            if (nextSuggestions.length === 0) {
+              return 0;
+            }
+
+            if (preservedIndex >= 0) {
+              return preservedIndex;
+            }
+
+            return Math.min(previousIndex, nextSuggestions.length - 1);
+          });
         }
       } catch {
         if (!isCancelled) {
