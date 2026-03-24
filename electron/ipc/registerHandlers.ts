@@ -65,22 +65,37 @@ export function registerIpcHandlers(
     sshService.listDirectory(profileId, remotePath),
   );
 
-  ipcMain.handle(IPC_CHANNELS.sftpDownload, async (_event, profileId: string, remotePath: string) => {
-    const mainWindow = getMainWindow();
-    const options: SaveDialogOptions = {
-      defaultPath: path.basename(remotePath),
-    };
-    const result = mainWindow
-      ? await dialog.showSaveDialog(mainWindow, options)
-      : await dialog.showSaveDialog(options);
+  ipcMain.handle(
+    IPC_CHANNELS.sftpDownload,
+    async (_event, profileId: string, remotePath: string, options?: { compress?: boolean }) => {
+      const shouldCompress = options?.compress ?? false;
+      const defaultFileName = path.basename(remotePath);
+      const suggestedPath = shouldCompress && !defaultFileName.endsWith('.gz')
+        ? `${defaultFileName}.gz`
+        : defaultFileName;
 
-    if (result.canceled || !result.filePath) {
-      return { success: false };
-    }
+      const mainWindow = getMainWindow();
+      const saveDialogOptions: SaveDialogOptions = {
+        defaultPath: suggestedPath,
+        filters: shouldCompress
+          ? [
+              { name: 'Gzip', extensions: ['gz'] },
+              { name: 'All Files', extensions: ['*'] },
+            ]
+          : undefined,
+      };
+      const result = mainWindow
+        ? await dialog.showSaveDialog(mainWindow, saveDialogOptions)
+        : await dialog.showSaveDialog(saveDialogOptions);
 
-    await sshService.downloadFile(profileId, remotePath, result.filePath);
-    return { success: true, path: result.filePath };
-  });
+      if (result.canceled || !result.filePath) {
+        return { success: false };
+      }
+
+      await sshService.downloadFile(profileId, remotePath, result.filePath, { compress: shouldCompress });
+      return { success: true, path: result.filePath };
+    },
+  );
 
   ipcMain.handle(
     IPC_CHANNELS.sftpSearchInDirectory,
@@ -121,13 +136,13 @@ export function registerIpcHandlers(
     sshService.grep(profileId, filePath, query, options),
   );
 
-  ipcMain.handle(IPC_CHANNELS.terminalStart, (_event, profileId: string) => sshService.startTerminal(profileId));
-  ipcMain.handle(IPC_CHANNELS.terminalWrite, (_event, profileId: string, data: string) => {
-    sshService.writeTerminal(profileId, data);
+  ipcMain.handle(IPC_CHANNELS.terminalStart, (_event, profileId: string, terminalId: string) => sshService.startTerminal(profileId, terminalId));
+  ipcMain.handle(IPC_CHANNELS.terminalWrite, (_event, terminalId: string, data: string) => {
+    sshService.writeTerminal(terminalId, data);
     return true;
   });
-  ipcMain.handle(IPC_CHANNELS.terminalResize, (_event, profileId: string, cols: number, rows: number) => {
-    sshService.resizeTerminal(profileId, cols, rows);
+  ipcMain.handle(IPC_CHANNELS.terminalResize, (_event, terminalId: string, cols: number, rows: number) => {
+    sshService.resizeTerminal(terminalId, cols, rows);
     return true;
   });
   ipcMain.handle(
@@ -135,8 +150,8 @@ export function registerIpcHandlers(
     (_event, profileId: string, request: { mode: 'command' | 'path'; query: string; currentPath?: string; directoryOnly?: boolean }) =>
       sshService.getTerminalSuggestions(profileId, request),
   );
-  ipcMain.handle(IPC_CHANNELS.terminalStop, (_event, profileId: string) => {
-    sshService.stopTerminal(profileId);
+  ipcMain.handle(IPC_CHANNELS.terminalStop, (_event, terminalId: string) => {
+    sshService.stopTerminal(terminalId);
     return true;
   });
 
@@ -163,7 +178,7 @@ export function registerIpcHandlers(
     mainWindow.webContents.send(IPC_CHANNELS.logsData, payload);
   });
 
-  sshService.on('terminal-data', (payload: { profileId: string; data: string }) => {
+  sshService.on('terminal-data', (payload: { terminalId: string; profileId: string; data: string }) => {
     const mainWindow = getMainWindow();
     if (!mainWindow || mainWindow.isDestroyed()) {
       return;

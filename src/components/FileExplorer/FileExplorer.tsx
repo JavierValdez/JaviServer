@@ -120,6 +120,9 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 
   const profile = profiles.find((entry) => entry.id === profileId);
   const bookmarks = profile?.bookmarks || [];
+  const normalizedCurrentPath = currentPath.endsWith('/') && currentPath !== '/'
+    ? currentPath.slice(0, -1)
+    : currentPath;
 
   useEffect(() => {
     onPathChangeRef.current = onPathChange;
@@ -213,6 +216,10 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     }
 
     setSelectedFile(file);
+
+    if (shouldTreatAsLogFile(file) && onOpenLog) {
+      onOpenLog(file.path, file.name);
+    }
   };
 
   const handleGoUp = () => {
@@ -230,7 +237,9 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const handleDownload = async (file: FileInfo) => {
     setActionError(null);
     try {
-      await window.api.sftp.download(profileId, file.path);
+      await window.api.sftp.download(profileId, file.path, {
+        compress: shouldCompressOnDownload(file),
+      });
     } catch (err: any) {
       setActionError(`No se pudo descargar "${file.name}": ${err.message}`);
     }
@@ -314,6 +323,25 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   };
 
   const isCurrentPathBookmarked = bookmarks.some((bookmark) => bookmark.path === currentPath);
+  const isCurrentPathLogDirectory = useMemo(() => {
+    const matchesNamedLogPath = /(^|\/)[^/]*log[s]?[^/]*$/i.test(normalizedCurrentPath);
+    const matchesSavedLogPath = bookmarks.some((bookmark) => {
+      if (!bookmark.isLogDirectory) {
+        return false;
+      }
+
+      const normalizedBookmarkPath = bookmark.path.endsWith('/') && bookmark.path !== '/'
+        ? bookmark.path.slice(0, -1)
+        : bookmark.path;
+
+      return (
+        normalizedCurrentPath === normalizedBookmarkPath
+        || normalizedCurrentPath.startsWith(`${normalizedBookmarkPath}/`)
+      );
+    });
+
+    return matchesNamedLogPath || matchesSavedLogPath;
+  }, [bookmarks, normalizedCurrentPath]);
 
   const formatSize = (bytes: number): string => {
     if (bytes === 0) return '0 B';
@@ -347,6 +375,20 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
     return logPatterns.some((pattern) => pattern.test(name));
   };
 
+  const isCompressedArchive = (name: string): boolean =>
+    /\.(gz|zip|bz2|xz|7z)$/i.test(name);
+
+  const shouldTreatAsLogFile = (file: FileInfo): boolean => {
+    if (file.isDirectory || isCompressedArchive(file.name)) {
+      return false;
+    }
+
+    return isCurrentPathLogDirectory || isLogFile(file.name);
+  };
+
+  const shouldCompressOnDownload = (file: FileInfo): boolean =>
+    shouldTreatAsLogFile(file);
+
   return (
     <div className="panel-surface-strong flex h-full flex-1 flex-col overflow-hidden">
       <div className="border-b border-[var(--border-subtle)] px-3 py-2.5">
@@ -355,7 +397,6 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
             <div className="section-label">Explorador remoto</div>
             <div className="max-w-[26rem] truncate text-sm font-semibold text-[var(--text-primary)]">{currentPath}</div>
             <span className="badge-neutral">{sortedFiles.length} elemento(s)</span>
-            {selectedFile ? <span className="badge-accent max-w-[12rem] truncate">{selectedFile.name}</span> : null}
           </div>
 
           <div className="toolbar-row">
@@ -426,6 +467,15 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
               <option value="size-asc">Tamano menor</option>
             </select>
           </div>
+        </div>
+
+        <div className="mt-2 flex min-h-[1.75rem] min-w-0 items-center gap-2">
+          {selectedFile ? (
+            <>
+              <span className="section-label shrink-0">Seleccionado</span>
+              <span className="badge-accent max-w-full truncate">{selectedFile.name}</span>
+            </>
+          ) : null}
         </div>
 
         {actionError ? <div className="notice-danger mt-2.5">{actionError}</div> : null}
@@ -577,7 +627,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                   <td className="table-cell">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.03)] p-2">
-                        {file.isDirectory ? <FolderIcon /> : isLogFile(file.name) ? <LogIcon /> : <FileIcon />}
+                        {file.isDirectory ? <FolderIcon /> : shouldTreatAsLogFile(file) ? <LogIcon /> : <FileIcon />}
                       </div>
                       <span className="truncate text-[var(--text-primary)]">{file.name}</span>
                     </div>
@@ -588,7 +638,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                   <td className="table-cell">
                     {!file.isDirectory ? (
                       <div className="flex items-center justify-end gap-1">
-                        {isLogFile(file.name) && onOpenLog ? (
+                        {shouldTreatAsLogFile(file) && onOpenLog ? (
                           <button
                             type="button"
                             onClick={(event) => {
@@ -609,8 +659,8 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                             void handleDownload(file);
                           }}
                           className="btn-icon-quiet"
-                          title="Descargar"
-                          aria-label={`Descargar ${file.name}`}
+                          title={shouldCompressOnDownload(file) ? 'Descargar comprimido (.gz)' : 'Descargar'}
+                          aria-label={shouldCompressOnDownload(file) ? `Descargar comprimido ${file.name}` : `Descargar ${file.name}`}
                         >
                           <DownloadIcon />
                         </button>

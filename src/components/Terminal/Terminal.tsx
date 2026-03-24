@@ -4,6 +4,7 @@ import { Terminal as XTerm } from '@xterm/xterm';
 import type { TerminalSuggestion } from '../../types';
 
 interface TerminalProps {
+  terminalId: string;
   profileId: string;
   initialPath?: string;
   currentPath?: string;
@@ -376,6 +377,7 @@ function extractTerminalPathMetadata(chunk: string, pending: string): { text: st
 }
 
 export const Terminal: React.FC<TerminalProps> = ({
+  terminalId,
   profileId,
   initialPath,
   currentPath,
@@ -454,10 +456,10 @@ export const Terminal: React.FC<TerminalProps> = ({
   useEffect(() => {
     if (isActive && status === 'ready' && currentPath && currentPath !== lastSyncedPath.current && xtermRef.current) {
       lastSyncedPath.current = currentPath;
-      void window.api.terminal.write(profileId, buildChangeDirectoryCommand(currentPath));
+      void window.api.terminal.write(terminalId, buildChangeDirectoryCommand(currentPath));
       scheduleFitRef.current();
     }
-  }, [currentPath, isActive, profileId, status]);
+  }, [currentPath, isActive, status, terminalId]);
 
   useEffect(() => {
     const unsubscribe = window.api.ssh.onConnectionClosed((closedProfileId) => {
@@ -592,7 +594,7 @@ export const Terminal: React.FC<TerminalProps> = ({
       }
 
       fitAddonRef.current.fit();
-      void window.api.terminal.resize(profileId, xtermRef.current.cols, xtermRef.current.rows);
+      void window.api.terminal.resize(terminalId, xtermRef.current.cols, xtermRef.current.rows);
     };
 
     const scheduleFit = () => {
@@ -644,7 +646,7 @@ export const Terminal: React.FC<TerminalProps> = ({
       const payload = buildTerminalWritePayload(inputBufferRef.current, data);
       setInputBuffer((previousBuffer) => applyTypedData(previousBuffer, data, () => undefined));
       try {
-        await window.api.terminal.write(profileId, payload);
+        await window.api.terminal.write(terminalId, payload);
       } catch (error) {
         console.error('No se pudo escribir en la terminal remota', error);
       }
@@ -725,10 +727,10 @@ export const Terminal: React.FC<TerminalProps> = ({
 
       const insertText = formatSuggestionInsertText(suggestion, context);
       if (context.rawToken) {
-        await window.api.terminal.write(profileId, '\u007f'.repeat(context.rawToken.length));
+        await window.api.terminal.write(terminalId, '\u007f'.repeat(context.rawToken.length));
       }
 
-      await window.api.terminal.write(profileId, insertText);
+      await window.api.terminal.write(terminalId, insertText);
 
       setInputBuffer((currentBuffer) => replaceTrailingToken(currentBuffer, context.rawToken, insertText));
       setSuggestions([]);
@@ -805,12 +807,12 @@ export const Terminal: React.FC<TerminalProps> = ({
         try {
           setStatus('connecting');
           setStatusMessage('Conectando shell remota');
-          await window.api.terminal.start(profileId);
+          await window.api.terminal.start(profileId, terminalId);
 
           const startupPath = initialPathRef.current;
           if (startupPath) {
             lastSyncedPath.current = startupPath;
-            await window.api.terminal.write(profileId, buildChangeDirectoryCommand(startupPath));
+            await window.api.terminal.write(terminalId, buildChangeDirectoryCommand(startupPath));
           } else {
             lastSyncedPath.current = terminalPathRef.current;
             onPathChangeRef.current?.(terminalPathRef.current);
@@ -839,8 +841,8 @@ export const Terminal: React.FC<TerminalProps> = ({
     startShellRef.current = startShell;
     void startShell();
 
-    const removeListener = window.api.terminal.onData((data: { profileId: string; data: string }) => {
-      if (data.profileId === profileId && xtermRef.current) {
+    const removeListener = window.api.terminal.onData((data: { terminalId: string; profileId: string; data: string }) => {
+      if (data.terminalId === terminalId && xtermRef.current) {
         const parsed = extractTerminalPathMetadata(data.data, outputMetadataBufferRef.current);
         outputMetadataBufferRef.current = parsed.pending;
 
@@ -905,9 +907,9 @@ export const Terminal: React.FC<TerminalProps> = ({
       pendingShellStartRef.current = null;
       initializedRef.current = false;
       outputMetadataBufferRef.current = '';
-      void window.api.terminal.stop(profileId);
+      void window.api.terminal.stop(terminalId);
     };
-  }, [profileId]);
+  }, [profileId, terminalId]);
 
   useEffect(() => {
     const wasConnected = previousConnectionRef.current;
@@ -1018,10 +1020,10 @@ export const Terminal: React.FC<TerminalProps> = ({
 
                         const insertText = formatSuggestionInsertText(suggestion, context);
                         if (context.rawToken) {
-                          void window.api.terminal.write(profileId, '\u007f'.repeat(context.rawToken.length));
+                          void window.api.terminal.write(terminalId, '\u007f'.repeat(context.rawToken.length));
                         }
 
-                        void window.api.terminal.write(profileId, insertText).then(() => {
+                        void window.api.terminal.write(terminalId, insertText).then(() => {
                           setInputBuffer((currentBuffer) => replaceTrailingToken(currentBuffer, context.rawToken, insertText));
                           setSuggestions([]);
                           setActiveSuggestionIndex(0);

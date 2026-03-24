@@ -64,5 +64,6 @@ export interface Tab {
   data?: {
     path?: string;
     filePath?: string;
+    terminalId?: string;
   };
 }

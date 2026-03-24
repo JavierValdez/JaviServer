@@ -1,6 +1,9 @@
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
+import { promises as fs, createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream/promises';
+import { constants as zlibConstants, createGzip } from 'node:zlib';
 import {
   Client,
   type Algorithms,
@@ -39,11 +42,15 @@ interface TailSession {
   stream: ClientChannel;
 }
 
+interface TerminalSession {
+  profileId: string;
+  stream: ClientChannel;
+}
+
 interface ConnectionContext {
   client: Client;
   profile: ServerProfile;
   sftp?: SFTPWrapper;
-  shell?: ClientChannel;
   homeDirectory?: string;
   commandCache?: string[];
 }
@@ -188,6 +195,7 @@ export class SSHService extends EventEmitter {
   private readonly connections = new Map<string, ConnectionContext>();
   private readonly pendingConnections = new Map<string, Promise<void>>();
   private readonly tailSessions = new Map<string, TailSession>();
+  private readonly terminalSessions = new Map<string, TerminalSession>();
 
   async connect(profile: ServerProfile): Promise<void> {
     const existingConnection = this.connections.get(profile.id);
@@ -214,7 +222,11 @@ export class SSHService extends EventEmitter {
       return;
     }
 
-    this.stopTerminal(profileId);
+    for (const [terminalId, session] of this.terminalSessions.entries()) {
+      if (session.profileId === profileId) {
+        this.stopTerminal(terminalId);
+      }
+    }
 
     for (const [tailId, session] of this.tailSessions.entries()) {
       if (session.profileId === profileId) {
@@ -252,8 +264,29 @@ export class SSHService extends EventEmitter {
       .sort((left, right) => left.name.localeCompare(right.name));
   }
 
-  async downloadFile(profileId: string, remotePath: string, localPath: string): Promise<void> {
+  async downloadFile(
+    profileId: string,
+    remotePath: string,
+    localPath: string,
+    options: { compress?: boolean } = {},
+  ): Promise<void> {
     const sftp = await this.getSftp(profileId);
+    if (options.compress) {
+      const remoteStream = sftp.createReadStream(remotePath);
+      const localStream = createWriteStream(localPath);
+      const gzipStream = createGzip({ level: zlibConstants.Z_BEST_COMPRESSION });
+
+      try {
+        await pipeline(remoteStream, gzipStream, localStream);
+        return;
+      } catch (error) {
+        remoteStream.destroy();
+        gzipStream.destroy();
+        localStream.destroy();
+        await fs.unlink(localPath).catch(() => undefined);
+        throw toPublicError(error);
+      }
+    }
 
     await new Promise<void>((resolve, reject) => {
       sftp.fastGet(remotePath, localPath, (error) => {
@@ -475,9 +508,9 @@ export class SSHService extends EventEmitter {
     );
   }
 
-  async startTerminal(profileId: string): Promise<void> {
+  async startTerminal(profileId: string, terminalId: string): Promise<void> {
     const connection = this.getConnection(profileId);
-    if (connection.shell) {
+    if (this.terminalSessions.has(terminalId)) {
       return;
     }
 
@@ -488,18 +521,20 @@ export class SSHService extends EventEmitter {
           return;
         }
 
-        connection.shell = stream;
+        this.terminalSessions.set(terminalId, { profileId, stream });
 
         stream.on('data', (chunk: Buffer) => {
           this.emit('terminal-data', {
+            terminalId,
             profileId,
             data: chunk.toString('utf8'),
           });
         });
 
         stream.on('close', () => {
-          if (this.connections.get(profileId)?.shell === stream) {
-            this.connections.get(profileId)!.shell = undefined;
+          const session = this.terminalSessions.get(terminalId);
+          if (session?.stream === stream) {
+            this.terminalSessions.delete(terminalId);
           }
         });
 
@@ -508,30 +543,28 @@ export class SSHService extends EventEmitter {
     });
   }
 
-  writeTerminal(profileId: string, data: string): void {
-    const connection = this.getConnection(profileId);
-
-    if (!connection.shell) {
-      throw new Error('La terminal no está inicializada para este perfil.');
+  writeTerminal(terminalId: string, data: string): void {
+    const session = this.terminalSessions.get(terminalId);
+    if (!session) {
+      throw new Error('La terminal no está inicializada para esta pestaña.');
     }
 
-    connection.shell.write(data);
+    session.stream.write(data);
   }
 
-  resizeTerminal(profileId: string, cols: number, rows: number): void {
-    const connection = this.getConnection(profileId);
-    connection.shell?.setWindow(rows, cols, 0, 0);
+  resizeTerminal(terminalId: string, cols: number, rows: number): void {
+    this.terminalSessions.get(terminalId)?.stream.setWindow(rows, cols, 0, 0);
   }
 
-  stopTerminal(profileId: string): void {
-    const connection = this.connections.get(profileId);
-    if (!connection?.shell) {
+  stopTerminal(terminalId: string): void {
+    const session = this.terminalSessions.get(terminalId);
+    if (!session) {
       return;
     }
 
-    connection.shell.close();
-    connection.shell.end();
-    connection.shell = undefined;
+    session.stream.close();
+    session.stream.end();
+    this.terminalSessions.delete(terminalId);
   }
 
   private async connectWithCompatibility(profile: ServerProfile): Promise<void> {
@@ -853,7 +886,11 @@ export class SSHService extends EventEmitter {
   }
 
   private handleConnectionClosed(profileId: string): void {
-    this.stopTerminal(profileId);
+    for (const [terminalId, session] of this.terminalSessions.entries()) {
+      if (session.profileId === profileId) {
+        this.terminalSessions.delete(terminalId);
+      }
+    }
 
     for (const [tailId, session] of this.tailSessions.entries()) {
       if (session.profileId === profileId) {

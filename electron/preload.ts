@@ -35,8 +35,8 @@ contextBridge.exposeInMainWorld('api', {
   sftp: {
     listDirectory: (profileId: string, remotePath: string) =>
       ipcRenderer.invoke(IPC_CHANNELS.sftpListDirectory, profileId, remotePath),
-    download: (profileId: string, remotePath: string) =>
-      ipcRenderer.invoke(IPC_CHANNELS.sftpDownload, profileId, remotePath),
+    download: (profileId: string, remotePath: string, options?: { compress?: boolean }) =>
+      ipcRenderer.invoke(IPC_CHANNELS.sftpDownload, profileId, remotePath, options),
     searchInDirectory: (
       profileId: string,
       remotePath: string,
@@ -69,16 +69,16 @@ contextBridge.exposeInMainWorld('api', {
       unsubscribeOn(IPC_CHANNELS.logsData, listener),
   },
   terminal: {
-    start: (profileId: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalStart, profileId),
-    write: (profileId: string, data: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalWrite, profileId, data),
-    resize: (profileId: string, cols: number, rows: number) =>
-      ipcRenderer.invoke(IPC_CHANNELS.terminalResize, profileId, cols, rows),
+    start: (profileId: string, terminalId: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalStart, profileId, terminalId),
+    write: (terminalId: string, data: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalWrite, terminalId, data),
+    resize: (terminalId: string, cols: number, rows: number) =>
+      ipcRenderer.invoke(IPC_CHANNELS.terminalResize, terminalId, cols, rows),
     getSuggestions: (
       profileId: string,
       request: { mode: 'command' | 'path'; query: string; currentPath?: string; directoryOnly?: boolean },
     ) => ipcRenderer.invoke(IPC_CHANNELS.terminalSuggestions, profileId, request),
-    stop: (profileId: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalStop, profileId),
-    onData: (listener: (payload: { profileId: string; data: string }) => void) =>
+    stop: (terminalId: string) => ipcRenderer.invoke(IPC_CHANNELS.terminalStop, terminalId),
+    onData: (listener: (payload: { terminalId: string; profileId: string; data: string }) => void) =>
       unsubscribeOn(IPC_CHANNELS.terminalData, listener),
   },
   updater: {
