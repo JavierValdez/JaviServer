@@ -10,6 +10,7 @@ export const IPC_CHANNELS = {
   sshConnectionClosed: 'ssh:connection-closed',
   sftpListDirectory: 'sftp:list-directory',
   sftpDownload: 'sftp:download',
+  sftpDownloadProgress: 'sftp:download-progress',
   sftpSearchInDirectory: 'sftp:search-in-directory',
   bookmarksAdd: 'bookmarks:add',
   bookmarksRemove: 'bookmarks:remove',

@@ -79,6 +79,18 @@ interface SearchResult {
   matches: { line: number; content: string }[];
 }
 
+interface DownloadProgressState {
+  profileId: string;
+  remotePath: string;
+  localPath: string;
+  method: 'remote-gzip' | 'local-gzip' | 'sftp';
+  stage: 'starting' | 'progress' | 'completed' | 'error';
+  transferredBytes: number;
+  totalBytes: number | null;
+  progressPercent: number | null;
+  message: string;
+}
+
 interface FileExplorerProps {
   profileId: string;
   initialPath?: string;
@@ -113,6 +125,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<DownloadProgressState | null>(null);
   const onPathChangeRef = React.useRef(onPathChange);
   const lastLoadedPathRef = React.useRef<string | null>(null);
   const lastSyncedPathRef = React.useRef(initialPath);
@@ -127,6 +140,30 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
   useEffect(() => {
     onPathChangeRef.current = onPathChange;
   }, [onPathChange]);
+
+  useEffect(() => {
+    const unsubscribe = window.api.sftp.onDownloadProgress((payload) => {
+      if (payload.profileId !== profileId) {
+        return;
+      }
+
+      setDownloadProgress(payload);
+    });
+
+    return unsubscribe;
+  }, [profileId]);
+
+  useEffect(() => {
+    if (downloadProgress?.stage !== 'completed') {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setDownloadProgress((current) => (current?.stage === 'completed' ? null : current));
+    }, 4000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [downloadProgress]);
 
   const sortedFiles = useMemo(() => {
     const sorted = [...files].sort((left, right) => {
@@ -236,11 +273,36 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
 
   const handleDownload = async (file: FileInfo) => {
     setActionError(null);
+    const shouldCompress = shouldCompressOnDownload(file);
+    setDownloadProgress({
+      profileId,
+      remotePath: file.path,
+      localPath: '',
+      method: shouldCompress ? 'remote-gzip' : 'sftp',
+      stage: 'starting',
+      transferredBytes: 0,
+      totalBytes: file.size || null,
+      progressPercent: shouldCompress ? null : 0,
+      message: shouldCompress ? 'Preparando descarga comprimida...' : 'Preparando descarga por SFTP...',
+    });
+
     try {
-      await window.api.sftp.download(profileId, file.path, {
-        compress: shouldCompressOnDownload(file),
+      const result = await window.api.sftp.download(profileId, file.path, {
+        compress: shouldCompress,
       });
+      if (!result.success) {
+        setDownloadProgress(null);
+      }
     } catch (err: any) {
+      setDownloadProgress((current) =>
+        current?.remotePath === file.path
+          ? {
+              ...current,
+              stage: 'error',
+              message: err.message,
+            }
+          : current,
+      );
       setActionError(`No se pudo descargar "${file.name}": ${err.message}`);
     }
   };
@@ -358,6 +420,60 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
       hour: '2-digit',
       minute: '2-digit',
     });
+
+  const getDownloadMethodLabel = (method: DownloadProgressState['method']): string => {
+    switch (method) {
+      case 'remote-gzip':
+        return 'gzip remoto';
+      case 'local-gzip':
+        return 'compresion local';
+      case 'sftp':
+      default:
+        return 'SFTP directo';
+    }
+  };
+
+  const getDownloadStageLabel = (stage: DownloadProgressState['stage']): string => {
+    switch (stage) {
+      case 'completed':
+        return 'Completada';
+      case 'error':
+        return 'Con error';
+      case 'progress':
+        return 'En progreso';
+      case 'starting':
+      default:
+        return 'Iniciando';
+    }
+  };
+
+  const getDownloadStageBadgeClass = (stage: DownloadProgressState['stage']): string => {
+    switch (stage) {
+      case 'completed':
+        return 'badge-success';
+      case 'error':
+        return 'badge-warning';
+      default:
+        return 'badge-neutral';
+    }
+  };
+
+  const getFileNameFromPath = (filePath: string): string =>
+    filePath.split('/').filter(Boolean).pop() || filePath;
+
+  const getDownloadSizeLabel = (progress: DownloadProgressState): string => {
+    if (progress.method === 'remote-gzip') {
+      return progress.totalBytes
+        ? `${formatSize(progress.transferredBytes)} transferidos comprimidos • origen ${formatSize(progress.totalBytes)}`
+        : `${formatSize(progress.transferredBytes)} transferidos comprimidos`;
+    }
+
+    return progress.totalBytes
+      ? `${formatSize(progress.transferredBytes)} / ${formatSize(progress.totalBytes)}`
+      : formatSize(progress.transferredBytes);
+  };
+
+  const isDownloadActive = downloadProgress?.stage === 'starting' || downloadProgress?.stage === 'progress';
 
   const isLogFile = (name: string): boolean => {
     const logPatterns = [
@@ -477,6 +593,43 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
             </>
           ) : null}
         </div>
+
+        {downloadProgress ? (
+          <div className="notice-neutral mt-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-sm font-medium text-[var(--text-primary)]">
+                  Descargando {getFileNameFromPath(downloadProgress.remotePath)}
+                </div>
+                <div className="mt-1 body-sm">{downloadProgress.message}</div>
+              </div>
+              <div className={`${getDownloadStageBadgeClass(downloadProgress.stage)} shrink-0`}>
+                {getDownloadStageLabel(downloadProgress.stage)}
+              </div>
+            </div>
+
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
+              {downloadProgress.progressPercent !== null ? (
+                <div
+                  className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-200"
+                  style={{ width: `${Math.max(downloadProgress.progressPercent, downloadProgress.stage === 'completed' ? 100 : 4)}%` }}
+                />
+              ) : (
+                <div className="h-full w-1/3 animate-pulse rounded-full bg-[var(--accent)]" />
+              )}
+            </div>
+
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-[var(--text-secondary)]">
+              <span className="badge-neutral">{getDownloadMethodLabel(downloadProgress.method)}</span>
+              {downloadProgress.progressPercent !== null ? (
+                <span>{downloadProgress.progressPercent}%</span>
+              ) : (
+                <span>Stream comprimido</span>
+              )}
+              <span>{getDownloadSizeLabel(downloadProgress)}</span>
+            </div>
+          </div>
+        ) : null}
 
         {actionError ? <div className="notice-danger mt-2.5">{actionError}</div> : null}
       </div>
@@ -659,6 +812,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                             void handleDownload(file);
                           }}
                           className="btn-icon-quiet"
+                          disabled={isDownloadActive}
                           title={shouldCompressOnDownload(file) ? 'Descargar comprimido (.gz)' : 'Descargar'}
                           aria-label={shouldCompressOnDownload(file) ? `Descargar comprimido ${file.name}` : `Descargar ${file.name}`}
                         >

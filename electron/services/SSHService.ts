@@ -37,6 +37,18 @@ export interface LogFileInfo {
   lastModified: string;
 }
 
+export interface DownloadProgressPayload {
+  profileId: string;
+  remotePath: string;
+  localPath: string;
+  method: 'remote-gzip' | 'local-gzip' | 'sftp';
+  stage: 'starting' | 'progress' | 'completed' | 'error';
+  transferredBytes: number;
+  totalBytes: number | null;
+  progressPercent: number | null;
+  message: string;
+}
+
 interface TailSession {
   profileId: string;
   stream: ClientChannel;
@@ -53,6 +65,7 @@ interface ConnectionContext {
   sftp?: SFTPWrapper;
   homeDirectory?: string;
   commandCache?: string[];
+  remoteGzipAvailable?: boolean;
 }
 
 interface ExecOptions {
@@ -97,6 +110,7 @@ const LEGACY_SSH_ALGORITHMS: Algorithms = {
 };
 
 const MAX_TERMINAL_SUGGESTIONS = 12;
+const DOWNLOAD_PROGRESS_INTERVAL_MS = 150;
 const COMMON_TERMINAL_COMMANDS = [
   'cd',
   'ls',
@@ -174,6 +188,28 @@ function toPublicError(error: unknown): Error {
   }
 
   return new Error('Ocurrió un error inesperado en la conexión SSH.');
+}
+
+function isRemoteGzipUnavailable(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+  return (
+    (message.includes('gzip') && message.includes('not found'))
+    || message.includes('command not found')
+    || message.includes('código 127')
+    || message.includes('code 127')
+  );
+}
+
+function calculateProgressPercent(transferredBytes: number, totalBytes: number | null): number | null {
+  if (!totalBytes || totalBytes <= 0) {
+    return null;
+  }
+
+  return Math.min(100, Math.max(0, Math.round((transferredBytes / totalBytes) * 100)));
 }
 
 function shouldRetryWithLegacyAlgorithms(error: unknown): boolean {
@@ -270,34 +306,325 @@ export class SSHService extends EventEmitter {
     localPath: string,
     options: { compress?: boolean } = {},
   ): Promise<void> {
-    const sftp = await this.getSftp(profileId);
+    const totalBytes = await this.getRemoteFileSize(profileId, remotePath);
+
     if (options.compress) {
-      const remoteStream = sftp.createReadStream(remotePath);
-      const localStream = createWriteStream(localPath);
-      const gzipStream = createGzip({ level: zlibConstants.Z_BEST_COMPRESSION });
+      const connection = this.getConnection(profileId);
+      this.emitDownloadProgress({
+        profileId,
+        remotePath,
+        localPath,
+        method: 'remote-gzip',
+        stage: 'starting',
+        transferredBytes: 0,
+        totalBytes,
+        progressPercent: null,
+        message: 'Preparando compresion remota en el servidor...',
+      });
 
       try {
-        await pipeline(remoteStream, gzipStream, localStream);
-        return;
+        if (connection.remoteGzipAvailable !== false) {
+          await this.downloadFileWithRemoteCompression(profileId, remotePath, localPath, totalBytes);
+          connection.remoteGzipAvailable = true;
+          return;
+        }
       } catch (error) {
-        remoteStream.destroy();
-        gzipStream.destroy();
-        localStream.destroy();
-        await fs.unlink(localPath).catch(() => undefined);
-        throw toPublicError(error);
+        if (!isRemoteGzipUnavailable(error)) {
+          this.emitDownloadProgress({
+            profileId,
+            remotePath,
+            localPath,
+            method: 'remote-gzip',
+            stage: 'error',
+            transferredBytes: 0,
+            totalBytes,
+            progressPercent: null,
+            message: error instanceof Error ? error.message : 'No se pudo completar la compresion remota.',
+          });
+          throw error;
+        }
+
+        connection.remoteGzipAvailable = false;
       }
+
+      this.emitDownloadProgress({
+        profileId,
+        remotePath,
+        localPath,
+        method: 'local-gzip',
+        stage: 'starting',
+        transferredBytes: 0,
+        totalBytes,
+        progressPercent: calculateProgressPercent(0, totalBytes),
+        message: 'gzip no esta disponible en el servidor. Descargando y comprimiendo localmente...',
+      });
+
+      await this.downloadFileWithLocalCompression(profileId, remotePath, localPath, totalBytes);
+      return;
     }
 
+    this.emitDownloadProgress({
+      profileId,
+      remotePath,
+      localPath,
+      method: 'sftp',
+      stage: 'starting',
+      transferredBytes: 0,
+      totalBytes,
+      progressPercent: calculateProgressPercent(0, totalBytes),
+      message: 'Iniciando descarga por SFTP...',
+    });
+
+    await this.downloadFileWithSftp(profileId, remotePath, localPath, totalBytes);
+  }
+
+  private async downloadFileWithLocalCompression(
+    profileId: string,
+    remotePath: string,
+    localPath: string,
+    totalBytes: number | null,
+  ): Promise<void> {
+    const sftp = await this.getSftp(profileId);
+    const remoteStream = sftp.createReadStream(remotePath);
+    const localStream = createWriteStream(localPath);
+    const gzipStream = createGzip({ level: zlibConstants.Z_BEST_COMPRESSION });
+    let transferredBytes = 0;
+    let lastProgressUpdate = 0;
+
+    remoteStream.on('data', (chunk: Buffer) => {
+      transferredBytes += chunk.length;
+      const now = Date.now();
+      if (now - lastProgressUpdate < DOWNLOAD_PROGRESS_INTERVAL_MS) {
+        return;
+      }
+
+      lastProgressUpdate = now;
+      this.emitDownloadProgress({
+        profileId,
+        remotePath,
+        localPath,
+        method: 'local-gzip',
+        stage: 'progress',
+        transferredBytes,
+        totalBytes,
+        progressPercent: calculateProgressPercent(transferredBytes, totalBytes),
+        message: 'Descargando y comprimiendo localmente...',
+      });
+    });
+
+    try {
+      await pipeline(remoteStream, gzipStream, localStream);
+      this.emitDownloadProgress({
+        profileId,
+        remotePath,
+        localPath,
+        method: 'local-gzip',
+        stage: 'completed',
+        transferredBytes: totalBytes ?? transferredBytes,
+        totalBytes,
+        progressPercent: 100,
+        message: 'Descarga completada con compresion local.',
+      });
+    } catch (error) {
+      remoteStream.destroy();
+      gzipStream.destroy();
+      localStream.destroy();
+      await fs.unlink(localPath).catch(() => undefined);
+      this.emitDownloadProgress({
+        profileId,
+        remotePath,
+        localPath,
+        method: 'local-gzip',
+        stage: 'error',
+        transferredBytes,
+        totalBytes,
+        progressPercent: calculateProgressPercent(transferredBytes, totalBytes),
+        message: error instanceof Error ? error.message : 'No se pudo completar la descarga.',
+      });
+      throw toPublicError(error);
+    }
+  }
+
+  private async downloadFileWithRemoteCompression(
+    profileId: string,
+    remotePath: string,
+    localPath: string,
+    totalBytes: number | null,
+  ): Promise<void> {
+    const connection = this.getConnection(profileId);
+    const command = `gzip -1 -c -- ${shellQuote(remotePath)}`;
+    let transferredBytes = 0;
+    let lastProgressUpdate = 0;
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        connection.client.exec(command, (error, stream) => {
+          if (error) {
+            reject(toPublicError(error));
+            return;
+          }
+
+          const localStream = createWriteStream(localPath);
+          let stderr = '';
+
+          stream.on('data', (chunk: Buffer) => {
+            transferredBytes += chunk.length;
+            const now = Date.now();
+            if (now - lastProgressUpdate < DOWNLOAD_PROGRESS_INTERVAL_MS) {
+              return;
+            }
+
+            lastProgressUpdate = now;
+            this.emitDownloadProgress({
+              profileId,
+              remotePath,
+              localPath,
+              method: 'remote-gzip',
+              stage: 'progress',
+              transferredBytes,
+              totalBytes,
+              progressPercent: null,
+              message: 'Recibiendo stream comprimido desde el servidor...',
+            });
+          });
+
+          const commandFinished = new Promise<void>((resolveCommand, rejectCommand) => {
+            stream.stderr.on('data', (chunk: Buffer) => {
+              stderr += chunk.toString('utf8');
+            });
+
+            stream.on('error', (streamError: unknown) => {
+              rejectCommand(toPublicError(streamError));
+            });
+
+            stream.on('close', (code?: number) => {
+              const exitCode = code ?? 0;
+              if (exitCode === 0) {
+                resolveCommand();
+                return;
+              }
+
+              rejectCommand(new Error(stderr.trim() || `La compresión remota falló con código ${exitCode}.`));
+            });
+          });
+
+          Promise.all([pipeline(stream, localStream), commandFinished])
+            .then(() => resolve())
+            .catch((streamError: unknown) => {
+              stream.destroy();
+              localStream.destroy();
+              reject(streamError);
+            });
+        });
+      });
+      this.emitDownloadProgress({
+        profileId,
+        remotePath,
+        localPath,
+        method: 'remote-gzip',
+        stage: 'completed',
+        transferredBytes,
+        totalBytes,
+        progressPercent: 100,
+        message: 'Descarga completada con compresion remota.',
+      });
+    } catch (error) {
+      await fs.unlink(localPath).catch(() => undefined);
+      throw toPublicError(error);
+    }
+  }
+
+  private async downloadFileWithSftp(
+    profileId: string,
+    remotePath: string,
+    localPath: string,
+    totalBytes: number | null,
+  ): Promise<void> {
+    const sftp = await this.getSftp(profileId);
+
     await new Promise<void>((resolve, reject) => {
-      sftp.fastGet(remotePath, localPath, (error) => {
+      let lastProgressUpdate = 0;
+
+      sftp.fastGet(remotePath, localPath, {
+        step: (transferredBytes: number, _chunkBytes: number, fileSize: number) => {
+          const now = Date.now();
+          if (now - lastProgressUpdate < DOWNLOAD_PROGRESS_INTERVAL_MS && transferredBytes < fileSize) {
+            return;
+          }
+
+          lastProgressUpdate = now;
+          this.emitDownloadProgress({
+            profileId,
+            remotePath,
+            localPath,
+            method: 'sftp',
+            stage: transferredBytes >= fileSize ? 'completed' : 'progress',
+            transferredBytes,
+            totalBytes: fileSize || totalBytes,
+            progressPercent: calculateProgressPercent(transferredBytes, fileSize || totalBytes),
+            message: transferredBytes >= fileSize
+              ? 'Descarga SFTP completada.'
+              : 'Descargando archivo por SFTP...',
+          });
+        },
+      }, (error) => {
         if (error) {
+          this.emitDownloadProgress({
+            profileId,
+            remotePath,
+            localPath,
+            method: 'sftp',
+            stage: 'error',
+            transferredBytes: 0,
+            totalBytes,
+            progressPercent: calculateProgressPercent(0, totalBytes),
+            message: error.message,
+          });
           reject(toPublicError(error));
           return;
+        }
+
+        if (!totalBytes) {
+          this.emitDownloadProgress({
+            profileId,
+            remotePath,
+            localPath,
+            method: 'sftp',
+            stage: 'completed',
+            transferredBytes: 0,
+            totalBytes,
+            progressPercent: 100,
+            message: 'Descarga SFTP completada.',
+          });
         }
 
         resolve();
       });
     });
+  }
+
+  private emitDownloadProgress(payload: DownloadProgressPayload): void {
+    this.emit('download-progress', payload);
+  }
+
+  private async getRemoteFileSize(profileId: string, remotePath: string): Promise<number | null> {
+    try {
+      const sftp = await this.getSftp(profileId);
+      const stats = await new Promise<Stats>((resolve, reject) => {
+        sftp.stat(remotePath, (error, result) => {
+          if (error) {
+            reject(toPublicError(error));
+            return;
+          }
+
+          resolve(result);
+        });
+      });
+
+      return stats.size ?? null;
+    } catch {
+      return null;
+    }
   }
 
   async searchInDirectory(
