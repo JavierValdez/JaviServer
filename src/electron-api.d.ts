@@ -63,7 +63,11 @@ interface ElectronApi {
   };
   sftp: {
     listDirectory: (profileId: string, remotePath: string) => Promise<FileInfo[]>;
-    download: (profileId: string, remotePath: string) => Promise<{ success: boolean; path?: string }>;
+    download: (
+      profileId: string,
+      remotePath: string,
+      options?: { compress?: boolean },
+    ) => Promise<{ success: boolean; path?: string }>;
     searchInDirectory: (
       profileId: string,
       remotePath: string,
@@ -94,12 +98,12 @@ interface ElectronApi {
     onData: (listener: (payload: { tailId: string; data: string }) => void) => () => void;
   };
   terminal: {
-    start: (profileId: string) => Promise<void>;
-    write: (profileId: string, data: string) => Promise<boolean>;
-    resize: (profileId: string, cols: number, rows: number) => Promise<boolean>;
+    start: (profileId: string, terminalId: string) => Promise<void>;
+    write: (terminalId: string, data: string) => Promise<boolean>;
+    resize: (terminalId: string, cols: number, rows: number) => Promise<boolean>;
     getSuggestions: (profileId: string, request: TerminalSuggestionRequest) => Promise<TerminalSuggestion[]>;
-    stop: (profileId: string) => Promise<boolean>;
-    onData: (listener: (payload: { profileId: string; data: string }) => void) => () => void;
+    stop: (terminalId: string) => Promise<boolean>;
+    onData: (listener: (payload: { terminalId: string; profileId: string; data: string }) => void) => () => void;
   };
   updater: {
     getState: () => Promise<AppUpdateState>;

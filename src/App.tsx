@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type DragEvent as ReactDragEvent, useEffect, useRef, useState } from 'react';
 import { FileExplorer } from './components/FileExplorer/FileExplorer';
 import { LogViewer } from './components/LogViewer/LogViewer';
 import { ServerList } from './components/ServerList/ServerList';
@@ -41,10 +41,15 @@ function App() {
     activeTabId,
     addTab,
     removeTab,
+    reorderTabs,
     updateTabData,
     setActiveTab,
   } = useAppStore();
   const [updateState, setUpdateState] = useState<AppUpdateState | null>(null);
+  const [draggedTabId, setDraggedTabId] = useState<string | null>(null);
+  const [dragOverTabId, setDragOverTabId] = useState<string | null>(null);
+  const draggedTabIdRef = useRef<string | null>(null);
+  const dragOverTabIdRef = useRef<string | null>(null);
 
   const selectedProfile = profiles.find((profile) => profile.id === selectedProfileId);
   const isConnected = selectedProfileId ? connections.get(selectedProfileId)?.connected : false;
@@ -82,7 +87,17 @@ function App() {
     return [...tabs].reverse().find((tab) => tab.profileId === profileId && tab.data?.path)?.data?.path || '/';
   };
 
-  const openTab = (profileId: string, type: TabType, title: string, data?: { path?: string; filePath?: string }) => {
+  const createTabId = (type: TabType): string => {
+    const suffix = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    return `${type}-${suffix}`;
+  };
+
+  const openTab = (
+    profileId: string,
+    type: TabType,
+    title: string,
+    data?: { path?: string; filePath?: string; terminalId?: string },
+  ) => {
     if (!profileId) return;
 
     const existingTab = tabs.find(
@@ -93,23 +108,28 @@ function App() {
           ? tab.data?.path === data?.path
           : type === 'logs'
             ? tab.data?.filePath === data?.filePath
-            : type === 'terminal'),
+            : false),
     );
 
     if (existingTab) {
-      if (type === 'terminal' && data?.path && existingTab.data?.path !== data.path) {
-        updateTabData(existingTab.id, { path: data.path });
-      }
       setActiveTab(existingTab.id);
       return;
     }
 
+    const tabId = createTabId(type);
+    const nextData = type === 'terminal'
+      ? {
+          ...data,
+          terminalId: data?.terminalId || tabId,
+        }
+      : data;
+
     const newTab: Tab = {
-      id: `${type}-${Date.now()}`,
+      id: tabId,
       type,
       title,
       profileId,
-      data,
+      data: nextData,
     };
 
     addTab(newTab);
@@ -159,6 +179,43 @@ function App() {
   const connectionBadgeClass = isConnected ? 'badge-success' : selectedProfile ? 'badge-accent' : 'badge-neutral';
   const connectionBadgeLabel = isConnected ? 'Sesion activa' : selectedProfile ? 'Perfil listo' : 'Sin conexion';
   const selectedProfileWorkingPath = selectedProfileId ? getProfileWorkingPath(selectedProfileId) : '/';
+  const visibleTabs = selectedProfileId ? tabs.filter((tab) => tab.profileId === selectedProfileId) : [];
+
+  const handleTabDragStart = (tabId: string) => (event: ReactDragEvent<HTMLDivElement>) => {
+    draggedTabIdRef.current = tabId;
+    dragOverTabIdRef.current = tabId;
+    setDraggedTabId(tabId);
+    setDragOverTabId(tabId);
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', tabId);
+  };
+
+  const handleTabDragOver = (tabId: string) => (event: ReactDragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    const sourceTabId = draggedTabIdRef.current || event.dataTransfer.getData('text/plain');
+
+    if (sourceTabId && sourceTabId !== tabId && dragOverTabIdRef.current !== tabId) {
+      reorderTabs(sourceTabId, tabId);
+    }
+
+    if (dragOverTabIdRef.current !== tabId) {
+      dragOverTabIdRef.current = tabId;
+      setDragOverTabId(tabId);
+    }
+  };
+
+  const resetTabDragState = () => {
+    draggedTabIdRef.current = null;
+    dragOverTabIdRef.current = null;
+    setDraggedTabId(null);
+    setDragOverTabId(null);
+  };
+
+  const handleTabDrop = (_tabId: string) => (event: ReactDragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    resetTabDragState();
+  };
 
   return (
     <div className="app-shell">
@@ -205,12 +262,24 @@ function App() {
           </div>
         </div>
 
-        {tabs.length > 0 ? (
+        {visibleTabs.length > 0 ? (
           <div className="tab-strip app-scroll">
-            {tabs.map((tab) => {
+            {visibleTabs.map((tab) => {
               const tabProfile = profiles.find((profile) => profile.id === tab.profileId);
+              const isDragTarget = dragOverTabId === tab.id && draggedTabId !== tab.id;
+              const isDragged = draggedTabId === tab.id;
+
               return (
-                <div key={tab.id} className="tab-item shrink-0" data-active={activeTabId === tab.id}>
+                <div
+                  key={tab.id}
+                  draggable
+                  onDragStart={handleTabDragStart(tab.id)}
+                  onDragOver={handleTabDragOver(tab.id)}
+                  onDrop={handleTabDrop(tab.id)}
+                  onDragEnd={resetTabDragState}
+                  className={`tab-item shrink-0 transition ${isDragTarget ? 'ring-1 ring-[var(--accent)] ring-offset-1 ring-offset-[var(--surface-primary)]' : ''} ${isDragged ? 'opacity-70' : ''}`}
+                  data-active={activeTabId === tab.id}
+                >
                   <button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={() => setActiveTab(tab.id)}>
                     <span className="text-[var(--accent)]">{getTabIcon(tab.type)}</span>
                     <div className="min-w-0">
@@ -268,6 +337,7 @@ function App() {
                   case 'terminal':
                     return (
                       <Terminal
+                        terminalId={tab.data?.terminalId || tab.id}
                         profileId={tab.profileId}
                         initialPath={tab.data?.path}
                         currentPath={tab.data?.path}
@@ -283,7 +353,7 @@ function App() {
             </div>
           ))}
 
-          {tabs.length === 0 ? (
+          {visibleTabs.length === 0 ? (
             <div className="panel-surface-strong flex h-full items-center justify-center">
               {!selectedProfile ? (
                 <div className="empty-state">
@@ -327,6 +397,24 @@ function App() {
                   <p className="body-sm max-w-md">
                     Abre el explorador, lanza una terminal o entra directo a una ruta de logs desde la barra superior.
                   </p>
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => openTab(selectedProfile.id, 'explorer', 'Explorador', { path: '/' })}
+                      className="btn-secondary"
+                    >
+                      <FolderIcon />
+                      Explorador
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openTab(selectedProfile.id, 'terminal', 'Terminal', { path: selectedProfileWorkingPath })}
+                      className="btn-secondary"
+                    >
+                      <TerminalIcon />
+                      Terminal
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
