@@ -4,7 +4,7 @@ import { BrowserWindow, dialog, ipcMain, type OpenDialogOptions, type SaveDialog
 import type { UpdateController } from '../autoUpdater';
 import { IPC_CHANNELS } from './channels';
 import { ProfileStore, type ProfileInput } from '../services/ProfileStore';
-import { SSHService } from '../services/SSHService';
+import { SSHService, type DownloadProgressPayload } from '../services/SSHService';
 
 export function registerIpcHandlers(
   getMainWindow: () => BrowserWindow | null,
@@ -185,6 +185,15 @@ export function registerIpcHandlers(
     }
 
     mainWindow.webContents.send(IPC_CHANNELS.terminalData, payload);
+  });
+
+  sshService.on('download-progress', (payload: DownloadProgressPayload) => {
+    const mainWindow = getMainWindow();
+    if (!mainWindow || mainWindow.isDestroyed()) {
+      return;
+    }
+
+    mainWindow.webContents.send(IPC_CHANNELS.sftpDownloadProgress, payload);
   });
 
   updater.onStateChange((state) => {

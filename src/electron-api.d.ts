@@ -24,6 +24,18 @@ interface LogFileInfo {
   lastModified: string;
 }
 
+interface FileDownloadProgress {
+  profileId: string;
+  remotePath: string;
+  localPath: string;
+  method: 'remote-gzip' | 'local-gzip' | 'sftp';
+  stage: 'starting' | 'progress' | 'completed' | 'error';
+  transferredBytes: number;
+  totalBytes: number | null;
+  progressPercent: number | null;
+  message: string;
+}
+
 interface ElectronApi {
   profiles: {
     getAll: () => Promise<ServerProfile[]>;
@@ -68,6 +80,7 @@ interface ElectronApi {
       remotePath: string,
       options?: { compress?: boolean },
     ) => Promise<{ success: boolean; path?: string }>;
+    onDownloadProgress: (listener: (payload: FileDownloadProgress) => void) => () => void;
     searchInDirectory: (
       profileId: string,
       remotePath: string,

@@ -37,6 +37,19 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.invoke(IPC_CHANNELS.sftpListDirectory, profileId, remotePath),
     download: (profileId: string, remotePath: string, options?: { compress?: boolean }) =>
       ipcRenderer.invoke(IPC_CHANNELS.sftpDownload, profileId, remotePath, options),
+    onDownloadProgress: (
+      listener: (payload: {
+        profileId: string;
+        remotePath: string;
+        localPath: string;
+        method: 'remote-gzip' | 'local-gzip' | 'sftp';
+        stage: 'starting' | 'progress' | 'completed' | 'error';
+        transferredBytes: number;
+        totalBytes: number | null;
+        progressPercent: number | null;
+        message: string;
+      }) => void,
+    ) => unsubscribeOn(IPC_CHANNELS.sftpDownloadProgress, listener),
     searchInDirectory: (
       profileId: string,
       remotePath: string,
