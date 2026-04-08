@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
-import { BrowserWindow, dialog, ipcMain, type OpenDialogOptions, type SaveDialogOptions } from 'electron';
+import { BrowserWindow, clipboard, dialog, ipcMain, type OpenDialogOptions, type SaveDialogOptions } from 'electron';
 import type { UpdateController } from '../autoUpdater';
 import { IPC_CHANNELS } from './channels';
 import { ProfileStore, type ProfileInput } from '../services/ProfileStore';
@@ -159,6 +159,9 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC_CHANNELS.updaterCheckForUpdates, () => updater.checkForUpdates());
   ipcMain.handle(IPC_CHANNELS.updaterDownloadInstaller, () => updater.downloadInstaller());
   ipcMain.handle(IPC_CHANNELS.updaterRevealInstaller, () => updater.revealInstaller());
+
+  ipcMain.handle(IPC_CHANNELS.clipboardReadText, () => clipboard.readText());
+  ipcMain.handle(IPC_CHANNELS.clipboardWriteText, (_event, text: string) => clipboard.writeText(text));
 
   sshService.on('connection-closed', (profileId: string) => {
     const mainWindow = getMainWindow();

@@ -1,4 +1,4 @@
-import { clipboard, contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 import { IPC_CHANNELS } from './ipc/channels';
 import type { AppUpdateState } from '../src/types/updater';
 
@@ -23,8 +23,8 @@ contextBridge.exposeInMainWorld('api', {
     selectKeyfile: () => ipcRenderer.invoke(IPC_CHANNELS.dialogSelectKeyfile),
   },
   clipboard: {
-    readText: () => clipboard.readText(),
-    writeText: (text: string) => clipboard.writeText(text),
+    readText: () => ipcRenderer.invoke(IPC_CHANNELS.clipboardReadText) as Promise<string>,
+    writeText: (text: string) => ipcRenderer.invoke(IPC_CHANNELS.clipboardWriteText, text) as Promise<void>,
   },
   ssh: {
     connect: (profileId: string) => ipcRenderer.invoke(IPC_CHANNELS.sshConnect, profileId),

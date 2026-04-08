@@ -32,6 +32,8 @@ export const IPC_CHANNELS = {
   updaterDownloadInstaller: 'updater:download-installer',
   updaterRevealInstaller: 'updater:reveal-installer',
   updaterStateChanged: 'updater:state-changed',
+  clipboardReadText: 'clipboard:read-text',
+  clipboardWriteText: 'clipboard:write-text',
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];

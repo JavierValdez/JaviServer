@@ -65,8 +65,8 @@ interface ElectronApi {
     selectKeyfile: () => Promise<{ success: boolean; path?: string; content?: string }>;
   };
   clipboard: {
-    readText: () => Promise<string> | string;
-    writeText: (text: string) => Promise<void> | void;
+    readText: () => Promise<string>;
+    writeText: (text: string) => Promise<void>;
   };
   ssh: {
     connect: (profileId: string) => Promise<boolean>;

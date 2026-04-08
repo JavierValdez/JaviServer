@@ -626,7 +626,7 @@ export const Terminal: React.FC<TerminalProps> = ({
         return;
       }
 
-      await Promise.resolve(window.api.clipboard.writeText(term.getSelection()));
+      await window.api.clipboard.writeText(term.getSelection());
       setHasSelection(false);
       term.clearSelection();
       term.focus();
@@ -664,7 +664,7 @@ export const Terminal: React.FC<TerminalProps> = ({
 
     const readClipboardText = async () => {
       try {
-        const nativeText = await Promise.resolve(window.api.clipboard.readText());
+        const nativeText = await window.api.clipboard.readText();
         if (nativeText) {
           return nativeText;
         }
