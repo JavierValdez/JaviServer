@@ -1,7 +1,7 @@
 {
   "name": "javiserver",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Gestor SSH Multi-servidor para explorar archivos y logs de servidores",
   "author": "jasegura",
   "type": "module",
@@ -70,6 +70,7 @@
       }
     ],
     "mac": {
+      "icon": "build/icon.icns",
       "category": "public.app-category.developer-tools",
       "target": [
         "dmg",
@@ -103,6 +104,7 @@
       ]
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         {
           "target": "nsis",
