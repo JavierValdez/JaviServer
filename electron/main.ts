@@ -93,6 +93,7 @@ if (isMcpStdioMode) {
 }
 
 app.on('window-all-closed', () => {
+  if (isMcpStdioMode) return;
   if (process.platform !== 'darwin') {
     app.quit();
   }
