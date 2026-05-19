@@ -3,6 +3,62 @@ import { FitAddon } from '@xterm/addon-fit';
 import { Terminal as XTerm } from '@xterm/xterm';
 import type { TerminalSuggestion } from '../../types';
 
+const XTERM_THEMES = {
+  dark: {
+    background: '#08111f',
+    foreground: '#edf3fb',
+    cursor: '#7dd3fc',
+    cursorAccent: '#09111f',
+    selectionBackground: '#20446e',
+    black: '#08111f',
+    red: '#ff8b9f',
+    green: '#68d8aa',
+    yellow: '#f4c971',
+    blue: '#79bbff',
+    magenta: '#c6a8ff',
+    cyan: '#7ce2ff',
+    white: '#dfe7f5',
+    brightBlack: '#51627e',
+    brightRed: '#ff9cac',
+    brightGreen: '#7ae3b6',
+    brightYellow: '#ffd88d',
+    brightBlue: '#9dd0ff',
+    brightMagenta: '#d5beff',
+    brightCyan: '#9be8ff',
+    brightWhite: '#f8fbff',
+  },
+  light: {
+    background: '#1e1033',
+    foreground: '#e9e0f8',
+    cursor: '#a78bfa',
+    cursorAccent: '#1e1033',
+    selectionBackground: 'rgba(168, 85, 247, 0.35)',
+    black: '#1a0e2e',
+    red: '#f87171',
+    green: '#34d399',
+    yellow: '#fbbf24',
+    blue: '#a78bfa',
+    magenta: '#c084fc',
+    cyan: '#67e8f9',
+    white: '#e9e0f8',
+    brightBlack: '#5b4a72',
+    brightRed: '#fca5a5',
+    brightGreen: '#6ee7b7',
+    brightYellow: '#fcd34d',
+    brightBlue: '#c4b5fd',
+    brightMagenta: '#d8b4fe',
+    brightCyan: '#a5f3fc',
+    brightWhite: '#faf5ff',
+  },
+} as const;
+
+type ThemeName = keyof typeof XTERM_THEMES;
+
+function getCurrentTheme(): ThemeName {
+  if (typeof document === 'undefined') return 'dark';
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
+
 interface TerminalProps {
   terminalId: string;
   profileId: string;
@@ -130,7 +186,7 @@ const ControlButton = ({
     type="button"
     onClick={onClick}
     disabled={disabled}
-    className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-[var(--text-primary)] transition hover:bg-white/[0.08] disabled:cursor-not-allowed disabled:opacity-40"
+    className="inline-flex items-center gap-2 rounded-lg border border-[var(--border-subtle)] bg-[var(--btn-ghost-hover)] px-2.5 py-1.5 text-xs font-medium text-[var(--text-primary)] transition hover:bg-[var(--btn-secondary-hover)] disabled:cursor-not-allowed disabled:opacity-40"
   >
     {icon}
     <span>{label}</span>
@@ -547,30 +603,9 @@ export const Terminal: React.FC<TerminalProps> = ({
     initializedRef.current = true;
 
     const fitAddon = new FitAddon();
+    const currentTheme = getCurrentTheme();
     const term = new XTerm({
-      theme: {
-        background: '#08111f',
-        foreground: '#edf3fb',
-        cursor: '#7dd3fc',
-        cursorAccent: '#09111f',
-        selectionBackground: '#20446e',
-        black: '#08111f',
-        red: '#ff8b9f',
-        green: '#68d8aa',
-        yellow: '#f4c971',
-        blue: '#79bbff',
-        magenta: '#c6a8ff',
-        cyan: '#7ce2ff',
-        white: '#dfe7f5',
-        brightBlack: '#51627e',
-        brightRed: '#ff9cac',
-        brightGreen: '#7ae3b6',
-        brightYellow: '#ffd88d',
-        brightBlue: '#9dd0ff',
-        brightMagenta: '#d5beff',
-        brightCyan: '#9be8ff',
-        brightWhite: '#f8fbff',
-      },
+      theme: XTERM_THEMES[currentTheme],
       fontSize: 13,
       lineHeight: 1.32,
       letterSpacing: 0.2,
@@ -581,6 +616,18 @@ export const Terminal: React.FC<TerminalProps> = ({
       scrollback: 7000,
       cols: 80,
       rows: 24,
+    });
+
+    // Watch for theme changes and update xterm
+    const themeObserver = new MutationObserver(() => {
+      const newTheme = getCurrentTheme();
+      if (xtermRef.current) {
+        xtermRef.current.options.theme = XTERM_THEMES[newTheme];
+      }
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
     });
 
     const syncSize = () => {
@@ -899,6 +946,7 @@ export const Terminal: React.FC<TerminalProps> = ({
 
       term.dispose();
       removeListener();
+      themeObserver.disconnect();
       fitAddonRef.current = null;
       xtermRef.current = null;
       copySelectionRef.current = () => Promise.resolve();
@@ -972,9 +1020,9 @@ export const Terminal: React.FC<TerminalProps> = ({
         </div>
       </div>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.14),transparent_38%),linear-gradient(180deg,rgba(6,13,25,0.94),rgba(3,8,17,0.98))]">
+      <div className="relative min-h-0 flex-1 overflow-hidden terminal-bg">
         <div
-          className="pointer-events-none absolute inset-0 opacity-30"
+          className="pointer-events-none absolute inset-0 terminal-grid"
           style={{
             backgroundImage:
               'linear-gradient(rgba(130,150,182,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(130,150,182,0.08) 1px, transparent 1px)',
@@ -984,7 +1032,7 @@ export const Terminal: React.FC<TerminalProps> = ({
 
         {suggestions.length > 0 || isSuggestionLoading ? (
           <div className="pointer-events-none absolute left-4 right-4 top-4 z-20 flex justify-center">
-            <div className="pointer-events-auto w-full max-w-2xl rounded-2xl border border-white/10 bg-[rgba(6,13,25,0.94)] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur">
+            <div className="pointer-events-auto w-full max-w-2xl rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-panel-strong)] p-3 shadow-[var(--shadow-panel)] backdrop-blur">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">
@@ -995,7 +1043,7 @@ export const Terminal: React.FC<TerminalProps> = ({
                   </div>
                 </div>
 
-                <div className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] text-[var(--text-secondary)]">
+                <div className="rounded-full border border-[var(--border-subtle)] bg-[var(--btn-ghost-hover)] px-2 py-1 text-[11px] text-[var(--text-secondary)]">
                   {isSuggestionLoading ? 'Buscando...' : activeSuggestion ? 'Tab para aplicar' : 'Sin resultados'}
                 </div>
               </div>
@@ -1032,8 +1080,8 @@ export const Terminal: React.FC<TerminalProps> = ({
                       }}
                       className={`flex items-center justify-between gap-3 rounded-xl border px-3 py-2 text-left transition ${
                         index === activeSuggestionIndex
-                          ? 'border-[rgba(121,187,255,0.55)] bg-[rgba(121,187,255,0.12)] text-[var(--text-primary)]'
-                          : 'border-white/6 bg-white/[0.03] text-[var(--text-secondary)] hover:bg-white/[0.06]'
+                          ? 'border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--text-primary)]'
+                          : 'border-[var(--border-subtle)] bg-[var(--btn-ghost-hover)] text-[var(--text-secondary)] hover:bg-[var(--btn-secondary-hover)]'
                       }`}
                     >
                       <div className="min-w-0">
@@ -1045,7 +1093,7 @@ export const Terminal: React.FC<TerminalProps> = ({
                           <div className="mt-1 truncate text-xs text-[var(--text-muted)]">{suggestion.detail}</div>
                         ) : null}
                       </div>
-                      <div className="rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[11px] uppercase tracking-[0.16em]">
+                      <div className="rounded-full border border-[var(--border-subtle)] bg-[var(--btn-ghost-hover)] px-2 py-1 text-[11px] uppercase tracking-[0.16em] text-[var(--text-secondary)]">
                         {suggestion.type}
                       </div>
                     </button>
@@ -1058,7 +1106,7 @@ export const Terminal: React.FC<TerminalProps> = ({
 
         <div ref={viewportRef} className="relative h-full w-full p-2.5">
           <div
-            className="h-full overflow-hidden rounded-2xl border border-white/10 bg-[rgba(5,12,24,0.88)] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_18px_40px_rgba(0,0,0,0.35)]"
+            className="h-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-contrast)] shadow-[inset_0_1px_0_rgba(128,128,128,0.06),var(--shadow-soft)]"
             onClick={() => xtermRef.current?.focus()}
           >
             <div ref={terminalRef} className="h-full w-full" style={{ minHeight: '320px' }} />

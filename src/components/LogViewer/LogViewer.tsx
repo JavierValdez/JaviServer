@@ -56,14 +56,14 @@ const CalendarIcon = () => (
 );
 
 const quickFilters = [
-  { label: 'Errores', pattern: 'ERROR|SEVERE|Exception|FATAL', color: '#ff8b9f' },
-  { label: 'Warnings', pattern: 'WARN|WARNING', color: '#f4c971' },
-  { label: 'Excepciones', pattern: 'Exception|Caused by|at \\w+\\.', color: '#ff8b9f' },
-  { label: 'Stack trace', pattern: 'at .*\\(.*\\.java:\\d+\\)', color: '#ff8b9f' },
-  { label: 'HTTP 5xx', pattern: 'HTTP.*\\s5\\d{2}|status[=:]\\s*5\\d{2}', color: '#ff8b9f' },
-  { label: 'HTTP 4xx', pattern: 'HTTP.*\\s4\\d{2}|status[=:]\\s*4\\d{2}', color: '#f4c971' },
-  { label: 'Deploys', pattern: 'Deploying|deployed|undeploying|Starting|Started|Stopping|Stopped', color: '#79bbff' },
-  { label: 'Memoria', pattern: 'OutOfMemory|heap|GC|memory', color: '#c6a8ff' },
+  { label: 'Errores', pattern: 'ERROR|SEVERE|Exception|FATAL', color: 'var(--danger-strong)' },
+  { label: 'Warnings', pattern: 'WARN|WARNING', color: 'var(--warning-strong)' },
+  { label: 'Excepciones', pattern: 'Exception|Caused by|at \\w+\\.', color: 'var(--danger-strong)' },
+  { label: 'Stack trace', pattern: 'at .*\\(.*\\.java:\\d+\\)', color: 'var(--danger-strong)' },
+  { label: 'HTTP 5xx', pattern: 'HTTP.*\\s5\\d{2}|status[=:]\\s*5\\d{2}', color: 'var(--danger-strong)' },
+  { label: 'HTTP 4xx', pattern: 'HTTP.*\\s4\\d{2}|status[=:]\\s*4\\d{2}', color: 'var(--warning-strong)' },
+  { label: 'Deploys', pattern: 'Deploying|deployed|undeploying|Starting|Started|Stopping|Stopped', color: 'var(--accent-strong)' },
+  { label: 'Memoria', pattern: 'OutOfMemory|heap|GC|memory', color: 'var(--info-strong)' },
 ];
 
 const lineOptions = [
@@ -575,7 +575,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
               <span className="badge-neutral">{searchResults.length} coincidencia(s)</span>
             </div>
             {searchResults.map((line, index) => (
-              <div key={`${line}-${index}`} className="rounded-xl border border-[rgba(121,187,255,0.14)] bg-[rgba(121,187,255,0.08)] px-3 py-2">
+              <div key={`${line}-${index}`} className="rounded-xl border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-2">
                 {highlightLine(line)}
               </div>
             ))}
@@ -595,7 +595,7 @@ export const LogViewer: React.FC<LogViewerProps> = ({ profileId, filePath }) => 
         ) : (
           <div className="space-y-1">
             {shownLines.map((line, index) => (
-              <div key={`${index}-${line.slice(0, 24)}`} className="rounded-lg px-2 py-1 hover:bg-[rgba(121,187,255,0.05)]">
+              <div key={`${index}-${line.slice(0, 24)}`} className="rounded-lg px-2 py-1 hover:bg-[var(--table-row-hover)]">
                 {highlightLine(line)}
               </div>
             ))}
@@ -625,12 +625,12 @@ function escapeHtml(value: string): string {
 
 function getDefaultPatterns(): LogPattern[] {
   return [
-    { pattern: 'SEVERE', color: '#ff8b9f', label: 'Severe' },
-    { pattern: 'ERROR', color: '#ff8b9f', label: 'Error' },
-    { pattern: 'WARN', color: '#f4c971', label: 'Warning' },
-    { pattern: 'WARNING', color: '#f4c971', label: 'Warning' },
-    { pattern: 'INFO', color: '#79bbff', label: 'Info' },
-    { pattern: 'DEBUG', color: '#93a4c5', label: 'Debug' },
-    { pattern: 'Exception', color: '#ff8b9f', label: 'Exception' },
+    { pattern: 'SEVERE', color: 'var(--danger-strong)', label: 'Severe' },
+    { pattern: 'ERROR', color: 'var(--danger-strong)', label: 'Error' },
+    { pattern: 'WARN', color: 'var(--warning-strong)', label: 'Warning' },
+    { pattern: 'WARNING', color: 'var(--warning-strong)', label: 'Warning' },
+    { pattern: 'INFO', color: 'var(--accent-strong)', label: 'Info' },
+    { pattern: 'DEBUG', color: 'var(--text-muted)', label: 'Debug' },
+    { pattern: 'Exception', color: 'var(--danger-strong)', label: 'Exception' },
   ];
 }

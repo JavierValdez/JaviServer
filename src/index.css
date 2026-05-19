@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* ── Dark Theme (default) ── */
+[data-theme='dark'] {
   color-scheme: dark;
   --surface-app: #09111f;
   --surface-sidebar: rgba(11, 19, 34, 0.9);
@@ -19,40 +20,259 @@
   --accent: #79bbff;
   --accent-strong: #b9dbff;
   --accent-soft: rgba(121, 187, 255, 0.18);
+  --accent-surface: rgba(121, 187, 255, 0.08);
+  --accent-border: rgba(121, 187, 255, 0.2);
   --success: #68d8aa;
+  --success-strong: #b8ffe0;
   --success-soft: rgba(104, 216, 170, 0.18);
   --warning: #f4c971;
+  --warning-strong: #ffe7b4;
   --warning-soft: rgba(244, 201, 113, 0.18);
   --danger: #ff95a7;
+  --danger-strong: #ffd9df;
   --danger-soft: rgba(255, 149, 167, 0.18);
+  --info: #c4b5fd;
+  --info-strong: #ddd6fe;
+  --info-soft: rgba(196, 181, 253, 0.18);
   --focus-ring: rgba(121, 187, 255, 0.36);
   --shadow-panel: 0 18px 60px rgba(2, 7, 18, 0.42);
   --shadow-soft: 0 10px 30px rgba(2, 7, 18, 0.24);
+  --shadow-button: 0 8px 20px rgba(121, 187, 255, 0.22);
+  --btn-secondary-bg: rgba(30, 43, 66, 0.76);
+  --btn-secondary-hover: rgba(42, 58, 86, 0.92);
+  --btn-icon-bg: rgba(27, 39, 59, 0.76);
+  --btn-icon-hover: rgba(42, 58, 86, 0.92);
+  --btn-ghost-hover: rgba(255, 255, 255, 0.05);
+  --btn-chip-bg: rgba(28, 38, 59, 0.72);
+  --input-bg: rgba(8, 15, 28, 0.66);
+  --segmented-bg: rgba(8, 15, 28, 0.72);
+  --segmented-active: rgba(36, 51, 78, 0.96);
+  --tab-strip-bg: rgba(10, 18, 32, 0.72);
+  --tab-item-bg: rgba(22, 32, 49, 0.74);
+  --tab-item-hover: rgba(33, 47, 72, 0.88);
+  --tab-item-active: rgba(35, 49, 76, 0.98);
+  --table-head-bg: rgba(13, 22, 37, 0.96);
+  --table-row-hover: rgba(121, 187, 255, 0.07);
+  --table-row-selected: rgba(121, 187, 255, 0.12);
+  --modal-backdrop: rgba(4, 9, 18, 0.66);
+  --modal-card-top: rgba(255, 255, 255, 0.02);
+  --modal-border-top: rgba(255, 255, 255, 0.06);
+  --agent-panel-bg: rgba(8, 15, 28, 0.62);
+  --agent-entry-bg: rgba(21, 33, 52, 0.78);
+  --agent-entry-hover: rgba(27, 43, 66, 0.92);
+  --agent-entry-border: rgba(132, 153, 188, 0.22);
+  --agent-entry-hover-border: rgba(121, 187, 255, 0.34);
+  --agent-config-bg: rgba(3, 8, 17, 0.78);
+  --agent-list-row-bg: rgba(255, 255, 255, 0.035);
+  --agent-list-row-border: rgba(255, 255, 255, 0.06);
+  --scrollbar-track: rgba(255, 255, 255, 0.02);
+  --scrollbar-thumb: rgba(130, 150, 182, 0.22);
+  --scrollbar-thumb-hover: rgba(151, 174, 209, 0.34);
+  --body-gradient: radial-gradient(circle at top left, rgba(121, 187, 255, 0.16), transparent 28%),
+    radial-gradient(circle at top right, rgba(104, 216, 170, 0.08), transparent 18%),
+    linear-gradient(180deg, #0a1221 0%, #09101d 100%);
+  --app-shell-gradient: radial-gradient(circle at 12% 14%, rgba(121, 187, 255, 0.1), transparent 24%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 32%),
+    var(--surface-app);
+  --workbench-header-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--surface-panel-strong);
+  --modal-card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 22%), var(--surface-elevated);
+  --xterm-bg: #0d1526;
+  --xterm-fg: #d0d9e8;
+  --xterm-cursor: #79bbff;
+  --xterm-selection: rgba(121, 187, 255, 0.3);
 }
 
-@layer base {
-  * {
-    box-sizing: border-box;
-  }
+/* ── Light Theme: "Violet Dusk" by Kiro ── */
+[data-theme='light'] {
+  color-scheme: light;
 
-  html,
-  body,
-  #root {
-    height: 100%;
-    overflow: hidden;
-  }
+  /* ── Surfaces ── */
+  --surface-app: #f8f5ff;
+  --surface-sidebar: rgba(255, 255, 255, 0.72);
+  --surface-panel: rgba(255, 255, 255, 0.68);
+  --surface-panel-strong: rgba(255, 255, 255, 0.82);
+  --surface-panel-muted: rgba(243, 237, 255, 0.7);
+  --surface-elevated: rgba(255, 255, 255, 0.88);
+  --surface-contrast: rgba(248, 243, 255, 0.94);
 
-  body {
-    margin: 0;
-    font-family: 'SF Pro Text', 'IBM Plex Sans', 'Segoe UI', sans-serif;
-    color: var(--text-primary);
-    background:
-      radial-gradient(circle at top left, rgba(121, 187, 255, 0.16), transparent 28%),
-      radial-gradient(circle at top right, rgba(104, 216, 170, 0.08), transparent 18%),
-      linear-gradient(180deg, #0a1221 0%, #09101d 100%);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  /* ── Borders ── */
+  --border-subtle: rgba(139, 92, 246, 0.15);
+  --border-strong: rgba(139, 92, 246, 0.3);
+
+  /* ── Text ── */
+  --text-primary: #1e1033;
+  --text-secondary: #5b4a72;
+  --text-muted: #8b7aa3;
+
+  /* ── Accent (Violeta vibrante) ── */
+  --accent: #7c3aed;
+  --accent-strong: #5b21b6;
+  --accent-soft: rgba(124, 58, 237, 0.14);
+  --accent-surface: rgba(124, 58, 237, 0.06);
+  --accent-border: rgba(124, 58, 237, 0.25);
+
+  /* ── Semantic colors ── */
+  --success: #059669;
+  --success-strong: #047857;
+  --success-soft: rgba(5, 150, 105, 0.12);
+
+  --warning: #d97706;
+  --warning-strong: #b45309;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+
+  --danger: #e11d48;
+  --danger-strong: #be123c;
+  --danger-soft: rgba(225, 29, 72, 0.1);
+
+  --info: #8b5cf6;
+  --info-strong: #7c3aed;
+  --info-soft: rgba(139, 92, 246, 0.12);
+
+  /* ── Focus ── */
+  --focus-ring: rgba(124, 58, 237, 0.4);
+
+  /* ── Shadows (coloreadas púrpura) ── */
+  --shadow-panel: 0 18px 60px rgba(124, 58, 237, 0.1), 0 4px 16px rgba(168, 85, 247, 0.08);
+  --shadow-soft: 0 8px 28px rgba(124, 58, 237, 0.07), 0 2px 6px rgba(139, 92, 246, 0.05);
+  --shadow-button: 0 8px 24px rgba(124, 58, 237, 0.3), 0 2px 8px rgba(168, 85, 247, 0.2);
+
+  /* ── Buttons ── */
+  --btn-secondary-bg: rgba(243, 237, 255, 0.8);
+  --btn-secondary-hover: rgba(233, 222, 255, 0.95);
+  --btn-icon-bg: rgba(243, 237, 255, 0.75);
+  --btn-icon-hover: rgba(233, 222, 255, 0.95);
+  --btn-ghost-hover: rgba(139, 92, 246, 0.07);
+  --btn-chip-bg: rgba(243, 237, 255, 0.8);
+
+  /* ── Inputs ── */
+  --input-bg: rgba(255, 255, 255, 0.7);
+
+  /* ── Segmented / Tabs ── */
+  --segmented-bg: rgba(237, 228, 255, 0.6);
+  --segmented-active: rgba(255, 255, 255, 0.95);
+  --tab-strip-bg: rgba(248, 243, 255, 0.8);
+  --tab-item-bg: rgba(243, 237, 255, 0.6);
+  --tab-item-hover: rgba(233, 222, 255, 0.85);
+  --tab-item-active: rgba(255, 255, 255, 0.96);
+
+  /* ── Table ── */
+  --table-head-bg: rgba(248, 243, 255, 0.95);
+  --table-row-hover: rgba(139, 92, 246, 0.06);
+  --table-row-selected: rgba(124, 58, 237, 0.1);
+
+  /* ── Modal ── */
+  --modal-backdrop: rgba(30, 16, 51, 0.45);
+  --modal-card-top: rgba(255, 255, 255, 0.5);
+  --modal-border-top: rgba(139, 92, 246, 0.15);
+
+  /* ── Agent / MCP Panel ── */
+  --agent-panel-bg: rgba(248, 243, 255, 0.8);
+  --agent-entry-bg: rgba(255, 255, 255, 0.7);
+  --agent-entry-hover: rgba(243, 237, 255, 0.95);
+  --agent-entry-border: rgba(139, 92, 246, 0.18);
+  --agent-entry-hover-border: rgba(124, 58, 237, 0.4);
+  --agent-config-bg: rgba(248, 243, 255, 0.9);
+  --agent-list-row-bg: rgba(139, 92, 246, 0.04);
+  --agent-list-row-border: rgba(139, 92, 246, 0.1);
+
+  /* ── Scrollbar ── */
+  --scrollbar-track: rgba(139, 92, 246, 0.04);
+  --scrollbar-thumb: rgba(139, 92, 246, 0.2);
+  --scrollbar-thumb-hover: rgba(124, 58, 237, 0.35);
+
+  /* ── Gradients ── */
+  --body-gradient:
+    radial-gradient(ellipse at top left, rgba(168, 85, 247, 0.18), transparent 45%),
+    radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.12), transparent 50%),
+    radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.08), transparent 35%),
+    linear-gradient(165deg, #faf5ff 0%, #f3e8ff 35%, #fdf2f8 70%, #faf5ff 100%);
+
+  --app-shell-gradient:
+    radial-gradient(circle at 8% 12%, rgba(139, 92, 246, 0.12), transparent 30%),
+    radial-gradient(circle at 92% 85%, rgba(236, 72, 153, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 40%),
+    var(--surface-app);
+
+  --workbench-header-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(248, 243, 255, 0.4)),
+    var(--surface-panel-strong);
+
+  --modal-card-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(248, 243, 255, 0.3) 30%),
+    var(--surface-elevated);
+
+  /* ── Terminal (oscuro con tonos violeta, integrado) ── */
+  --xterm-bg: #1e1033;
+  --xterm-fg: #e9e0f8;
+  --xterm-cursor: #a78bfa;
+  --xterm-selection: rgba(168, 85, 247, 0.35);
+}
+
+/* ── Base ── */
+  @layer base {
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body,
+    #root {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'SF Pro Text', 'IBM Plex Sans', 'Segoe UI', sans-serif;
+      color: var(--text-primary);
+      background: var(--body-gradient);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background 0.4s ease, color 0.3s ease;
+    }
+
+    /* Smooth theme transitions for all themed elements */
+    .app-shell,
+    .sidebar-shell,
+    .workbench-header,
+    .panel-surface,
+    .panel-surface-strong,
+    .muted-surface,
+    .tab-strip,
+    .badge,
+    .badge-neutral,
+    .badge-accent,
+    .badge-success,
+    .badge-warning,
+    .badge-danger,
+    .input,
+    .select,
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-ghost,
+    .btn-danger,
+    .btn-icon,
+    .btn-icon-quiet,
+    .btn-chip,
+    .notice,
+    .notice-danger,
+    .notice-success,
+    .notice-neutral,
+    .modal-card,
+    .modal-backdrop,
+    .agent-entry-button,
+    .agent-config {
+      transition: background 0.3s ease, color 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Exclude terminal from transitions */
+    .terminal-bg,
+    .terminal-bg *,
+    .xterm,
+    .xterm * {
+      transition: none !important;
+    }
 
   button,
   input,
@@ -77,18 +297,16 @@
   }
 
   ::selection {
-    background: rgba(121, 187, 255, 0.24);
+    background: var(--accent-soft);
     color: var(--text-primary);
   }
 }
 
+/* ── Component classes ── */
 @layer components {
   .app-shell {
     @apply flex h-screen overflow-hidden;
-    background:
-      radial-gradient(circle at 12% 14%, rgba(121, 187, 255, 0.1), transparent 24%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 32%),
-      var(--surface-app);
+    background: var(--app-shell-gradient);
   }
 
   .sidebar-shell {
@@ -96,7 +314,7 @@
     width: 17.25rem;
     background: var(--surface-sidebar);
     border-color: var(--border-subtle);
-    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.03);
+    box-shadow: inset -1px 0 0 rgba(128, 128, 128, 0.06);
   }
 
   .workbench-shell {
@@ -105,7 +323,7 @@
 
   .workbench-header {
     @apply flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--surface-panel-strong);
+    background: var(--workbench-header-bg);
     border-color: var(--border-subtle);
   }
 
@@ -126,7 +344,7 @@
   .muted-surface {
     @apply rounded-xl border;
     background: var(--surface-panel-muted);
-    border-color: rgba(255, 255, 255, 0.04);
+    border-color: var(--border-subtle);
   }
 
   .section-label {
@@ -156,25 +374,25 @@
 
   .btn-primary {
     @apply btn border;
-    color: #08111f;
-    background: linear-gradient(180deg, var(--accent-strong), var(--accent));
-    border-color: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    background: linear-gradient(180deg, var(--accent), var(--accent-strong));
+    border-color: transparent;
   }
 
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 20px rgba(121, 187, 255, 0.22);
+    box-shadow: var(--shadow-button);
   }
 
   .btn-secondary {
     @apply btn border;
     color: var(--text-primary);
-    background: rgba(30, 43, 66, 0.76);
+    background: var(--btn-secondary-bg);
     border-color: var(--border-subtle);
   }
 
   .btn-secondary:hover {
-    background: rgba(42, 58, 86, 0.92);
+    background: var(--btn-secondary-hover);
     border-color: var(--border-strong);
   }
 
@@ -186,18 +404,20 @@
 
   .btn-ghost:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--btn-ghost-hover);
   }
 
   .btn-danger {
     @apply btn border;
-    color: #ffd9df;
+    color: var(--danger-strong);
     background: var(--danger-soft);
-    border-color: rgba(255, 149, 167, 0.26);
+    border-color: var(--danger-soft);
   }
 
   .btn-danger:hover {
-    background: rgba(255, 149, 167, 0.24);
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
   }
 
   .btn-icon {
@@ -205,13 +425,13 @@
     width: 1.875rem;
     height: 1.875rem;
     color: var(--text-secondary);
-    background: rgba(27, 39, 59, 0.76);
+    background: var(--btn-icon-bg);
     border-color: var(--border-subtle);
   }
 
   .btn-icon:hover {
     color: var(--text-primary);
-    background: rgba(42, 58, 86, 0.92);
+    background: var(--btn-icon-hover);
     border-color: var(--border-strong);
   }
 
@@ -224,14 +444,14 @@
 
   .btn-icon-quiet:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--btn-ghost-hover);
   }
 
   .btn-chip {
     @apply inline-flex items-center gap-2 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors duration-150;
     min-height: 1.625rem;
     color: var(--text-secondary);
-    background: rgba(28, 38, 59, 0.72);
+    background: var(--btn-chip-bg);
     border-color: var(--border-subtle);
   }
 
@@ -243,7 +463,7 @@
   .input {
     @apply w-full rounded-xl border px-3 py-1.5 text-sm transition-all duration-150;
     min-height: 2.25rem;
-    background: rgba(8, 15, 28, 0.66);
+    background: var(--input-bg);
     border-color: var(--border-subtle);
     color: var(--text-primary);
   }
@@ -259,20 +479,20 @@
 
   .input:focus-visible,
   .select:focus-visible {
-    border-color: rgba(121, 187, 255, 0.38);
+    border-color: var(--accent-border);
   }
 
   .select {
     @apply rounded-xl border px-3 py-1.5 text-sm transition-all duration-150;
     min-height: 2rem;
-    background: rgba(8, 15, 28, 0.66);
+    background: var(--input-bg);
     border-color: var(--border-subtle);
     color: var(--text-primary);
   }
 
   .segmented {
     @apply inline-flex items-center gap-1 rounded-2xl border p-1;
-    background: rgba(8, 15, 28, 0.72);
+    background: var(--segmented-bg);
     border-color: var(--border-subtle);
   }
 
@@ -283,8 +503,8 @@
 
   .segmented-item[data-active='true'] {
     color: var(--text-primary);
-    background: rgba(36, 51, 78, 0.96);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    background: var(--segmented-active);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
 
   .badge {
@@ -295,7 +515,7 @@
   .badge-neutral {
     @apply badge;
     color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--btn-ghost-hover);
   }
 
   .badge-accent {
@@ -306,19 +526,19 @@
 
   .badge-success {
     @apply badge;
-    color: #b8ffe0;
+    color: var(--success-strong);
     background: var(--success-soft);
   }
 
   .badge-warning {
     @apply badge;
-    color: #ffe7b4;
+    color: var(--warning-strong);
     background: var(--warning-soft);
   }
 
   .badge-danger {
     @apply badge;
-    color: #ffd9df;
+    color: var(--danger-strong);
     background: var(--danger-soft);
   }
 
@@ -339,7 +559,7 @@
 
   .tab-strip {
     @apply flex items-center gap-1.5 overflow-x-auto border-b px-2.5 py-1;
-    background: rgba(10, 18, 32, 0.72);
+    background: var(--tab-strip-bg);
     border-color: var(--border-subtle);
   }
 
@@ -347,20 +567,20 @@
     @apply flex min-w-0 items-center gap-2 rounded-xl border px-2.5 py-1 transition-all duration-150;
     min-height: 2rem;
     color: var(--text-secondary);
-    background: rgba(22, 32, 49, 0.74);
+    background: var(--tab-item-bg);
     border-color: transparent;
   }
 
   .tab-item:hover {
     color: var(--text-primary);
-    background: rgba(33, 47, 72, 0.88);
+    background: var(--tab-item-hover);
   }
 
   .tab-item[data-active='true'] {
     color: var(--text-primary);
-    background: rgba(35, 49, 76, 0.98);
-    border-color: rgba(121, 187, 255, 0.2);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    background: var(--tab-item-active);
+    border-color: var(--accent-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
 
   .empty-state {
@@ -373,8 +593,8 @@
     width: 5.5rem;
     height: 5.5rem;
     color: var(--accent);
-    background: rgba(121, 187, 255, 0.08);
-    border-color: rgba(121, 187, 255, 0.18);
+    background: var(--accent-surface);
+    border-color: var(--accent-border);
   }
 
   .table-shell {
@@ -383,7 +603,7 @@
 
   .table-head {
     @apply sticky top-0 z-10;
-    background: rgba(13, 22, 37, 0.96);
+    background: var(--table-head-bg);
     backdrop-filter: blur(12px);
   }
 
@@ -395,20 +615,20 @@
 
   .table-row {
     @apply transition-colors duration-150;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   .table-row:hover {
-    background: rgba(121, 187, 255, 0.07);
+    background: var(--table-row-hover);
   }
 
   .table-row[data-selected='true'] {
-    background: rgba(121, 187, 255, 0.12);
+    background: var(--table-row-selected);
   }
 
   .table-cell {
     @apply px-4 py-2.5 text-sm align-middle;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
   .notice {
@@ -417,58 +637,58 @@
 
   .notice-danger {
     @apply notice;
-    color: #ffd9df;
-    background: rgba(255, 149, 167, 0.12);
-    border-color: rgba(255, 149, 167, 0.22);
+    color: var(--danger-strong);
+    background: var(--danger-soft);
+    border-color: var(--danger);
   }
 
   .notice-success {
     @apply notice;
-    color: #b8ffe0;
-    background: rgba(104, 216, 170, 0.12);
-    border-color: rgba(104, 216, 170, 0.22);
+    color: var(--success-strong);
+    background: var(--success-soft);
+    border-color: var(--success);
   }
 
   .notice-neutral {
     @apply notice;
     color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--btn-ghost-hover);
     border-color: var(--border-subtle);
   }
 
   .modal-backdrop {
     @apply fixed inset-0 z-50 flex items-center justify-center p-6;
-    background: rgba(4, 9, 18, 0.66);
+    background: var(--modal-backdrop);
     backdrop-filter: blur(12px);
   }
 
   .modal-card {
-    @apply w-full rounded-[1.75rem] border;
+    @apply flex w-full flex-col rounded-[1.75rem] border;
     max-height: calc(100vh - 3rem);
     overflow: hidden;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 22%), var(--surface-elevated);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: var(--modal-card-bg);
+    border-color: var(--border-strong);
     box-shadow: var(--shadow-panel);
   }
 
   .modal-header {
-    @apply flex items-start justify-between gap-4 border-b px-6 py-4;
-    border-color: rgba(255, 255, 255, 0.06);
+    @apply flex shrink-0 items-start justify-between gap-4 border-b px-6 py-4;
+    border-color: var(--modal-border-top);
   }
 
   .modal-body {
-    @apply overflow-y-auto px-6 py-4;
+    @apply min-h-0 flex-1 overflow-y-auto px-6 py-4;
   }
 
   .modal-footer {
-    @apply flex flex-wrap items-center justify-end gap-3 border-t px-6 py-3;
-    border-color: rgba(255, 255, 255, 0.06);
-    background: rgba(255, 255, 255, 0.02);
+    @apply flex shrink-0 flex-wrap items-center justify-end gap-3 border-t px-6 py-3;
+    border-color: var(--modal-border-top);
+    background: var(--btn-ghost-hover);
   }
 
   .agent-header-panel {
     @apply flex items-center justify-between gap-4 rounded-2xl border px-4 py-3;
-    background: rgba(8, 15, 28, 0.62);
+    background: var(--agent-panel-bg);
     border-color: var(--border-subtle);
   }
 
@@ -476,16 +696,16 @@
     @apply flex w-full items-center gap-2.5 rounded-xl border px-3 py-2 text-left transition-all duration-150;
     min-height: 2.75rem;
     color: var(--text-primary);
-    background: rgba(21, 33, 52, 0.78);
-    border-color: rgba(132, 153, 188, 0.22);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    background: var(--agent-entry-bg);
+    border-color: var(--agent-entry-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
 
   .agent-entry-button:hover {
     color: var(--accent-strong);
-    background: rgba(27, 43, 66, 0.92);
-    border-color: rgba(121, 187, 255, 0.34);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 8px 20px rgba(2, 7, 18, 0.16);
+    background: var(--agent-entry-hover);
+    border-color: var(--agent-entry-hover-border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   .agent-entry-icon {
@@ -493,21 +713,21 @@
     width: 1.875rem;
     height: 1.875rem;
     color: var(--accent-strong);
-    background: rgba(121, 187, 255, 0.12);
+    background: var(--accent-soft);
   }
 
   .agent-entry-chip {
     @apply shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-bold;
     color: var(--accent-strong);
-    background: rgba(121, 187, 255, 0.08);
-    border-color: rgba(121, 187, 255, 0.18);
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
   }
 
   .agent-toggle {
     @apply relative shrink-0 rounded-full border transition-all duration-150;
     width: 3.25rem;
     height: 1.75rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--btn-ghost-hover);
     border-color: var(--border-subtle);
   }
 
@@ -522,7 +742,7 @@
 
   .agent-toggle.active {
     background: var(--success-soft);
-    border-color: rgba(104, 216, 170, 0.32);
+    border-color: var(--success);
   }
 
   .agent-toggle.active span {
@@ -531,26 +751,28 @@
   }
 
   .agent-config {
-    @apply mt-4 overflow-auto rounded-2xl border p-3 text-xs leading-relaxed;
+    @apply mt-4 min-h-0 flex-1 overflow-auto rounded-2xl border p-3 text-xs leading-relaxed;
     max-height: 18rem;
     color: var(--text-primary);
-    background: rgba(3, 8, 17, 0.78);
+    background: var(--agent-config-bg);
     border-color: var(--border-subtle);
   }
 
   .agent-list {
-    @apply mt-4 flex max-h-72 flex-col gap-2 overflow-y-auto;
+    @apply mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto;
+    max-height: 18rem;
   }
 
   .agent-list-row,
   .agent-activity-row {
     @apply flex items-center gap-3 rounded-2xl border px-3 py-2;
-    background: rgba(255, 255, 255, 0.035);
-    border-color: rgba(255, 255, 255, 0.06);
+    background: var(--agent-list-row-bg);
+    border-color: var(--agent-list-row-border);
   }
 
   .agent-activity-list {
-    @apply mt-4 flex max-h-72 flex-col gap-2 overflow-y-auto;
+    @apply mt-4 flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto;
+    max-height: 16rem;
   }
 
   .agent-activity-dot {
@@ -564,6 +786,59 @@
     background: var(--success);
   }
 
+  /* ── Terminal ── */
+  [data-theme='dark'] .terminal-bg {
+    background: radial-gradient(circle at top, rgba(125, 211, 252, 0.14), transparent 38%),
+      linear-gradient(180deg, rgba(6, 13, 25, 0.94), rgba(3, 8, 17, 0.98));
+  }
+
+  [data-theme='light'] .terminal-bg {
+    background: radial-gradient(ellipse at top, rgba(139, 92, 246, 0.2), transparent 50%),
+      linear-gradient(180deg, #1e1033 0%, #150c28 100%);
+  }
+
+  [data-theme='dark'] .terminal-grid {
+    opacity: 0.3;
+  }
+
+  [data-theme='light'] .terminal-grid {
+    opacity: 0.2;
+  }
+
+  /* ── Theme Toggle ── */
+  .theme-toggle {
+    @apply relative inline-flex items-center rounded-full transition-all duration-300;
+    width: 2.75rem;
+    height: 1.5rem;
+    background: var(--btn-secondary-bg);
+    border: 1px solid var(--border-subtle);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--border-strong);
+  }
+
+  .theme-toggle-knob {
+    @apply absolute rounded-full transition-all duration-300 flex items-center justify-center;
+    top: 0.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.65rem;
+  }
+
+  [data-theme='dark'] .theme-toggle-knob {
+    left: 0.1875rem;
+  }
+
+  [data-theme='light'] .theme-toggle-knob {
+    left: 1.375rem;
+  }
+
+  /* ── Scrollbar ── */
   .app-scroll::-webkit-scrollbar,
   ::-webkit-scrollbar {
     width: 10px;
@@ -572,21 +847,22 @@
 
   .app-scroll::-webkit-scrollbar-track,
   ::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--scrollbar-track);
   }
 
   .app-scroll::-webkit-scrollbar-thumb,
   ::-webkit-scrollbar-thumb {
-    background: rgba(130, 150, 182, 0.22);
+    background: var(--scrollbar-thumb);
     border-radius: 999px;
   }
 
   .app-scroll::-webkit-scrollbar-thumb:hover,
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(151, 174, 209, 0.34);
+    background: var(--scrollbar-thumb-hover);
   }
 }
 
+/* ── Animations ── */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -603,6 +879,20 @@
   animation: fadeIn 0.2s ease-out;
 }
 
+/* ── xterm ── */
 .xterm {
   padding: 0.75rem;
+}
+
+.xterm-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
 }

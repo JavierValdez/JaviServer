@@ -638,7 +638,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                   </div>
                 </div>
 
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-[rgba(255,255,255,0.08)]">
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--btn-ghost-hover)]">
                   {progress.progressPercent !== null ? (
                     <div
                       className="h-full rounded-full bg-[var(--accent)] transition-[width] duration-200"
@@ -755,7 +755,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
           </div>
         ) : error ? (
           <div className="empty-state h-full">
-            <div className="empty-state-icon" style={{ color: 'var(--danger)', background: 'var(--danger-soft)', borderColor: 'rgba(255,149,167,0.18)' }}>
+            <div className="empty-state-icon" style={{ color: 'var(--danger)', background: 'var(--danger-soft)', borderColor: 'var(--danger)' }}>
               <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.7} d="M12 8v4m0 4h.01M4.93 19h14.14c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.2 16c-.77 1.33.19 3 1.73 3z" />
               </svg>
@@ -811,7 +811,7 @@ export const FileExplorer: React.FC<FileExplorerProps> = ({
                 >
                   <td className="table-cell">
                     <div className="flex items-center gap-3">
-                      <div className="rounded-xl border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.03)] p-2">
+                      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--btn-ghost-hover)] p-2">
                         {file.isDirectory ? <FolderIcon /> : shouldTreatAsLogFile(file) ? <LogIcon /> : <FileIcon />}
                       </div>
                       <span className="truncate text-[var(--text-primary)]">{file.name}</span>

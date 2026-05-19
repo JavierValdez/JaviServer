@@ -202,7 +202,7 @@ export const ServerList: React.FC = () => {
       <div className="app-scroll flex-1 overflow-y-auto px-3 py-4">
         {profiles.length === 0 ? (
           <div className="panel-surface px-4 py-6 text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-[rgba(121,187,255,0.2)] bg-[rgba(121,187,255,0.08)] text-[var(--accent)]">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-surface)] text-[var(--accent)]">
               <ServerIcon />
             </div>
             <div className="mt-4 text-base font-semibold text-[var(--text-primary)]">No hay servidores configurados</div>
@@ -224,7 +224,7 @@ export const ServerList: React.FC = () => {
                 <div
                   key={profile.id}
                   className={`panel-surface cursor-pointer px-4 py-4 transition-all duration-150 ${
-                    isSelected ? 'border-[rgba(121,187,255,0.28)] bg-[rgba(31,47,73,0.96)]' : 'hover:border-[var(--border-strong)]'
+                    isSelected ? 'border-[var(--accent-border)] bg-[var(--accent-soft)]' : 'hover:border-[var(--border-strong)]'
                   }`}
                   onClick={() => setSelectedProfileId(profile.id)}
                   onDoubleClick={() => handleConnect(profile)}
@@ -233,7 +233,7 @@ export const ServerList: React.FC = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <div className="rounded-xl border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.04)] p-2 text-[var(--accent)]">
+                        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--btn-ghost-hover)] p-2 text-[var(--accent)]">
                           <ServerIcon />
                         </div>
                         <div className="min-w-0">
@@ -351,7 +351,7 @@ export const ServerList: React.FC = () => {
             </button>
             <button
               type="button"
-              className="btn-ghost w-full justify-start text-[var(--danger)] hover:bg-[rgba(255,149,167,0.12)]"
+              className="btn-ghost w-full justify-start text-[var(--danger)] hover:bg-[var(--danger-soft)]"
               onClick={() => {
                 setDeleteCandidate(contextMenu.profile);
                 setContextMenu(null);

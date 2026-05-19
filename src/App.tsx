@@ -5,6 +5,7 @@ import { ServerList } from './components/ServerList/ServerList';
 import { Terminal } from './components/Terminal/Terminal';
 import { UpdateStatus } from './components/UpdateStatus/UpdateStatus';
 import { useAppStore } from './store/useAppStore';
+import { useTheme } from './store/ThemeContext';
 import { Tab, TabType } from './types';
 import type { AppUpdateState } from './types/updater';
 
@@ -32,6 +33,18 @@ const CloseIcon = () => (
   </svg>
 );
 
+const SunIcon = () => (
+  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 3v1m0 16v1m9-9h-1m-16 0H3m15.32-6.32l-.71-.71M5.38 18.38l-.71-.71M18.32 18.32l-.71-.71M5.38 5.38l-.71-.71M12 7a5 5 0 100 10 5 5 0 000-10z" />
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+  </svg>
+);
+
 function App() {
   const {
     profiles,
@@ -45,6 +58,7 @@ function App() {
     updateTabData,
     setActiveTab,
   } = useAppStore();
+  const { theme, toggleTheme } = useTheme();
   const [updateState, setUpdateState] = useState<AppUpdateState | null>(null);
   const [draggedTabId, setDraggedTabId] = useState<string | null>(null);
   const [dragOverTabId, setDragOverTabId] = useState<string | null>(null);
@@ -259,6 +273,18 @@ function App() {
             ) : null}
 
             <UpdateStatus state={updateState} onAction={handleUpdateAction} />
+
+            <button
+              type="button"
+              className="theme-toggle"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+              aria-label={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            >
+              <span className="theme-toggle-knob">
+                {theme === 'dark' ? <MoonIcon /> : <SunIcon />}
+              </span>
+            </button>
           </div>
         </div>
 
@@ -277,7 +303,7 @@ function App() {
                   onDragOver={handleTabDragOver(tab.id)}
                   onDrop={handleTabDrop(tab.id)}
                   onDragEnd={resetTabDragState}
-                  className={`tab-item shrink-0 transition ${isDragTarget ? 'ring-1 ring-[var(--accent)] ring-offset-1 ring-offset-[var(--surface-primary)]' : ''} ${isDragged ? 'opacity-70' : ''}`}
+                  className={`tab-item shrink-0 transition ${isDragTarget ? 'ring-1 ring-[var(--accent)] ring-offset-1 ring-offset-[var(--surface-app)]' : ''} ${isDragged ? 'opacity-70' : ''}`}
                   data-active={activeTabId === tab.id}
                 >
                   <button type="button" className="flex min-w-0 flex-1 items-center gap-2 text-left" onClick={() => setActiveTab(tab.id)}>
@@ -386,7 +412,7 @@ function App() {
                     style={{
                       color: 'var(--success)',
                       background: 'var(--success-soft)',
-                      borderColor: 'rgba(104, 216, 170, 0.2)',
+                      borderColor: 'var(--success)',
                     }}
                   >
                     <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
