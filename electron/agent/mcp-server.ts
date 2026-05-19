@@ -22,7 +22,7 @@ function spawnVisibleApp(): void {
     stdio: 'ignore',
     env: Object.fromEntries(
       Object.entries(process.env).filter(([key]) =>
-        key !== 'ELECTRON_RUN_AS_NODE' && key !== 'JAVISERVER_MCP_STDIO'
+        key !== 'ELECTRON_RUN_AS_NODE' && key !== 'JAVISERVER_MCP_STDIO' && key !== 'JAVISERVER_MCP_TOKEN'
       ),
     ),
   });
