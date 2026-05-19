@@ -44,6 +44,25 @@ Importante:
 - Windows auto-update funciona con el instalador `NSIS`.
 - En macOS, el auto-update requiere que la app esté firmada. Si compilas sin certificados, el `.dmg` se genera, pero la actualización automática no quedará operativa.
 
+## Integración IA por MCP
+
+JaviServer incluye una integración MCP local opcional para que agentes de IA puedan consultar y operar los perfiles SSH ya guardados en la app, sin exponer credenciales.
+
+1. Abre **Integración IA** desde el pie de la barra lateral.
+2. Activa la integración.
+3. Copia la configuración MCP generada en tu cliente compatible.
+4. Mantén JaviServer disponible; si el cliente inicia el MCP con la app cerrada, JaviServer intentará abrirse automáticamente.
+
+La integración expone operaciones para listar servidores, conectar/desconectar perfiles, listar directorios, leer archivos con límite de bytes, buscar contenido, revisar logs y ejecutar comandos SSH no interactivos. Los comandos claramente de lectura se ejecutan directo; los comandos desconocidos o potencialmente mutables requieren confirmación visible en la app.
+
+Variables usadas por el modo MCP:
+
+- `JAVISERVER_MCP_TOKEN`
+- `JAVISERVER_MCP_DEBUG`
+- `JAVISERVER_MCP_CLIENT_ID`
+- `JAVISERVER_MCP_CLIENT_NAME`
+- `JAVISERVER_MCP_CLIENT_VERSION`
+
 ## 🚀 Releases en GitHub
 
 El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que publica instaladores para Windows y macOS en GitHub Releases.
@@ -87,6 +106,7 @@ javiserver/
 ├── electron/
 │   ├── main.ts              # Proceso principal de Electron
 │   ├── preload.ts           # API expuesta al renderer
+│   ├── agent/               # Broker local, MCP stdio, token y auditoría
 │   ├── services/
 │   │   ├── SSHService.ts    # Conexiones SSH/SFTP
 │   │   └── ProfileManager.ts # Gestión de perfiles

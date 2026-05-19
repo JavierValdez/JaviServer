@@ -1,5 +1,8 @@
 import type {
   FileInfo,
+  AgentActivityEntry,
+  AgentClientConfig,
+  AgentIntegrationState,
   PathBookmark,
   ServerProfile,
   TerminalSuggestion,
@@ -124,6 +127,16 @@ interface ElectronApi {
     downloadInstaller: () => Promise<AppUpdateState>;
     revealInstaller: () => Promise<boolean>;
     onStateChange: (listener: (payload: AppUpdateState) => void) => () => void;
+  };
+  agentIntegration: {
+    getState: () => Promise<AgentIntegrationState>;
+    setEnabled: (enabled: boolean) => Promise<AgentIntegrationState>;
+    getClientConfig: () => Promise<AgentClientConfig>;
+    regenerateToken: () => Promise<AgentIntegrationState>;
+    getActivity: () => Promise<AgentActivityEntry[]>;
+    clearActivity: () => Promise<AgentActivityEntry[]>;
+    onState: (listener: (payload: AgentIntegrationState) => void) => () => void;
+    onActivity: (listener: (payload: AgentActivityEntry[]) => void) => () => void;
   };
 }
 

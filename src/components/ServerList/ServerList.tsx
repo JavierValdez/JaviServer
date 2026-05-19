@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppStore } from '../../store/useAppStore';
 import { ServerProfile } from '../../types';
+import { AgentIntegrationDialog } from '../AgentIntegrationDialog/AgentIntegrationDialog';
 import { ServerForm } from '../ServerForm/ServerForm';
 import { Modal } from '../ui/Modal';
 
@@ -37,6 +38,12 @@ const DeleteIcon = () => (
 const PlugIcon = () => (
   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-3 3m0 0l-4.5-4.5M16 10l2.5 2.5a2.121 2.121 0 010 3l-3 3a2.121 2.121 0 01-3 0L10 16m6-6L9 17m0 0l-3-3m3 3L6.5 19.5a2.121 2.121 0 01-3 0l-1-1a2.121 2.121 0 010-3L5 13" />
+  </svg>
+);
+
+const SparkIcon = () => (
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3l1.75 5.25L19 10l-5.25 1.75L12 17l-1.75-5.25L5 10l5.25-1.75L12 3zm6 10l.9 2.7 2.7.9-2.7.9L18 21l-.9-2.7-2.7-.9 2.7-.9L18 13z" />
   </svg>
 );
 
@@ -84,6 +91,7 @@ export const ServerList: React.FC = () => {
   const [editingProfile, setEditingProfile] = useState<ServerProfile | undefined>();
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; profile: ServerProfile } | null>(null);
   const [deleteCandidate, setDeleteCandidate] = useState<ServerProfile | null>(null);
+  const [showAgentIntegration, setShowAgentIntegration] = useState(false);
 
   const loadProfiles = async () => {
     const loaded = await window.api.profiles.getAll();
@@ -291,11 +299,27 @@ export const ServerList: React.FC = () => {
       </div>
 
       <div className="border-t border-[var(--border-subtle)] px-5 py-4">
-        <div className="section-label">Resumen</div>
-        <div className="mt-2 flex items-center gap-2">
-          <span className="badge-neutral">{profiles.length} perfil(es)</span>
-          <span className="badge-neutral">{Array.from(connections.values()).filter((status) => status.connected).length} activo(s)</span>
+        <div>
+          <div className="section-label">Resumen</div>
+          <div className="mt-2 flex items-center gap-2">
+            <span className="badge-neutral">{profiles.length} perfil(es)</span>
+            <span className="badge-neutral">{Array.from(connections.values()).filter((status) => status.connected).length} activo(s)</span>
+          </div>
         </div>
+
+        <button
+          type="button"
+          className="agent-entry-button mt-4"
+          onClick={() => setShowAgentIntegration(true)}
+          title="Integracion IA"
+          aria-label="Abrir integracion IA"
+        >
+          <span className="agent-entry-icon">
+            <SparkIcon />
+          </span>
+          <span className="min-w-0 flex-1 truncate text-left text-sm font-semibold">Integracion IA</span>
+          <span className="agent-entry-chip">MCP</span>
+        </button>
       </div>
 
       {contextMenu ? (
@@ -373,6 +397,10 @@ export const ServerList: React.FC = () => {
             Esta accion no se puede deshacer. Si el perfil esta conectado, se volvera a cargar la lista de perfiles.
           </div>
         </Modal>
+      ) : null}
+
+      {showAgentIntegration ? (
+        <AgentIntegrationDialog onClose={() => setShowAgentIntegration(false)} />
       ) : null}
     </aside>
   );

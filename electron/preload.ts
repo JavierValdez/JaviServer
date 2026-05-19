@@ -102,4 +102,16 @@ contextBridge.exposeInMainWorld('api', {
     onStateChange: (listener: (payload: AppUpdateState) => void) =>
       unsubscribeOn(IPC_CHANNELS.updaterStateChanged, listener),
   },
+  agentIntegration: {
+    getState: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetState),
+    setEnabled: (enabled: boolean) => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationSetEnabled, enabled),
+    getClientConfig: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetClientConfig),
+    regenerateToken: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationRegenerateToken),
+    getActivity: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetActivity),
+    clearActivity: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationClearActivity),
+    onState: (listener: (payload: unknown) => void) =>
+      unsubscribeOn(IPC_CHANNELS.agentIntegrationState, listener),
+    onActivity: (listener: (payload: unknown[]) => void) =>
+      unsubscribeOn(IPC_CHANNELS.agentIntegrationActivity, listener),
+  },
 });

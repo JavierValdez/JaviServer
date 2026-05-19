@@ -422,6 +422,13 @@
     border-color: rgba(255, 149, 167, 0.22);
   }
 
+  .notice-success {
+    @apply notice;
+    color: #b8ffe0;
+    background: rgba(104, 216, 170, 0.12);
+    border-color: rgba(104, 216, 170, 0.22);
+  }
+
   .notice-neutral {
     @apply notice;
     color: var(--text-secondary);
@@ -457,6 +464,104 @@
     @apply flex flex-wrap items-center justify-end gap-3 border-t px-6 py-3;
     border-color: rgba(255, 255, 255, 0.06);
     background: rgba(255, 255, 255, 0.02);
+  }
+
+  .agent-header-panel {
+    @apply flex items-center justify-between gap-4 rounded-2xl border px-4 py-3;
+    background: rgba(8, 15, 28, 0.62);
+    border-color: var(--border-subtle);
+  }
+
+  .agent-entry-button {
+    @apply flex w-full items-center gap-2.5 rounded-xl border px-3 py-2 text-left transition-all duration-150;
+    min-height: 2.75rem;
+    color: var(--text-primary);
+    background: rgba(21, 33, 52, 0.78);
+    border-color: rgba(132, 153, 188, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  }
+
+  .agent-entry-button:hover {
+    color: var(--accent-strong);
+    background: rgba(27, 43, 66, 0.92);
+    border-color: rgba(121, 187, 255, 0.34);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045), 0 8px 20px rgba(2, 7, 18, 0.16);
+  }
+
+  .agent-entry-icon {
+    @apply flex shrink-0 items-center justify-center rounded-lg;
+    width: 1.875rem;
+    height: 1.875rem;
+    color: var(--accent-strong);
+    background: rgba(121, 187, 255, 0.12);
+  }
+
+  .agent-entry-chip {
+    @apply shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-bold;
+    color: var(--accent-strong);
+    background: rgba(121, 187, 255, 0.08);
+    border-color: rgba(121, 187, 255, 0.18);
+  }
+
+  .agent-toggle {
+    @apply relative shrink-0 rounded-full border transition-all duration-150;
+    width: 3.25rem;
+    height: 1.75rem;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-subtle);
+  }
+
+  .agent-toggle span {
+    @apply absolute rounded-full transition-all duration-150;
+    top: 0.25rem;
+    left: 0.25rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    background: var(--text-secondary);
+  }
+
+  .agent-toggle.active {
+    background: var(--success-soft);
+    border-color: rgba(104, 216, 170, 0.32);
+  }
+
+  .agent-toggle.active span {
+    left: 1.75rem;
+    background: var(--success);
+  }
+
+  .agent-config {
+    @apply mt-4 overflow-auto rounded-2xl border p-3 text-xs leading-relaxed;
+    max-height: 18rem;
+    color: var(--text-primary);
+    background: rgba(3, 8, 17, 0.78);
+    border-color: var(--border-subtle);
+  }
+
+  .agent-list {
+    @apply mt-4 flex max-h-72 flex-col gap-2 overflow-y-auto;
+  }
+
+  .agent-list-row,
+  .agent-activity-row {
+    @apply flex items-center gap-3 rounded-2xl border px-3 py-2;
+    background: rgba(255, 255, 255, 0.035);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .agent-activity-list {
+    @apply mt-4 flex max-h-72 flex-col gap-2 overflow-y-auto;
+  }
+
+  .agent-activity-dot {
+    @apply shrink-0 rounded-full;
+    width: 0.625rem;
+    height: 0.625rem;
+    background: var(--danger);
+  }
+
+  .agent-activity-dot.ok {
+    background: var(--success);
   }
 
   .app-scroll::-webkit-scrollbar,

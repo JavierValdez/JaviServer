@@ -34,6 +34,14 @@ export const IPC_CHANNELS = {
   updaterStateChanged: 'updater:state-changed',
   clipboardReadText: 'clipboard:read-text',
   clipboardWriteText: 'clipboard:write-text',
+  agentIntegrationGetState: 'agentIntegration:getState',
+  agentIntegrationSetEnabled: 'agentIntegration:setEnabled',
+  agentIntegrationGetClientConfig: 'agentIntegration:getClientConfig',
+  agentIntegrationRegenerateToken: 'agentIntegration:regenerateToken',
+  agentIntegrationGetActivity: 'agentIntegration:getActivity',
+  agentIntegrationClearActivity: 'agentIntegration:clearActivity',
+  agentIntegrationState: 'agentIntegration:state',
+  agentIntegrationActivity: 'agentIntegration:activity',
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];

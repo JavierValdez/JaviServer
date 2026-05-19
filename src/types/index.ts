@@ -47,6 +47,54 @@ export interface TerminalSuggestionRequest {
   directoryOnly?: boolean;
 }
 
+export type AgentActivityKind = 'connect' | 'disconnect' | 'tool' | 'resource';
+
+export interface AgentActivityEntry {
+  id: string;
+  at: string;
+  kind: AgentActivityKind;
+  clientId: string;
+  clientName: string;
+  action: string;
+  target?: string;
+  ok: boolean;
+  durationMs?: number;
+  error?: string;
+}
+
+export interface AgentSession {
+  id: string;
+  clientId: string;
+  clientName: string;
+  clientVersion?: string;
+  connectedAt: string;
+}
+
+export interface AgentIntegrationState {
+  enabled: boolean;
+  brokerRunning: boolean;
+  sessions: AgentSession[];
+  activity: AgentActivityEntry[];
+}
+
+export interface AgentClientConfig {
+  command: string;
+  args: string[];
+  env: Record<string, string>;
+}
+
+export interface RemoteCommandResult {
+  command: string;
+  cwd?: string;
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+  signal?: string;
+  timedOut: boolean;
+  truncated: boolean;
+  durationMs: number;
+}
+
 export interface ConnectionStatus {
   profileId: string;
   connected: boolean;

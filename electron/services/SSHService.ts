@@ -19,6 +19,12 @@ import type {
   TerminalSuggestion,
   TerminalSuggestionRequest,
 } from '../../src/types';
+import {
+  DEFAULT_COMMAND_OUTPUT_BYTES,
+  DEFAULT_COMMAND_TIMEOUT_MS,
+  MAX_COMMAND_OUTPUT_BYTES,
+  MAX_COMMAND_TIMEOUT_MS,
+} from '../agent/command-policy';
 
 interface SearchMatch {
   line: number;
@@ -70,6 +76,32 @@ interface ConnectionContext {
 
 interface ExecOptions {
   allowedExitCodes?: number[];
+}
+
+export interface RemoteTextFileResult {
+  path: string;
+  content: string;
+  bytesRead: number;
+  totalBytes: number | null;
+  truncated: boolean;
+}
+
+export interface RemoteCommandOptions {
+  cwd?: string;
+  timeoutMs?: number;
+  maxOutputBytes?: number;
+}
+
+export interface RemoteCommandResult {
+  command: string;
+  cwd?: string;
+  stdout: string;
+  stderr: string;
+  exitCode: number | null;
+  signal?: string;
+  timedOut: boolean;
+  truncated: boolean;
+  durationMs: number;
 }
 
 const LEGACY_SSH_ALGORITHMS: Algorithms = {
@@ -212,6 +244,15 @@ function calculateProgressPercent(transferredBytes: number, totalBytes: number |
   return Math.min(100, Math.max(0, Math.round((transferredBytes / totalBytes) * 100)));
 }
 
+function clampPositiveInt(value: unknown, defaultValue: number, maxValue: number): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return defaultValue;
+  }
+
+  return Math.min(maxValue, Math.max(1, Math.floor(parsed)));
+}
+
 function shouldRetryWithLegacyAlgorithms(error: unknown): boolean {
   if (!(error instanceof Error)) {
     return false;
@@ -274,6 +315,10 @@ export class SSHService extends EventEmitter {
     this.connections.delete(profileId);
   }
 
+  isConnected(profileId: string): boolean {
+    return this.connections.has(profileId);
+  }
+
   async listDirectory(profileId: string, remotePath: string): Promise<FileInfo[]> {
     const sftp = await this.getSftp(profileId);
     const entries = await new Promise<FileEntryWithStats[]>((resolve, reject) => {
@@ -298,6 +343,144 @@ export class SSHService extends EventEmitter {
         permissions: toPermissions(entry),
       }))
       .sort((left, right) => left.name.localeCompare(right.name));
+  }
+
+  async readTextFile(
+    profileId: string,
+    filePath: string,
+    options: { maxBytes?: number } = {},
+  ): Promise<RemoteTextFileResult> {
+    const maxBytes = clampPositiveInt(options.maxBytes, DEFAULT_COMMAND_OUTPUT_BYTES, MAX_COMMAND_OUTPUT_BYTES);
+    const sftp = await this.getSftp(profileId);
+    const stats = await new Promise<Stats>((resolve, reject) => {
+      sftp.stat(filePath, (error, result) => {
+        if (error) {
+          reject(toPublicError(error));
+          return;
+        }
+
+        resolve(result);
+      });
+    });
+    const chunks: Buffer[] = [];
+    let bytesRead = 0;
+
+    await new Promise<void>((resolve, reject) => {
+      const stream = sftp.createReadStream(filePath, { start: 0, end: maxBytes - 1 });
+
+      stream.on('data', (chunk: Buffer) => {
+        chunks.push(chunk);
+        bytesRead += chunk.length;
+      });
+      stream.on('error', (error: unknown) => reject(toPublicError(error)));
+      stream.on('end', () => resolve());
+    });
+
+    const totalBytes = typeof stats.size === 'number' ? stats.size : null;
+    return {
+      path: filePath,
+      content: Buffer.concat(chunks, bytesRead).toString('utf8'),
+      bytesRead,
+      totalBytes,
+      truncated: totalBytes === null ? bytesRead >= maxBytes : totalBytes > bytesRead,
+    };
+  }
+
+  async runCommand(
+    profileId: string,
+    command: string,
+    options: RemoteCommandOptions = {},
+  ): Promise<RemoteCommandResult> {
+    const connection = this.getConnection(profileId);
+    const cwd = options.cwd?.trim() || undefined;
+    const timeoutMs = clampPositiveInt(options.timeoutMs, DEFAULT_COMMAND_TIMEOUT_MS, MAX_COMMAND_TIMEOUT_MS);
+    const maxOutputBytes = clampPositiveInt(options.maxOutputBytes, DEFAULT_COMMAND_OUTPUT_BYTES, MAX_COMMAND_OUTPUT_BYTES);
+    const remoteCommand = cwd ? `cd ${shellQuote(cwd)} && ${command}` : command;
+    const started = Date.now();
+
+    return new Promise<RemoteCommandResult>((resolve, reject) => {
+      connection.client.exec(remoteCommand, (error, stream) => {
+        if (error) {
+          reject(toPublicError(error));
+          return;
+        }
+
+        let stdout = '';
+        let stderr = '';
+        let capturedBytes = 0;
+        let truncated = false;
+        let timedOut = false;
+        let settled = false;
+        let timeout: NodeJS.Timeout;
+
+        const appendChunk = (current: string, chunk: Buffer): string => {
+          if (capturedBytes >= maxOutputBytes) {
+            truncated = true;
+            return current;
+          }
+
+          const remaining = maxOutputBytes - capturedBytes;
+          const accepted = chunk.subarray(0, remaining);
+          capturedBytes += accepted.length;
+          if (accepted.length < chunk.length) {
+            truncated = true;
+          }
+
+          return current + accepted.toString('utf8');
+        };
+
+        const finish = (exitCode: number | null, signal?: string) => {
+          if (settled) {
+            return;
+          }
+
+          settled = true;
+          clearTimeout(timeout);
+          resolve({
+            command,
+            cwd,
+            stdout,
+            stderr,
+            exitCode,
+            signal,
+            timedOut,
+            truncated,
+            durationMs: Date.now() - started,
+          });
+        };
+
+        timeout = setTimeout(() => {
+          timedOut = true;
+          try {
+            stream.close();
+            stream.end();
+          } catch {
+            // Ignore teardown errors; the result reports timeout.
+          }
+          finish(null, 'timeout');
+        }, timeoutMs);
+
+        stream.on('data', (chunk: Buffer) => {
+          stdout = appendChunk(stdout, chunk);
+        });
+
+        stream.stderr.on('data', (chunk: Buffer) => {
+          stderr = appendChunk(stderr, chunk);
+        });
+
+        stream.on('error', (streamError: unknown) => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timeout);
+            reject(toPublicError(streamError));
+          }
+        });
+
+        stream.on('close', (code?: number, signal?: string) => {
+          finish(typeof code === 'number' ? code : 0, signal);
+        });
+      });
+    });
   }
 
   async downloadFile(

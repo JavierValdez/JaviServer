@@ -1,12 +1,30 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { app, BrowserWindow } from 'electron';
+import {
+  configureAgentIntegration,
+  startAgentBrokerIfEnabled,
+  stopAgentBroker,
+} from './agent/integration';
+import { runMcpServerMode } from './agent/mcp-server';
 import { setupAutoUpdater } from './autoUpdater';
 import { registerIpcHandlers } from './ipc/registerHandlers';
 import { ProfileStore } from './services/ProfileStore';
 import { SSHService } from './services/SSHService';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const isMcpStdioMode = process.argv.includes('--mcp-stdio');
+
+app.name = 'JaviServer';
+
+if (isMcpStdioMode) {
+  app.disableHardwareAcceleration();
+  app.commandLine.appendSwitch('disable-gpu');
+  app.commandLine.appendSwitch('disable-software-rasterizer');
+  if (process.platform === 'darwin') {
+    app.setActivationPolicy('accessory');
+  }
+}
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -43,14 +61,22 @@ function createMainWindow(): BrowserWindow {
 }
 
 app.whenReady().then(() => {
+  if (isMcpStdioMode) {
+    return;
+  }
+
   app.setAppUserModelId('com.javierserver.app');
 
   const profileStore = new ProfileStore();
   const sshService = new SSHService();
   const updater = setupAutoUpdater();
+  configureAgentIntegration(profileStore, sshService);
 
   mainWindow = createMainWindow();
   registerIpcHandlers(() => mainWindow, profileStore, sshService, updater);
+  void startAgentBrokerIfEnabled().catch((error) => {
+    console.error('[agent] No se pudo iniciar el broker MCP:', error);
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -59,8 +85,19 @@ app.whenReady().then(() => {
   });
 });
 
+if (isMcpStdioMode) {
+  void runMcpServerMode().catch((error) => {
+    process.stderr.write(`${error instanceof Error ? error.message : 'No se pudo iniciar el MCP de JaviServer'}\n`);
+    app.exit(1);
+  });
+}
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('will-quit', () => {
+  void stopAgentBroker();
 });

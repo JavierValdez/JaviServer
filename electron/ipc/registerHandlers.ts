@@ -2,6 +2,13 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { BrowserWindow, clipboard, dialog, ipcMain, type OpenDialogOptions, type SaveDialogOptions } from 'electron';
 import type { UpdateController } from '../autoUpdater';
+import {
+  clearAgentActivity,
+  getAgentClientConfig,
+  getAgentIntegrationPublicState,
+  regenerateAgentIntegrationPublicToken,
+  setAgentIntegrationPublicEnabled,
+} from '../agent/integration';
 import { IPC_CHANNELS } from './channels';
 import { ProfileStore, type ProfileInput } from '../services/ProfileStore';
 import { SSHService, type DownloadProgressPayload } from '../services/SSHService';
@@ -162,6 +169,14 @@ export function registerIpcHandlers(
 
   ipcMain.handle(IPC_CHANNELS.clipboardReadText, () => clipboard.readText());
   ipcMain.handle(IPC_CHANNELS.clipboardWriteText, (_event, text: string) => clipboard.writeText(text));
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationGetState, () => getAgentIntegrationPublicState());
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationSetEnabled, (_event, enabled: boolean) =>
+    setAgentIntegrationPublicEnabled(Boolean(enabled)),
+  );
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationGetClientConfig, () => getAgentClientConfig());
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationRegenerateToken, () => regenerateAgentIntegrationPublicToken());
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationGetActivity, () => getAgentIntegrationPublicState().activity);
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationClearActivity, () => clearAgentActivity());
 
   sshService.on('connection-closed', (profileId: string) => {
     const mainWindow = getMainWindow();
