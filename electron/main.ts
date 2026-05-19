@@ -13,7 +13,7 @@ import { ProfileStore } from './services/ProfileStore';
 import { SSHService } from './services/SSHService';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const isMcpStdioMode = process.argv.includes('--mcp-stdio');
+const isMcpStdioMode = process.argv.includes('--mcp-stdio') || process.env.JAVISERVER_MCP_STDIO === '1';
 
 app.name = 'JaviServer';
 

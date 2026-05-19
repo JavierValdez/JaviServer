@@ -21,7 +21,9 @@ function spawnVisibleApp(): void {
     detached: true,
     stdio: 'ignore',
     env: Object.fromEntries(
-      Object.entries(process.env).filter(([key]) => key !== 'ELECTRON_RUN_AS_NODE'),
+      Object.entries(process.env).filter(([key]) =>
+        key !== 'ELECTRON_RUN_AS_NODE' && key !== 'JAVISERVER_MCP_STDIO'
+      ),
     ),
   });
   child.unref();

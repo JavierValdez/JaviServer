@@ -403,11 +403,12 @@ export function getAgentClientConfig(): {
     execPath: process.execPath,
     launchArgs,
     comSpec: process.env.ComSpec,
+    stdioEnvKey: 'JAVISERVER_MCP_STDIO',
   });
 
   return {
     ...launchConfig,
-    env: { JAVISERVER_MCP_TOKEN: token },
+    env: { JAVISERVER_MCP_TOKEN: token, JAVISERVER_MCP_STDIO: '1' },
   };
 }
 
