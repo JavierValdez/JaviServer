@@ -1,7 +1,7 @@
 {
   "name": "javiserver",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Gestor SSH Multi-servidor para explorar archivos y logs de servidores",
   "author": "jasegura",
   "type": "module",
@@ -9,8 +9,10 @@
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "build:web": "tsc && vite build",
-    "build": "npm run build:web && electron-builder --publish never",
-    "release": "npm run build:web && electron-builder --publish always",
+    "build:mcp-bridge": "node scripts/build-mcp-bridge.mjs --sea",
+    "build:mcp-bridge:bundle": "node scripts/build-mcp-bridge.mjs",
+    "build": "npm run build:web && npm run build:mcp-bridge && electron-builder --publish never",
+    "release": "npm run build:web && npm run build:mcp-bridge && electron-builder --publish always",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "tsx --test tests/**/*.test.ts",
     "preview": "vite preview"
@@ -45,6 +47,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.5.6",
+    "postject": "^1.0.0-alpha.6",
     "tailwindcss": "^3.4.18",
     "tsx": "^4.22.2",
     "typescript": "^5.2.2",
@@ -117,7 +120,13 @@
           ]
         }
       ],
-      "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+      "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+      "extraFiles": [
+        {
+          "from": "dist-mcp-bridge/JaviServerMcp.exe",
+          "to": "JaviServerMcp.exe"
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,

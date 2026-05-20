@@ -404,6 +404,11 @@ export function getAgentClientConfig(): {
     launchArgs,
     comSpec: process.env.ComSpec,
     stdioEnvKey: 'JAVISERVER_MCP_STDIO',
+    // Windows-only: cuando esta empaquetada, el instalador NSIS coloca este
+    // binario al lado de JaviServer.exe (extraFiles en electron-builder).
+    // En dev (no empaquetada) no existe; el builder ignora el bridge y cae al
+    // fallback de lanzar el exe directo.
+    mcpBridgeExeName: app.isPackaged && process.platform === 'win32' ? 'JaviServerMcp.exe' : undefined,
   });
 
   return {

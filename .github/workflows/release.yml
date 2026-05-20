@@ -62,6 +62,7 @@ jobs:
           fi
 
           npm run build:web
+          npm run build:mcp-bridge
           npx electron-builder --publish never ${{ matrix.platform.args }}
 
       - name: Flatten release files
