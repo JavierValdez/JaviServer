@@ -36,6 +36,7 @@ export const IPC_CHANNELS = {
   clipboardWriteText: 'clipboard:write-text',
   agentIntegrationGetState: 'agentIntegration:getState',
   agentIntegrationSetEnabled: 'agentIntegration:setEnabled',
+  agentIntegrationSetPermissions: 'agentIntegration:setPermissions',
   agentIntegrationGetClientConfig: 'agentIntegration:getClientConfig',
   agentIntegrationRegenerateToken: 'agentIntegration:regenerateToken',
   agentIntegrationGetActivity: 'agentIntegration:getActivity',

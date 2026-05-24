@@ -14,6 +14,16 @@ export interface CommandPolicyDecision {
   reason: string;
 }
 
+export interface CommandPermissionSettings {
+  autoApproveReadCommands: boolean;
+  autoApproveWriteCommands: boolean;
+}
+
+export const DEFAULT_COMMAND_PERMISSION_SETTINGS: CommandPermissionSettings = {
+  autoApproveReadCommands: true,
+  autoApproveWriteCommands: false,
+};
+
 const SAFE_COMMANDS = new Set([
   'awk',
   'cat',
@@ -81,8 +91,19 @@ const SAFE_DOCKER_SUBCOMMANDS = new Set([
   'volume',
 ]);
 
-const DANGEROUS_CONTROL_PATTERN = /(?:^|[^\\])(?:;|&&|\|\||\||`|\$\(|>|<|\n)/;
+const DANGEROUS_CONTROL_PATTERN = /(?:^|[^\\])(?:;|&&|\|\||`|\$\(|>|<|\n)/;
 const DANGEROUS_WORD_PATTERN = /\b(?:apt|apt-get|brew|chmod|chown|cp|curl|dd|dnf|docker\s+(?:compose\s+)?(?:exec|kill|restart|rm|run|start|stop)|kill|killall|mkdir|mv|nano|npm\s+(?:i|install|uninstall)|reboot|rm|rmdir|sed\s+-i|service\s+\S+\s+(?:restart|start|stop)|shutdown|systemctl\s+(?:disable|enable|mask|reload|restart|start|stop)|tee|touch|vi|vim|wget|yum)\b/i;
+const ALLOWED_READONLY_REDIRECTION_PATTERN = /(^|\s)2>\s*\/dev\/null(?=\s|$)/g;
+const UNSAFE_FIND_ACTIONS = new Set([
+  '-delete',
+  '-exec',
+  '-execdir',
+  '-fls',
+  '-fprint',
+  '-fprintf',
+  '-ok',
+  '-okdir',
+]);
 
 function clampPositiveInt(value: unknown, defaultValue: number, maxValue: number): number {
   const parsed = Number(value);
@@ -135,8 +156,28 @@ function firstExecutable(tokens: string[]): { command: string; args: string[] } 
   };
 }
 
-export function classifyCommand(command: string): CommandPolicyDecision {
+function stripAllowedReadonlyRedirections(command: string): string {
+  return command.replace(ALLOWED_READONLY_REDIRECTION_PATTERN, ' ');
+}
+
+function hasDangerousControl(command: string): boolean {
+  return DANGEROUS_CONTROL_PATTERN.test(stripAllowedReadonlyRedirections(command));
+}
+
+function hasUnescapedPipe(command: string): boolean {
+  return /(?:^|[^\\])\|/.test(command);
+}
+
+function splitPipeline(command: string): string[] {
+  return command
+    .split(/(?<!\\)\|/g)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
+function classifySimpleCommand(command: string): CommandPolicyDecision {
   const trimmed = command.trim();
+  const commandWithoutAllowedRedirections = stripAllowedReadonlyRedirections(trimmed).trim();
   if (!trimmed) {
     return {
       requiresConfirmation: true,
@@ -144,21 +185,21 @@ export function classifyCommand(command: string): CommandPolicyDecision {
     };
   }
 
-  if (DANGEROUS_CONTROL_PATTERN.test(trimmed)) {
+  if (hasDangerousControl(trimmed)) {
     return {
       requiresConfirmation: true,
       reason: 'Contiene operadores de shell o redireccionamientos',
     };
   }
 
-  if (DANGEROUS_WORD_PATTERN.test(trimmed)) {
+  if (DANGEROUS_WORD_PATTERN.test(commandWithoutAllowedRedirections)) {
     return {
       requiresConfirmation: true,
       reason: 'Coincide con una operacion potencialmente mutable',
     };
   }
 
-  const executable = firstExecutable(tokenizeSimpleCommand(trimmed));
+  const executable = firstExecutable(tokenizeSimpleCommand(commandWithoutAllowedRedirections));
   if (!executable) {
     return {
       requiresConfirmation: true,
@@ -192,7 +233,17 @@ export function classifyCommand(command: string): CommandPolicyDecision {
       requiresConfirmation: !subcommand || !SAFE_DOCKER_SUBCOMMANDS.has(subcommand),
       reason: subcommand && SAFE_DOCKER_SUBCOMMANDS.has(subcommand)
         ? 'Comando docker de lectura'
-        : 'Subcomando docker no clasificado como lectura',
+      : 'Subcomando docker no clasificado como lectura',
+    };
+  }
+
+  if (executable.command === 'find') {
+    const unsafeAction = executable.args.find((arg) => UNSAFE_FIND_ACTIONS.has(arg));
+    return {
+      requiresConfirmation: Boolean(unsafeAction),
+      reason: unsafeAction
+        ? `Accion find potencialmente mutable: ${unsafeAction}`
+        : 'Comando find de lectura',
     };
   }
 
@@ -202,4 +253,38 @@ export function classifyCommand(command: string): CommandPolicyDecision {
       ? 'Comando de lectura reconocido'
       : 'Comando no reconocido como lectura',
   };
+}
+
+export function classifyCommand(command: string): CommandPolicyDecision {
+  const trimmed = command.trim();
+  if (hasUnescapedPipe(trimmed) && !hasDangerousControl(trimmed)) {
+    const parts = splitPipeline(trimmed);
+    if (parts.length > 1) {
+      const decisions = parts.map((part) => classifySimpleCommand(part));
+      const unsafeDecision = decisions.find((decision) => decision.requiresConfirmation);
+
+      return unsafeDecision
+        ? {
+            requiresConfirmation: true,
+            reason: `Pipeline con tramo no clasificado como lectura: ${unsafeDecision.reason}`,
+          }
+        : {
+            requiresConfirmation: false,
+            reason: 'Pipeline de lectura reconocido',
+          };
+    }
+  }
+
+  return classifySimpleCommand(trimmed);
+}
+
+export function shouldConfirmCommand(
+  decision: CommandPolicyDecision,
+  permissions: CommandPermissionSettings,
+): boolean {
+  if (!decision.requiresConfirmation) {
+    return !permissions.autoApproveReadCommands;
+  }
+
+  return !permissions.autoApproveWriteCommands;
 }

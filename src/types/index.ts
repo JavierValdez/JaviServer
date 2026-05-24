@@ -70,11 +70,17 @@ export interface AgentSession {
   connectedAt: string;
 }
 
+export interface AgentPermissionSettings {
+  autoApproveReadCommands: boolean;
+  autoApproveWriteCommands: boolean;
+}
+
 export interface AgentIntegrationState {
   enabled: boolean;
   brokerRunning: boolean;
   sessions: AgentSession[];
   activity: AgentActivityEntry[];
+  permissions: AgentPermissionSettings;
 }
 
 export interface AgentClientConfig {

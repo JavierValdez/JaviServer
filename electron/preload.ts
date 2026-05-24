@@ -105,6 +105,8 @@ contextBridge.exposeInMainWorld('api', {
   agentIntegration: {
     getState: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetState),
     setEnabled: (enabled: boolean) => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationSetEnabled, enabled),
+    setPermissions: (permissions: unknown) =>
+      ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationSetPermissions, permissions),
     getClientConfig: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetClientConfig),
     regenerateToken: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationRegenerateToken),
     getActivity: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetActivity),

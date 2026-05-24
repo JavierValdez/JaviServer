@@ -3,6 +3,7 @@ import type {
   AgentActivityEntry,
   AgentClientConfig,
   AgentIntegrationState,
+  AgentPermissionSettings,
   PathBookmark,
   ServerProfile,
   TerminalSuggestion,
@@ -131,6 +132,7 @@ interface ElectronApi {
   agentIntegration: {
     getState: () => Promise<AgentIntegrationState>;
     setEnabled: (enabled: boolean) => Promise<AgentIntegrationState>;
+    setPermissions: (permissions: Partial<AgentPermissionSettings>) => Promise<AgentIntegrationState>;
     getClientConfig: () => Promise<AgentClientConfig>;
     regenerateToken: () => Promise<AgentIntegrationState>;
     getActivity: () => Promise<AgentActivityEntry[]>;

@@ -8,7 +8,9 @@ import {
   getAgentIntegrationPublicState,
   regenerateAgentIntegrationPublicToken,
   setAgentIntegrationPublicEnabled,
+  setAgentIntegrationPublicPermissions,
 } from '../agent/integration';
+import type { CommandPermissionSettings } from '../agent/command-policy';
 import { IPC_CHANNELS } from './channels';
 import { ProfileStore, type ProfileInput } from '../services/ProfileStore';
 import { SSHService, type DownloadProgressPayload } from '../services/SSHService';
@@ -172,6 +174,11 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC_CHANNELS.agentIntegrationGetState, () => getAgentIntegrationPublicState());
   ipcMain.handle(IPC_CHANNELS.agentIntegrationSetEnabled, (_event, enabled: boolean) =>
     setAgentIntegrationPublicEnabled(Boolean(enabled)),
+  );
+  ipcMain.handle(
+    IPC_CHANNELS.agentIntegrationSetPermissions,
+    (_event, permissions: Partial<CommandPermissionSettings>) =>
+      setAgentIntegrationPublicPermissions(permissions),
   );
   ipcMain.handle(IPC_CHANNELS.agentIntegrationGetClientConfig, () => getAgentClientConfig());
   ipcMain.handle(IPC_CHANNELS.agentIntegrationRegenerateToken, () => regenerateAgentIntegrationPublicToken());

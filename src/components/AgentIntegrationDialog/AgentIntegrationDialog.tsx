@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { AgentActivityEntry, AgentClientConfig, AgentIntegrationState } from '../../types';
+import type {
+  AgentActivityEntry,
+  AgentClientConfig,
+  AgentIntegrationState,
+  AgentPermissionSettings,
+} from '../../types';
 import { Modal } from '../ui/Modal';
 
 interface AgentIntegrationDialogProps {
@@ -44,12 +49,18 @@ function buildConfigText(config: AgentClientConfig | null): string {
   }, null, 2);
 }
 
+const DEFAULT_AGENT_PERMISSIONS: AgentPermissionSettings = {
+  autoApproveReadCommands: true,
+  autoApproveWriteCommands: false,
+};
+
 export function AgentIntegrationDialog({ onClose }: AgentIntegrationDialogProps) {
   const [state, setState] = useState<AgentIntegrationState | null>(null);
   const [config, setConfig] = useState<AgentClientConfig | null>(null);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const configText = useMemo(() => buildConfigText(config), [config]);
+  const permissions = state?.permissions || DEFAULT_AGENT_PERMISSIONS;
 
   useEffect(() => {
     let mounted = true;
@@ -163,6 +174,39 @@ export function AgentIntegrationDialog({ onClose }: AgentIntegrationDialogProps)
     }
   };
 
+  const updatePermissions = async (updates: Partial<AgentPermissionSettings>) => {
+    if (!state) {
+      return;
+    }
+
+    if (updates.autoApproveWriteCommands === true && !permissions.autoApproveWriteCommands) {
+      const confirmed = globalThis.confirm(
+        'Activar escritura sin confirmacion?\n\nLos clientes MCP podran ejecutar comandos que modifiquen el servidor sin pedir autorizacion en JaviServer.',
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
+    setBusy(true);
+    setNotice(null);
+    try {
+      const nextState = await window.api.agentIntegration.setPermissions({
+        ...permissions,
+        ...updates,
+      });
+      setState(nextState);
+      setNotice({ message: 'Permisos MCP actualizados.', type: 'success' });
+    } catch (error) {
+      setNotice({
+        message: error instanceof Error ? error.message : 'No se pudieron actualizar los permisos MCP.',
+        type: 'error',
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const activity = state?.activity.slice().reverse() || [];
 
   return (
@@ -202,6 +246,56 @@ export function AgentIntegrationDialog({ onClose }: AgentIntegrationDialogProps)
             <span />
           </button>
         </div>
+
+        <section className="panel-surface p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <div className="headline-sm">Permisos MCP</div>
+              <div className="mt-1 body-xs">Controla cuando JaviServer pide confirmacion antes de ejecutar comandos SSH.</div>
+            </div>
+            <span className={permissions.autoApproveWriteCommands ? 'badge-danger' : 'badge-neutral'}>
+              {permissions.autoApproveWriteCommands ? 'Escritura activa' : 'Lectura controlada'}
+            </span>
+          </div>
+
+          <div className="agent-permission-list">
+            <div className="agent-permission-row">
+              <div className="min-w-0">
+                <div className="text-sm font-medium text-[var(--text-primary)]">Lectura sin confirmacion</div>
+                <div className="body-xs mt-1">Comandos clasificados como lectura se ejecutan sin dialogo.</div>
+              </div>
+              <button
+                type="button"
+                className={`agent-toggle ${permissions.autoApproveReadCommands ? 'active' : ''}`}
+                onClick={() => void updatePermissions({
+                  autoApproveReadCommands: !permissions.autoApproveReadCommands,
+                })}
+                disabled={!state || busy}
+                aria-label={permissions.autoApproveReadCommands ? 'Desactivar lectura sin confirmacion' : 'Activar lectura sin confirmacion'}
+              >
+                <span />
+              </button>
+            </div>
+
+            <div className="agent-permission-row">
+              <div className="min-w-0">
+                <div className="text-sm font-medium text-[var(--text-primary)]">Escritura sin confirmacion</div>
+                <div className="body-xs mt-1">Permite comandos mutables o no clasificados en el servidor sin pedir autorizacion.</div>
+              </div>
+              <button
+                type="button"
+                className={`agent-toggle ${permissions.autoApproveWriteCommands ? 'active' : ''}`}
+                onClick={() => void updatePermissions({
+                  autoApproveWriteCommands: !permissions.autoApproveWriteCommands,
+                })}
+                disabled={!state || busy}
+                aria-label={permissions.autoApproveWriteCommands ? 'Desactivar escritura sin confirmacion' : 'Activar escritura sin confirmacion'}
+              >
+                <span />
+              </button>
+            </div>
+          </div>
+        </section>
 
         <div className="grid min-h-0 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.95fr)]">
           <section className="panel-surface p-4">

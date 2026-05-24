@@ -262,6 +262,7 @@
     .modal-card,
     .modal-backdrop,
     .agent-entry-button,
+    .agent-permission-row,
     .agent-config {
       transition: background 0.3s ease, color 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
@@ -748,6 +749,21 @@
   .agent-toggle.active span {
     left: 1.75rem;
     background: var(--success);
+  }
+
+  .agent-toggle:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .agent-permission-list {
+    @apply mt-4 grid gap-3 md:grid-cols-2;
+  }
+
+  .agent-permission-row {
+    @apply flex items-center justify-between gap-4 rounded-2xl border px-3 py-3;
+    background: var(--agent-list-row-bg);
+    border-color: var(--agent-list-row-border);
   }
 
   .agent-config {

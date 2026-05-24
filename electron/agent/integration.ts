@@ -4,7 +4,8 @@ import { join } from 'node:path';
 import { AgentActivityLog } from './activity-log';
 import { AgentBrokerServer } from './broker';
 import { buildAgentClientLaunchConfig } from './client-config';
-import { classifyCommand, normalizeRunCommandOptions } from './command-policy';
+import { classifyCommand, normalizeRunCommandOptions, shouldConfirmCommand } from './command-policy';
+import type { CommandPermissionSettings } from './command-policy';
 import type { AgentActivityEntry, AgentSession, BrokerRequest } from './protocol';
 import { createActivityEntry } from './protocol';
 import {
@@ -12,6 +13,7 @@ import {
   getAgentIntegrationState,
   regenerateAgentIntegrationToken,
   setAgentIntegrationEnabled,
+  setAgentIntegrationPermissions,
 } from './store';
 import type { ProfileStore } from '../services/ProfileStore';
 import type { SSHService } from '../services/SSHService';
@@ -22,6 +24,7 @@ export interface AgentIntegrationPublicState {
   brokerRunning: boolean;
   sessions: AgentSession[];
   activity: AgentActivityEntry[];
+  permissions: CommandPermissionSettings;
 }
 
 interface AgentDependencies {
@@ -252,7 +255,8 @@ async function handleBrokerRequest(
 
         const options = normalizeRunCommandOptions(params);
         const decision = classifyCommand(command);
-        if (decision.requiresConfirmation) {
+        const permissions = getAgentIntegrationState().permissions;
+        if (shouldConfirmCommand(decision, permissions)) {
           await confirmAgentRunCommand(session, profile, command, options.cwd, decision.reason);
         }
 
@@ -376,6 +380,7 @@ export function getAgentIntegrationPublicState(): AgentIntegrationPublicState {
     brokerRunning: Boolean(broker?.isRunning()),
     sessions: broker?.listSessions() || [],
     activity: getActivityLog().list(),
+    permissions: state.permissions,
   };
 }
 
@@ -388,6 +393,14 @@ export async function setAgentIntegrationPublicEnabled(enabled: boolean): Promis
     await stopAgentBroker();
   }
 
+  return getAgentIntegrationPublicState();
+}
+
+export function setAgentIntegrationPublicPermissions(
+  permissions: Partial<CommandPermissionSettings>,
+): AgentIntegrationPublicState {
+  setAgentIntegrationPermissions(permissions);
+  broadcast('agentIntegration:state', getAgentIntegrationPublicState());
   return getAgentIntegrationPublicState();
 }
 
