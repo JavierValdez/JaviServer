@@ -103,6 +103,38 @@ test('broker rejects invalid tokens and closes sessions when disconnected', asyn
   await server.stop();
 });
 
+test('broker does not replace an active Unix socket', { skip: process.platform === 'win32' }, async () => {
+  const endpoint = createEndpoint();
+  const server = new AgentBrokerServer({
+    endpoint,
+    getToken: () => 'secret',
+    handleRequest: async (_session, request) => ({ method: request.method }),
+  });
+  await server.start();
+
+  const duplicate = new AgentBrokerServer({
+    endpoint,
+    getToken: () => 'secret',
+    handleRequest: async () => true,
+  });
+
+  try {
+    await assert.rejects(() => duplicate.start(), /broker MCP activo/);
+
+    const client = new AgentBrokerClient({
+      endpoint,
+      token: 'secret',
+      clientId: 'after-duplicate',
+      clientName: 'After Duplicate',
+    });
+    await client.connect();
+    assert.deepEqual(await client.request('ping'), { method: 'ping' });
+    await client.close();
+  } finally {
+    await server.stop();
+  }
+});
+
 test('broker forwards request progress to connected clients', async () => {
   const endpoint = createEndpoint();
   const server = new AgentBrokerServer({

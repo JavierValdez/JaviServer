@@ -27,6 +27,9 @@ if (isMcpStdioMode) {
 }
 
 let mainWindow: BrowserWindow | null = null;
+let hasSingleInstanceLock = true;
+let guiReady = false;
+let shouldFocusWhenGuiReady = false;
 
 function createMainWindow(): BrowserWindow {
   const window = new BrowserWindow({
@@ -60,7 +63,41 @@ function createMainWindow(): BrowserWindow {
   return window;
 }
 
+function focusMainWindow(): void {
+  if (!app.isReady() || !guiReady) {
+    shouldFocusWhenGuiReady = true;
+    return;
+  }
+
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    mainWindow = createMainWindow();
+    return;
+  }
+
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+if (!isMcpStdioMode) {
+  hasSingleInstanceLock = app.requestSingleInstanceLock();
+  if (!hasSingleInstanceLock) {
+    app.quit();
+  } else {
+    app.on('second-instance', () => {
+      focusMainWindow();
+    });
+  }
+}
+
 app.whenReady().then(() => {
+  if (!hasSingleInstanceLock) {
+    return;
+  }
+
   if (isMcpStdioMode) {
     return;
   }
@@ -72,8 +109,16 @@ app.whenReady().then(() => {
   const updater = setupAutoUpdater();
   configureAgentIntegration(profileStore, sshService);
 
-  mainWindow = createMainWindow();
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    mainWindow = createMainWindow();
+  }
   registerIpcHandlers(() => mainWindow, profileStore, sshService, updater);
+  guiReady = true;
+  if (shouldFocusWhenGuiReady) {
+    shouldFocusWhenGuiReady = false;
+    focusMainWindow();
+  }
+
   void startAgentBrokerIfEnabled().catch((error) => {
     console.error('[agent] No se pudo iniciar el broker MCP:', error);
   });
@@ -81,7 +126,10 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       mainWindow = createMainWindow();
+      return;
     }
+
+    focusMainWindow();
   });
 });
 

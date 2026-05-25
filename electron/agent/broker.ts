@@ -1,6 +1,6 @@
 import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { existsSync, rmSync } from 'node:fs';
-import { createServer, type Server, type Socket } from 'node:net';
+import { connect, createServer, type Server, type Socket } from 'node:net';
 import type {
   AgentSession,
   BrokerHello,
@@ -41,6 +41,27 @@ function safeTokenEquals(left: string | null, right: string): boolean {
   return timingSafeEqual(leftBuffer, rightBuffer);
 }
 
+async function endpointAcceptsConnection(endpoint: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const socket = connect(endpoint);
+    let settled = false;
+
+    const settle = (value: boolean) => {
+      if (settled) {
+        return;
+      }
+
+      settled = true;
+      socket.destroy();
+      resolve(value);
+    };
+
+    socket.once('connect', () => settle(true));
+    socket.once('error', () => settle(false));
+    socket.setTimeout(250, () => settle(false));
+  });
+}
+
 export class AgentBrokerServer {
   private server: Server | null = null;
   private readonly sessions = new Map<string, SessionConnection>();
@@ -53,14 +74,24 @@ export class AgentBrokerServer {
     }
 
     if (process.platform !== 'win32' && existsSync(this.options.endpoint)) {
+      if (await endpointAcceptsConnection(this.options.endpoint)) {
+        throw new Error('Ya existe un broker MCP activo en este endpoint.');
+      }
+
       rmSync(this.options.endpoint, { force: true });
     }
 
     this.server = createServer((socket) => this.accept(socket));
     await new Promise<void>((resolve, reject) => {
-      this.server?.once('error', reject);
+      const onError = (error: Error & { code?: string }) => {
+        reject(error.code === 'EADDRINUSE'
+          ? new Error('Ya existe un broker MCP activo en este endpoint.')
+          : error);
+      };
+
+      this.server?.once('error', onError);
       this.server?.listen(this.options.endpoint, () => {
-        this.server?.off('error', reject);
+        this.server?.off('error', onError);
         resolve();
       });
     });
