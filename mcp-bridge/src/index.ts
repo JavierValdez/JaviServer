@@ -1,22 +1,32 @@
-// Bridge MCP standalone para Windows.
-// Este binario se ejecuta en CONSOLE subsystem (vía Node SEA o node.exe directo)
-// y actúa como puente entre el cliente MCP (Kiro CLI, Claude Desktop, VS Code Copilot, etc.)
-// y la app GUI JaviServer corriendo localmente, conectándose a su broker via named pipe.
-//
-// La app GUI principal sigue funcionando exactamente igual; solo se cambia el binario
-// que se invoca desde mcp.json en Windows.
+// Bridge MCP standalone cross-plataforma.
+// En Windows se conecta vía named pipe; en macOS/Linux vía Unix socket.
+// Actúa como puente entre el cliente MCP (Kiro CLI, Claude Desktop, VS Code Copilot, etc.)
+// y la app GUI corriendo localmente, conectándose a su broker.
 
 import { randomUUID } from 'node:crypto';
+import os from 'node:os';
+import path from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { AgentBrokerClient } from '../../electron/agent/broker-client';
 import { registerResources, registerTools } from '../../electron/agent/mcp-surface';
 
 const SERVER_NAME = 'javiserver';
-const PIPE_ENDPOINT = '\\\\.\\pipe\\javiserver-agent-broker';
 const TOKEN_ENV = 'JAVISERVER_MCP_TOKEN';
 const DEBUG_ENV = 'JAVISERVER_MCP_DEBUG';
 const VERSION = process.env.JAVISERVER_BRIDGE_VERSION || '0.0.0';
+
+function resolveBrokerEndpoint(): string {
+  if (process.platform === 'win32') return '\\\\\\\\.\\\\pipe\\\\javiserver-agent-broker';
+  const userData = process.platform === 'darwin'
+    ? path.join(os.homedir(), 'Library', 'Application Support', 'JaviServer')
+    : path.join(process.env.XDG_DATA_HOME ?? path.join(os.homedir(), '.local', 'share'), 'JaviServer');
+  const preferred = path.join(userData, 'javiserver-agent-broker.sock');
+  if (Buffer.byteLength(preferred, 'utf-8') <= 100) return preferred;
+  return path.join(os.tmpdir(), `javiserver-agent-broker-${process.getuid?.() ?? 'u'}.sock`);
+}
+
+const PIPE_ENDPOINT = resolveBrokerEndpoint();
 
 function logDebug(message: string): void {
   if (process.env[DEBUG_ENV] !== '1') {
@@ -65,15 +75,12 @@ async function main(): Promise<void> {
   registerTools(server, broker);
   registerResources(server, broker);
 
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  logDebug('stdio server ready');
-
   let shuttingDown = false;
   const shutdown = async (exitCode: number, reason: string): Promise<void> => {
     if (shuttingDown) {
       return;
     }
+
     shuttingDown = true;
     logDebug(`shutdown: ${reason}`);
     try {
@@ -84,12 +91,35 @@ async function main(): Promise<void> {
     }
   };
 
-  transport.onclose = () => {
-    void shutdown(0, 'transport closed');
-  };
-  broker.onClose(() => {
-    void shutdown(1, 'broker closed');
+  // ── Triggers defensivos ──────────────────────────────────────────
+  process.stdin.on('end', () => { void shutdown(0, 'stdin end'); });
+  process.stdin.on('close', () => { void shutdown(0, 'stdin close'); });
+  process.stdin.on('error', (err) => {
+    void shutdown(1, `stdin error: ${err instanceof Error ? err.message : String(err)}`);
   });
+
+  for (const sig of ['SIGTERM', 'SIGINT', 'SIGHUP'] as const) {
+    process.on(sig, () => { void shutdown(0, sig); });
+  }
+
+  if (process.platform !== 'win32') {
+    const initialPpid = process.ppid;
+    const ppidWatcher = setInterval(() => {
+      const current = process.ppid;
+      if (current !== initialPpid || current === 1) {
+        void shutdown(0, `parent changed: ${initialPpid} -> ${current}`);
+      }
+    }, 2000);
+    ppidWatcher.unref();
+  }
+  // ──────────────────────────────────────────────────────────────────
+
+  const transport = new StdioServerTransport();
+  transport.onclose = () => { void shutdown(0, 'transport closed'); };
+  await server.connect(transport);
+  logDebug('stdio server ready');
+
+  broker.onClose(() => { void shutdown(1, 'broker closed'); });
 }
 
 main().catch((error) => {

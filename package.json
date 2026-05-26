@@ -1,7 +1,7 @@
 {
   "name": "javiserver",
   "private": true,
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Gestor SSH Multi-servidor para explorar archivos y logs de servidores",
   "author": "jasegura",
   "type": "module",
@@ -83,7 +83,17 @@
         "dmg",
         "zip"
       ],
-      "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
+      "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+      "extraResources": [
+        {
+          "from": "dist-mcp-bridge/bridge.cjs",
+          "to": "bridge/bridge.cjs"
+        },
+        {
+          "from": "dist-mcp-bridge/javiserver-mcp-bridge",
+          "to": "bridge/javiserver-mcp-bridge"
+        }
+      ]
     },
     "dmg": {
       "window": {

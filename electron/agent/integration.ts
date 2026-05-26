@@ -1,5 +1,7 @@
 import { app, BrowserWindow, dialog } from 'electron';
 import type { MessageBoxOptions } from 'electron';
+import { Buffer } from 'node:buffer';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { AgentActivityLog } from './activity-log';
 import { AgentBrokerServer } from './broker';
@@ -50,10 +52,13 @@ function getDependencies(): AgentDependencies {
 
 export function getAgentBrokerEndpoint(): string {
   if (process.platform === 'win32') {
-    return '\\\\.\\pipe\\javiserver-agent-broker';
+    return '\\\\\\\\.\\\\pipe\\\\javiserver-agent-broker';
   }
 
-  return join(app.getPath('userData'), 'javiserver-agent-broker.sock');
+  const preferred = join(app.getPath('userData'), 'javiserver-agent-broker.sock');
+  // macOS limita sun_path a 104 bytes, Linux a 108. Si nos pasamos, usar /tmp.
+  if (Buffer.byteLength(preferred, 'utf-8') <= 100) return preferred;
+  return join(tmpdir(), `javiserver-agent-broker-${process.getuid?.() ?? 'u'}.sock`);
 }
 
 function getActivityLog(): AgentActivityLog {
@@ -411,17 +416,24 @@ export function getAgentClientConfig(): {
 } {
   const token = ensureAgentIntegrationToken();
   const launchArgs = app.isPackaged ? ['--mcp-stdio'] : [app.getAppPath(), '--mcp-stdio'];
+
+  // Resolver ruta al bridge MCP standalone en macOS/Linux empaquetado.
+  const mcpBridgeExePath = (() => {
+    if (!app.isPackaged) return undefined;
+    if (process.platform === 'darwin' || process.platform === 'linux') {
+      return join(process.resourcesPath, 'bridge', 'javiserver-mcp-bridge');
+    }
+    return undefined;
+  })();
+
   const launchConfig = buildAgentClientLaunchConfig({
     platform: process.platform,
     execPath: process.execPath,
     launchArgs,
     comSpec: process.env.ComSpec,
     stdioEnvKey: 'JAVISERVER_MCP_STDIO',
-    // Windows-only: cuando esta empaquetada, el instalador NSIS coloca este
-    // binario al lado de JaviServer.exe (extraFiles en electron-builder).
-    // En dev (no empaquetada) no existe; el builder ignora el bridge y cae al
-    // fallback de lanzar el exe directo.
     mcpBridgeExeName: app.isPackaged && process.platform === 'win32' ? 'JaviServerMcp.exe' : undefined,
+    mcpBridgeExePath,
   });
 
   return {

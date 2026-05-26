@@ -1,0 +1,141 @@
+/* ══════════════════════════════════════════════════════════════════════════════
+   JaviServer — Light Theme: "Violet Dusk"
+   Dirección: Púrpura + Violeta + Rosa / Gradientes premium / Glassmorphism real
+   Diseñado por Kiro — 2026-05-19
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* ── Surfaces ── */
+  --surface-app: #f8f5ff;
+  --surface-sidebar: rgba(255, 255, 255, 0.72);
+  --surface-panel: rgba(255, 255, 255, 0.68);
+  --surface-panel-strong: rgba(255, 255, 255, 0.82);
+  --surface-panel-muted: rgba(243, 237, 255, 0.7);
+  --surface-elevated: rgba(255, 255, 255, 0.88);
+  --surface-contrast: rgba(248, 243, 255, 0.94);
+
+  /* ── Borders ── */
+  --border-subtle: rgba(139, 92, 246, 0.15);
+  --border-strong: rgba(139, 92, 246, 0.3);
+
+  /* ── Text ── */
+  --text-primary: #1e1033;
+  --text-secondary: #5b4a72;
+  --text-muted: #8b7aa3;
+
+  /* ── Accent (Violeta vibrante) ── */
+  --accent: #7c3aed;
+  --accent-strong: #5b21b6;
+  --accent-soft: rgba(124, 58, 237, 0.14);
+  --accent-surface: rgba(124, 58, 237, 0.06);
+  --accent-border: rgba(124, 58, 237, 0.25);
+
+  /* ── Semantic colors ── */
+  --success: #059669;
+  --success-strong: #047857;
+  --success-soft: rgba(5, 150, 105, 0.12);
+
+  --warning: #d97706;
+  --warning-strong: #b45309;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+
+  --danger: #e11d48;
+  --danger-strong: #be123c;
+  --danger-soft: rgba(225, 29, 72, 0.1);
+
+  --info: #8b5cf6;
+  --info-strong: #7c3aed;
+  --info-soft: rgba(139, 92, 246, 0.12);
+
+  /* ── Focus ── */
+  --focus-ring: rgba(124, 58, 237, 0.4);
+
+  /* ── Shadows (coloreadas, no negras) ── */
+  --shadow-panel: 0 18px 60px rgba(124, 58, 237, 0.1), 0 4px 16px rgba(168, 85, 247, 0.08);
+  --shadow-soft: 0 8px 28px rgba(124, 58, 237, 0.07), 0 2px 6px rgba(139, 92, 246, 0.05);
+  --shadow-button: 0 8px 24px rgba(124, 58, 237, 0.3), 0 2px 8px rgba(168, 85, 247, 0.2);
+
+  /* ── Buttons ── */
+  --btn-secondary-bg: rgba(243, 237, 255, 0.8);
+  --btn-secondary-hover: rgba(233, 222, 255, 0.95);
+  --btn-icon-bg: rgba(243, 237, 255, 0.75);
+  --btn-icon-hover: rgba(233, 222, 255, 0.95);
+  --btn-ghost-hover: rgba(139, 92, 246, 0.07);
+  --btn-chip-bg: rgba(243, 237, 255, 0.8);
+
+  /* ── Inputs ── */
+  --input-bg: rgba(255, 255, 255, 0.7);
+
+  /* ── Segmented / Tabs ── */
+  --segmented-bg: rgba(237, 228, 255, 0.6);
+  --segmented-active: rgba(255, 255, 255, 0.95);
+  --tab-strip-bg: rgba(248, 243, 255, 0.8);
+  --tab-item-bg: rgba(243, 237, 255, 0.6);
+  --tab-item-hover: rgba(233, 222, 255, 0.85);
+  --tab-item-active: rgba(255, 255, 255, 0.96);
+
+  /* ── Table ── */
+  --table-head-bg: rgba(248, 243, 255, 0.95);
+  --table-row-hover: rgba(139, 92, 246, 0.06);
+  --table-row-selected: rgba(124, 58, 237, 0.1);
+
+  /* ── Modal ── */
+  --modal-backdrop: rgba(30, 16, 51, 0.45);
+  --modal-card-top: rgba(255, 255, 255, 0.5);
+  --modal-border-top: rgba(139, 92, 246, 0.15);
+
+  /* ── Agent / MCP Panel ── */
+  --agent-panel-bg: rgba(248, 243, 255, 0.8);
+  --agent-entry-bg: rgba(255, 255, 255, 0.7);
+  --agent-entry-hover: rgba(243, 237, 255, 0.95);
+  --agent-entry-border: rgba(139, 92, 246, 0.18);
+  --agent-entry-hover-border: rgba(124, 58, 237, 0.4);
+  --agent-config-bg: rgba(248, 243, 255, 0.9);
+  --agent-list-row-bg: rgba(139, 92, 246, 0.04);
+  --agent-list-row-border: rgba(139, 92, 246, 0.1);
+
+  /* ── Scrollbar ── */
+  --scrollbar-track: rgba(139, 92, 246, 0.04);
+  --scrollbar-thumb: rgba(139, 92, 246, 0.2);
+  --scrollbar-thumb-hover: rgba(124, 58, 237, 0.35);
+
+  /* ── Gradients (el alma del theme) ── */
+  --body-gradient:
+    radial-gradient(ellipse at top left, rgba(168, 85, 247, 0.18), transparent 45%),
+    radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.12), transparent 50%),
+    radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.08), transparent 35%),
+    linear-gradient(165deg, #faf5ff 0%, #f3e8ff 35%, #fdf2f8 70%, #faf5ff 100%);
+
+  --app-shell-gradient:
+    radial-gradient(circle at 8% 12%, rgba(139, 92, 246, 0.12), transparent 30%),
+    radial-gradient(circle at 92% 85%, rgba(236, 72, 153, 0.08), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 40%),
+    var(--surface-app);
+
+  --workbench-header-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(248, 243, 255, 0.4)),
+    var(--surface-panel-strong);
+
+  --modal-card-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(248, 243, 255, 0.3) 30%),
+    var(--surface-elevated);
+
+  /* ── Terminal (integrado, no un rectángulo feo) ── */
+  --xterm-bg: #1e1033;
+  --xterm-fg: #e9e0f8;
+  --xterm-cursor: #a78bfa;
+  --xterm-selection: rgba(168, 85, 247, 0.35);
+}
+
+/* ── Terminal background con gradiente violeta ── */
+[data-theme='light'] .terminal-bg {
+  background:
+    radial-gradient(ellipse at top, rgba(139, 92, 246, 0.2), transparent 50%),
+    linear-gradient(180deg, #1e1033 0%, #150c28 100%);
+}
+
+[data-theme='light'] .terminal-grid {
+  opacity: 0.2;
+}
