@@ -133,7 +133,9 @@ jobs:
           set -euo pipefail
           shopt -s nullglob
 
-          destination="gs://${GCS_BUCKET}/${GCS_RELEASES_PREFIX}/"
+          version_dir="${GITHUB_REF_NAME}"
+          destination="gs://${GCS_BUCKET}/${GCS_RELEASES_PREFIX}"
+          version_destination="${destination}/${version_dir}/"
           installer_assets=(
             release-assets/*.dmg
             release-assets/*.zip
@@ -152,17 +154,42 @@ jobs:
             exit 1
           fi
 
+          VERSION_DIR="${version_dir}" node - <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          const versionDir = process.env.VERSION_DIR;
+          const metadataDir = 'release-assets';
+          const metadataFiles = fs
+            .readdirSync(metadataDir)
+            .filter((file) => /^latest.*\.yml$/.test(file));
+
+          for (const file of metadataFiles) {
+            const filePath = path.join(metadataDir, file);
+            const nextContent = fs
+              .readFileSync(filePath, 'utf8')
+              .replace(/^(\s*(?:- )?(?:url|path):\s*)(?!https?:\/\/|\/)(\S.*)$/gm, (match, prefix, value) => {
+                const trimmedValue = value.trim();
+                return trimmedValue.startsWith(`${versionDir}/`)
+                  ? match
+                  : `${prefix}${versionDir}/${trimmedValue}`;
+              });
+
+            fs.writeFileSync(filePath, nextContent);
+          }
+          NODE
+
           gcloud storage cp \
             --canned-acl=publicRead \
             --cache-control="public,max-age=31536000,immutable" \
             "${installer_assets[@]}" \
-            "${destination}"
+            "${version_destination}"
 
           gcloud storage cp \
             --canned-acl=publicRead \
             --cache-control="no-cache" \
             "${metadata_assets[@]}" \
-            "${destination}"
+            "${destination}/"
 
       - name: Verify published metadata
         shell: bash
@@ -170,5 +197,85 @@ jobs:
           set -euo pipefail
           base_url="https://storage.googleapis.com/${GCS_BUCKET}/${GCS_RELEASES_PREFIX}"
 
-          curl --fail --silent --show-error --head "${base_url}/latest.yml" >/dev/null
-          curl --fail --silent --show-error --head "${base_url}/latest-mac.yml" >/dev/null
+          for metadata in latest.yml latest-mac.yml; do
+            curl --fail --silent --show-error "${base_url}/${metadata}" --output "${metadata}"
+
+            while read -r asset_path; do
+              curl --fail --silent --show-error --head "${base_url}/${asset_path}" >/dev/null
+            done < <(awk '/^[[:space:]]*(- )?(url|path): / { print $NF }' "${metadata}" | sort -u)
+          done
+
+      - name: Keep only five Cloud Storage releases
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          destination="gs://${GCS_BUCKET}/${GCS_RELEASES_PREFIX}"
+          version_list="$(mktemp)"
+          delete_list="$(mktemp)"
+
+          gcloud storage ls "${destination}/" > "${version_list}" || true
+
+          node - "${version_list}" > "${delete_list}" <<'NODE'
+          const fs = require('node:fs');
+          const listPath = process.argv[2];
+          const versions = new Set();
+
+          for (const line of fs.readFileSync(listPath, 'utf8').split(/\r?\n/)) {
+            const match = line.match(/\/(v\d+\.\d+\.\d+(?:[-+][^/]+)?)\/$/);
+            if (match) {
+              versions.add(match[1]);
+            }
+          }
+
+          function parseVersion(value) {
+            const match = value.match(/^v(\d+)\.(\d+)\.(\d+)(?:-([^+]+))?/);
+            if (!match) {
+              return null;
+            }
+
+            return {
+              value,
+              major: Number(match[1]),
+              minor: Number(match[2]),
+              patch: Number(match[3]),
+              prerelease: match[4] || '',
+            };
+          }
+
+          function compareVersions(left, right) {
+            for (const key of ['major', 'minor', 'patch']) {
+              if (left[key] !== right[key]) {
+                return right[key] - left[key];
+              }
+            }
+
+            if (!left.prerelease && right.prerelease) {
+              return -1;
+            }
+
+            if (left.prerelease && !right.prerelease) {
+              return 1;
+            }
+
+            return right.prerelease.localeCompare(left.prerelease);
+          }
+
+          const sortedVersions = [...versions]
+            .map(parseVersion)
+            .filter(Boolean)
+            .sort(compareVersions);
+
+          process.stdout.write(sortedVersions.slice(5).map((version) => version.value).join('\n'));
+          NODE
+
+          while read -r version_dir; do
+            if [ -n "${version_dir}" ]; then
+              gcloud storage rm --recursive "${destination}/${version_dir}/"
+            fi
+          done < "${delete_list}"
+
+          mapfile -t legacy_root_assets < <(gcloud storage ls "${destination}/JaviServer-*" 2>/dev/null || true)
+          if [ "${#legacy_root_assets[@]}" -gt 0 ]; then
+            gcloud storage rm "${legacy_root_assets[@]}"
+          fi

@@ -70,6 +70,8 @@ El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/j
 - `gs://artictools-releases/javiserver/releases/`
 - `https://storage.googleapis.com/artictools-releases/javiserver/releases/`
 
+Los archivos `latest.yml` y `latest-mac.yml` quedan en la raíz de esa ruta. Los instaladores y blockmaps se guardan por versión, por ejemplo `v2.2.3/`. El workflow conserva las 5 versiones más recientes en Cloud Storage y elimina carpetas de versiones anteriores.
+
 Flujo recomendado:
 
 1. Actualiza la versión en [`package.json`](/Users/javier/Documents/GitHub/JaviServer/package.json).
