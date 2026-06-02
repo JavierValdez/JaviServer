@@ -9,7 +9,7 @@ import { autoUpdater, type UpdateInfo, type UpdateFileInfo } from 'electron-upda
 import type { AppUpdateState } from '../src/types/updater';
 
 const UPDATE_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
-const RELEASES_BASE_URL = 'https://storage.googleapis.com/artictools-releases/releases';
+const RELEASES_BASE_URL = 'https://storage.googleapis.com/artictools-releases/javiserver/releases';
 
 export interface UpdateController {
   getState: () => AppUpdateState;

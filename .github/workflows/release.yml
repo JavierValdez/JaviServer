@@ -11,7 +11,7 @@ permissions:
 env:
   GCP_PROJECT_ID: artictools-e5538
   GCS_BUCKET: artictools-releases
-  GCS_RELEASES_PREFIX: releases
+  GCS_RELEASES_PREFIX: javiserver/releases
 
 concurrency:
   group: release-${{ github.ref }}

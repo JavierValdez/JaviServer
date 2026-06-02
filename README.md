@@ -67,8 +67,8 @@ Variables usadas por el modo MCP:
 
 El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que construye instaladores para Windows y macOS al publicar un tag `v*`, y los sube al bucket de Cloud Storage usado por el actualizador:
 
-- `gs://artictools-releases/releases/`
-- `https://storage.googleapis.com/artictools-releases/releases/`
+- `gs://artictools-releases/javiserver/releases/`
+- `https://storage.googleapis.com/artictools-releases/javiserver/releases/`
 
 Flujo recomendado:
 

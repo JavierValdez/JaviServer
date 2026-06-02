@@ -71,7 +71,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "https://storage.googleapis.com/artictools-releases/releases"
+        "url": "https://storage.googleapis.com/artictools-releases/javiserver/releases"
       }
     ],
     "mac": {
