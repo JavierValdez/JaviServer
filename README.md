@@ -63,16 +63,19 @@ Variables usadas por el modo MCP:
 - `JAVISERVER_MCP_CLIENT_NAME`
 - `JAVISERVER_MCP_CLIENT_VERSION`
 
-## 🚀 Releases en GitHub
+## 🚀 Releases automáticos
 
-El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que publica instaladores para Windows y macOS en GitHub Releases.
+El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que construye instaladores para Windows y macOS al publicar un tag `v*`, y los sube al bucket de Cloud Storage usado por el actualizador:
+
+- `gs://artictools-releases/releases/`
+- `https://storage.googleapis.com/artictools-releases/releases/`
 
 Flujo recomendado:
 
 1. Actualiza la versión en [`package.json`](/Users/javier/Documents/GitHub/JaviServer/package.json).
 2. Haz commit de los cambios.
 3. Crea y publica un tag con el mismo número de versión, por ejemplo `v1.0.1`.
-4. GitHub Actions construirá y subirá:
+4. GitHub Actions construirá y publicará:
    - `JaviServer-Mac-x.y.z-Installer.dmg`
    - `JaviServer-Mac-x.y.z-Installer.zip`
    - `JaviServer-Windows-x.y.z-Setup.exe`
@@ -89,7 +92,9 @@ git push origin main --tags
 
 ## 🔐 Secrets recomendados para CI
 
-Para publicar releases desde GitHub Actions no necesitas más que `GITHUB_TOKEN`, que GitHub ya inyecta en el workflow.
+Para publicar releases en Cloud Storage, configura este secret del repositorio:
+
+- `GCP_RELEASES_SERVICE_ACCOUNT_KEY`
 
 Para que macOS quede firmado y el auto-update funcione correctamente, configura además estos secrets:
 
@@ -148,7 +153,7 @@ javiserver/
 - La aplicación está diseñada para acceso de solo lectura
 - Los perfiles se guardan en `%APPDATA%/javiserver/server-profiles.json`
 - Compatible con servidores que usan algoritmos MAC: hmac-sha2-256, hmac-sha2-512, hmac-sha1
-- Los releases publicados en GitHub son la fuente del sistema de auto-actualización
+- Los releases publicados en Cloud Storage son la fuente del sistema de auto-actualización
 
 ## 🔐 Seguridad
 

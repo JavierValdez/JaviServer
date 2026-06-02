@@ -6,7 +6,12 @@ on:
       - 'v*'
 
 permissions:
-  contents: write
+  contents: read
+
+env:
+  GCP_PROJECT_ID: artictools-e5538
+  GCS_BUCKET: artictools-releases
+  GCS_RELEASES_PREFIX: releases
 
 concurrency:
   group: release-${{ github.ref }}
@@ -91,23 +96,71 @@ jobs:
           if-no-files-found: error
 
   publish:
-    name: Publish GitHub Release
+    name: Publish Cloud Storage release
     needs: build
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Download release artifacts
         uses: actions/download-artifact@v4
         with:
           path: release-assets
           merge-multiple: true
 
-      - name: Publish release after all assets are ready
-        uses: softprops/action-gh-release@v2
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          name: ${{ github.ref_name }}
-          tag_name: ${{ github.ref_name }}
-          files: release-assets/**/*
-          fail_on_unmatched_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          credentials_json: ${{ secrets.GCP_RELEASES_SERVICE_ACCOUNT_KEY }}
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v3
+
+      - name: Publish release to Cloud Storage
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          destination="gs://${GCS_BUCKET}/${GCS_RELEASES_PREFIX}/"
+          installer_assets=(
+            release-assets/*.dmg
+            release-assets/*.zip
+            release-assets/*.exe
+            release-assets/*.blockmap
+          )
+          metadata_assets=(release-assets/latest*.yml)
+
+          if [ "${#installer_assets[@]}" -eq 0 ]; then
+            echo "No installer artifacts were found."
+            exit 1
+          fi
+
+          if [ "${#metadata_assets[@]}" -eq 0 ]; then
+            echo "No update metadata files were found."
+            exit 1
+          fi
+
+          gcloud storage cp \
+            --canned-acl=publicRead \
+            --cache-control="public,max-age=31536000,immutable" \
+            "${installer_assets[@]}" \
+            "${destination}"
+
+          gcloud storage cp \
+            --canned-acl=publicRead \
+            --cache-control="no-cache" \
+            "${metadata_assets[@]}" \
+            "${destination}"
+
+      - name: Verify published metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          base_url="https://storage.googleapis.com/${GCS_BUCKET}/${GCS_RELEASES_PREFIX}"
+
+          curl --fail --silent --show-error --head "${base_url}/latest.yml" >/dev/null
+          curl --fail --silent --show-error --head "${base_url}/latest-mac.yml" >/dev/null

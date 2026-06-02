@@ -9,24 +9,7 @@ import { autoUpdater, type UpdateInfo, type UpdateFileInfo } from 'electron-upda
 import type { AppUpdateState } from '../src/types/updater';
 
 const UPDATE_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
-const RELEASE_DOWNLOADS_URL = 'https://github.com/JavierValdez/JaviServer/releases/download';
-const LATEST_RELEASE_API_URL = 'https://api.github.com/repos/JavierValdez/JaviServer/releases/latest';
-
-interface GitHubReleaseAsset {
-  name: string;
-  size: number;
-  browser_download_url: string;
-}
-
-interface GitHubReleasePayload {
-  tag_name?: string;
-  name?: string;
-  body?: string | null;
-  published_at?: string;
-  prerelease?: boolean;
-  draft?: boolean;
-  assets?: GitHubReleaseAsset[];
-}
+const RELEASES_BASE_URL = 'https://storage.googleapis.com/artictools-releases/releases';
 
 export interface UpdateController {
   getState: () => AppUpdateState;
@@ -77,12 +60,12 @@ function encodeAssetPath(assetPath: string): string {
     .join('/');
 }
 
-function getReleaseAssetUrl(version: string, assetUrl: string): string {
+function getReleaseAssetUrl(assetUrl: string): string {
   if (/^https?:\/\//.test(assetUrl)) {
     return assetUrl;
   }
 
-  return `${RELEASE_DOWNLOADS_URL}/v${version}/${encodeAssetPath(assetUrl)}`;
+  return `${RELEASES_BASE_URL}/${encodeAssetPath(assetUrl.replace(/^\/+/, ''))}`;
 }
 
 function selectInstallerAsset(updateInfo: UpdateInfo): UpdateFileInfo | null {
@@ -95,131 +78,6 @@ function selectInstallerAsset(updateInfo: UpdateInfo): UpdateFileInfo | null {
   }
 
   return null;
-}
-
-function normalizeVersion(value: string | null | undefined): string {
-  return String(value || '').trim().replace(/^v/i, '');
-}
-
-function parseVersionParts(version: string): number[] {
-  return normalizeVersion(version)
-    .split(/[.-]/)
-    .map((part) => Number.parseInt(part, 10))
-    .map((part) => (Number.isFinite(part) ? part : 0));
-}
-
-function isRemoteVersionNewer(remoteVersion: string, currentVersion: string): boolean {
-  const remoteParts = parseVersionParts(remoteVersion);
-  const currentParts = parseVersionParts(currentVersion);
-  const maxLength = Math.max(remoteParts.length, currentParts.length, 3);
-
-  for (let index = 0; index < maxLength; index += 1) {
-    const remotePart = remoteParts[index] ?? 0;
-    const currentPart = currentParts[index] ?? 0;
-    if (remotePart > currentPart) {
-      return true;
-    }
-    if (remotePart < currentPart) {
-      return false;
-    }
-  }
-
-  return false;
-}
-
-function selectReleaseAsset(assets: GitHubReleaseAsset[]): GitHubReleaseAsset | null {
-  if (process.platform === 'darwin') {
-    return assets.find((asset) => asset.name.endsWith('.dmg')) ?? null;
-  }
-
-  if (process.platform === 'win32') {
-    return assets.find((asset) => asset.name.endsWith('.exe')) ?? null;
-  }
-
-  return null;
-}
-
-function buildUpdateInfoFromRelease(release: GitHubReleasePayload): UpdateInfo | null {
-  if (release.draft || release.prerelease) {
-    return null;
-  }
-
-  const version = normalizeVersion(release.tag_name || release.name);
-  const asset = selectReleaseAsset(release.assets || []);
-  if (!version || !asset) {
-    return null;
-  }
-
-  return {
-    version,
-    files: [{
-      url: asset.browser_download_url || asset.name,
-      size: asset.size,
-      sha512: '',
-    }],
-    path: asset.browser_download_url || asset.name,
-    sha512: '',
-    releaseName: release.name || release.tag_name || null,
-    releaseNotes: release.body || null,
-    releaseDate: release.published_at || new Date().toISOString(),
-  };
-}
-
-async function fetchLatestReleaseUpdateInfo(): Promise<UpdateInfo | null> {
-  const response = await fetch(LATEST_RELEASE_API_URL, {
-    headers: {
-      'User-Agent': `${app.getName()}/${app.getVersion()}`,
-      Accept: 'application/vnd.github+json',
-    },
-    redirect: 'follow',
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitHub Releases respondio con estado ${response.status}.`);
-  }
-
-  return buildUpdateInfoFromRelease(await response.json() as GitHubReleasePayload);
-}
-
-async function checkGitHubReleaseFallback(): Promise<AppUpdateState> {
-  const updateInfo = await fetchLatestReleaseUpdateInfo();
-  if (!updateInfo) {
-    return setState({
-      status: 'error',
-      message: 'No se encontro un instalador compatible en el ultimo release.',
-      checkedAt: new Date().toISOString(),
-      downloadProgress: null,
-    });
-  }
-
-  latestUpdateInfo = updateInfo;
-
-  if (!isRemoteVersionNewer(updateInfo.version, app.getVersion())) {
-    return setState({
-      status: 'up-to-date',
-      latestVersion: updateInfo.version,
-      message: 'Ya tienes la ultima version.',
-      checkedAt: new Date().toISOString(),
-      downloadProgress: null,
-      downloadedInstallerPath: null,
-      downloadedVersion: null,
-    });
-  }
-
-  const existingDownload = await syncExistingDownload(updateInfo);
-  if (existingDownload) {
-    return existingDownload;
-  }
-
-  return setState({
-    status: 'available',
-    latestVersion: updateInfo.version,
-    message: `Hay una actualizacion disponible: ${updateInfo.version}.`,
-    checkedAt: new Date().toISOString(),
-    downloadProgress: null,
-    downloadedInstallerPath: null,
-    downloadedVersion: null,
-  });
 }
 
 async function fileExists(filePath: string): Promise<boolean> {
@@ -308,12 +166,6 @@ async function checkForUpdates(): Promise<AppUpdateState> {
     });
 
     try {
-      try {
-        return await checkGitHubReleaseFallback();
-      } catch (releaseError) {
-        console.warn('[updater] No se pudo consultar GitHub Releases API, usando metadata electron-updater:', releaseError);
-      }
-
       const result = await autoUpdater.checkForUpdates();
       if (!result) {
         return setState({
@@ -427,7 +279,7 @@ async function downloadInstaller(): Promise<AppUpdateState> {
     });
 
     try {
-      const response = await fetch(getReleaseAssetUrl(updateInfo.version, installerAsset.url), {
+      const response = await fetch(getReleaseAssetUrl(installerAsset.url), {
         headers: {
           'User-Agent': `${app.getName()}/${app.getVersion()}`,
           Accept: 'application/octet-stream',
@@ -498,6 +350,10 @@ export function setupAutoUpdater(): UpdateController {
   autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.allowPrerelease = false;
   autoUpdater.allowDowngrade = false;
+  autoUpdater.setFeedURL({
+    provider: 'generic',
+    url: RELEASES_BASE_URL,
+  });
 
   autoUpdater.on('checking-for-update', () => {
     console.info('[updater] Buscando actualizaciones...');

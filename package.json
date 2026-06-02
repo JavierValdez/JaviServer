@@ -12,7 +12,7 @@
     "build:mcp-bridge": "node scripts/build-mcp-bridge.mjs --sea",
     "build:mcp-bridge:bundle": "node scripts/build-mcp-bridge.mjs",
     "build": "npm run build:web && npm run build:mcp-bridge && electron-builder --publish never",
-    "release": "npm run build:web && npm run build:mcp-bridge && electron-builder --publish always",
+    "release": "npm run build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "tsx --test tests/**/*.test.ts",
     "preview": "vite preview"
@@ -70,10 +70,8 @@
     ],
     "publish": [
       {
-        "provider": "github",
-        "owner": "JavierValdez",
-        "repo": "JaviServer",
-        "releaseType": "release"
+        "provider": "generic",
+        "url": "https://storage.googleapis.com/artictools-releases/releases"
       }
     ],
     "mac": {
