@@ -8,6 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { WINDOWS_AGENT_BROKER_ENDPOINT } from '../../electron/agent/broker-endpoint';
 import { AgentBrokerClient } from '../../electron/agent/broker-client';
 import { registerResources, registerTools } from '../../electron/agent/mcp-surface';
 
@@ -17,7 +18,7 @@ const DEBUG_ENV = 'JAVISERVER_MCP_DEBUG';
 const VERSION = process.env.JAVISERVER_BRIDGE_VERSION || '0.0.0';
 
 function resolveBrokerEndpoint(): string {
-  if (process.platform === 'win32') return '\\\\\\\\.\\\\pipe\\\\javiserver-agent-broker';
+  if (process.platform === 'win32') return WINDOWS_AGENT_BROKER_ENDPOINT;
   const userData = process.platform === 'darwin'
     ? path.join(os.homedir(), 'Library', 'Application Support', 'JaviServer')
     : path.join(process.env.XDG_DATA_HOME ?? path.join(os.homedir(), '.local', 'share'), 'JaviServer');

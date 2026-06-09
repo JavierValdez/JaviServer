@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { AgentActivityLog } from './activity-log';
 import { AgentBrokerServer } from './broker';
+import { WINDOWS_AGENT_BROKER_ENDPOINT } from './broker-endpoint';
 import { buildAgentClientLaunchConfig } from './client-config';
 import { classifyCommand, normalizeRunCommandOptions, shouldConfirmCommand } from './command-policy';
 import type { CommandPermissionSettings } from './command-policy';
@@ -52,7 +53,7 @@ function getDependencies(): AgentDependencies {
 
 export function getAgentBrokerEndpoint(): string {
   if (process.platform === 'win32') {
-    return '\\\\\\\\.\\\\pipe\\\\javiserver-agent-broker';
+    return WINDOWS_AGENT_BROKER_ENDPOINT;
   }
 
   const preferred = join(app.getPath('userData'), 'javiserver-agent-broker.sock');
