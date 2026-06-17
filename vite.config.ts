@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const mainExternalDeps = ['electron-store', 'ssh2', 'cpu-features']
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,8 +17,11 @@ export default defineConfig({
         entry: 'electron/main.ts',
         vite: {
           build: {
+            rolldownOptions: {
+              external: mainExternalDeps,
+            },
             rollupOptions: {
-              external: ['electron-store', 'ssh2'],
+              external: mainExternalDeps,
             },
           },
         },

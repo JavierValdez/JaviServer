@@ -1,0 +1,7 @@
+{
+  "name": "cpu-features",
+  "version": "0.0.10",
+  "private": true,
+  "main": "index.js",
+  "description": "No-op stub for ssh2's optional cpu-features dependency in Electron builds"
+}

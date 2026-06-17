@@ -101,9 +101,23 @@ function App() {
     return [...tabs].reverse().find((tab) => tab.profileId === profileId && tab.data?.path)?.data?.path || '/';
   };
 
+  const createRandomSuffix = (): string => {
+    const browserCrypto = globalThis.crypto;
+    if (browserCrypto?.randomUUID) {
+      return browserCrypto.randomUUID();
+    }
+
+    if (browserCrypto?.getRandomValues) {
+      const bytes = new Uint8Array(16);
+      browserCrypto.getRandomValues(bytes);
+      return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    return Date.now().toString(36);
+  };
+
   const createTabId = (type: TabType): string => {
-    const suffix = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    return `${type}-${suffix}`;
+    return `${type}-${createRandomSuffix()}`;
   };
 
   const openTab = (
