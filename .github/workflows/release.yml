@@ -58,6 +58,12 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
+          for signing_var in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
+            if [ -z "${!signing_var:-}" ]; then
+              unset "$signing_var"
+            fi
+          done
+
           npm run build:web
           npm run build:mcp-bridge
           npx electron-builder --publish never ${{ matrix.platform.args }}
