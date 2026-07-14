@@ -29,7 +29,7 @@ test('MCP surface lists tools and resources and serves responses', async () => {
     },
   };
 
-  const server = new McpServer({ name: 'javiserver-test', version: '1.0.0' });
+  const server = new McpServer({ name: 'artishell-test', version: '1.0.0' });
   registerTools(server, broker);
   registerResources(server, broker);
 
@@ -77,11 +77,11 @@ test('MCP surface lists tools and resources and serves responses', async () => {
   assert.match(JSON.stringify(invalidLimitResult), /timeoutMs/);
 
   const resources = await client.listResources();
-  assert.ok(resources.resources.some((resource) => resource.uri === 'javiserver://servers'));
-  assert.ok(resources.resources.some((resource) => resource.uri === 'javiserver://servers/server-1/status'));
-  assert.ok(resources.resources.some((resource) => resource.uri === 'javiserver://servers/server-1/bookmarks'));
+  assert.ok(resources.resources.some((resource) => resource.uri === 'artishell://servers'));
+  assert.ok(resources.resources.some((resource) => resource.uri === 'artishell://servers/server-1/status'));
+  assert.ok(resources.resources.some((resource) => resource.uri === 'artishell://servers/server-1/bookmarks'));
 
-  const status = await client.readResource({ uri: 'javiserver://servers/server-1/status' });
+  const status = await client.readResource({ uri: 'artishell://servers/server-1/status' });
   assert.match(JSON.stringify(status), /server-1/);
   assert.ok(calls.some((call) => call.method === 'resource:server_status'));
 

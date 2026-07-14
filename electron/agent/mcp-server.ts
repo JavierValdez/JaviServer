@@ -14,12 +14,16 @@ interface TrackedSpawn {
 }
 const trackedSpawns = new Set<TrackedSpawn>();
 
+function getMcpEnv(primary: string, legacy: string): string | undefined {
+  return process.env[primary] || process.env[legacy];
+}
+
 function logMcp(event: string): void {
-  if (process.env.JAVISERVER_MCP_DEBUG !== '1') {
+  if (getMcpEnv('ARTISHELL_MCP_DEBUG', 'JAVISERVER_MCP_DEBUG') !== '1') {
     return;
   }
 
-  process.stderr.write(`[JaviServer MCP] ${new Date().toISOString()} ${event}\n`);
+  process.stderr.write(`[ArtiShell MCP] ${new Date().toISOString()} ${event}\n`);
 }
 
 function buildVisibleAppEnv(): Record<string, string | undefined> {
@@ -77,9 +81,9 @@ async function connectBroker(token: string): Promise<AgentBrokerClient> {
   const client = new AgentBrokerClient({
     endpoint: getAgentBrokerEndpoint(),
     token,
-    clientId: process.env.JAVISERVER_MCP_CLIENT_ID || randomUUID(),
-    clientName: process.env.JAVISERVER_MCP_CLIENT_NAME || 'MCP client',
-    clientVersion: process.env.JAVISERVER_MCP_CLIENT_VERSION,
+    clientId: getMcpEnv('ARTISHELL_MCP_CLIENT_ID', 'JAVISERVER_MCP_CLIENT_ID') || randomUUID(),
+    clientName: getMcpEnv('ARTISHELL_MCP_CLIENT_NAME', 'JAVISERVER_MCP_CLIENT_NAME') || 'MCP client',
+    clientVersion: getMcpEnv('ARTISHELL_MCP_CLIENT_VERSION', 'JAVISERVER_MCP_CLIENT_VERSION'),
   });
 
   try {
@@ -104,13 +108,13 @@ async function connectBroker(token: string): Promise<AgentBrokerClient> {
     }
   }
 
-  throw new Error('No se pudo conectar con JaviServer. Abre la app y habilita la integracion IA.');
+  throw new Error('No se pudo conectar con ArtiShell. Abre la app y habilita la integracion IA.');
 }
 
 export async function runMcpServerMode(): Promise<void> {
-  const token = process.env.JAVISERVER_MCP_TOKEN;
+  const token = getMcpEnv('ARTISHELL_MCP_TOKEN', 'JAVISERVER_MCP_TOKEN');
   if (!token) {
-    throw new Error('Falta JAVISERVER_MCP_TOKEN para autenticar el MCP de JaviServer.');
+    throw new Error('Falta ARTISHELL_MCP_TOKEN para autenticar el MCP de ArtiShell.');
   }
 
   await app.whenReady();
@@ -171,7 +175,7 @@ export async function runMcpServerMode(): Promise<void> {
   // ── Conexión y registro normales ───────────────────────────────────
   try {
     broker = await connectBroker(token);
-    server = new McpServer({ name: 'javiserver', version: app.getVersion() });
+    server = new McpServer({ name: 'artishell', version: app.getVersion() });
     registerTools(server, broker);
     registerResources(server, broker);
 

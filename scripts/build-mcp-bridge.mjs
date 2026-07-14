@@ -3,11 +3,11 @@
 // Pipeline:
 //   1. esbuild bundle  -> dist-mcp-bridge/bridge.cjs (todas las deps inline)
 //   2. Si --sea en Windows, crear binario standalone con Node SEA.
-//      Resultado: dist-mcp-bridge/JaviServerMcp.exe (CONSOLE subsystem).
+//      Resultado: dist-mcp-bridge/ArtiShellMcp.exe (CONSOLE subsystem).
 //   3. En macOS/Linux, generar launcher script que envuelve bridge.cjs con node.
 //
 // El binario/script resultante es lo que el instalador shipea. La app GUI
-// (JaviServer) NO cambia.
+// (ArtiShell) NO cambia.
 
 import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -24,10 +24,10 @@ const OUT_DIR = resolve(ROOT, 'dist-mcp-bridge');
 const BUNDLE_PATH = resolve(OUT_DIR, 'bridge.cjs');
 const SEA_BLOB_PATH = resolve(OUT_DIR, 'sea-prep.blob');
 const SEA_CONFIG_PATH = resolve(OUT_DIR, 'sea-config.json');
-const EXE_NAME = 'JaviServerMcp.exe';
-const EXE_PATH = resolve(OUT_DIR, EXE_NAME);
-const LAUNCHER_NAME = 'javiserver-mcp-bridge';
-const LAUNCHER_PATH = resolve(OUT_DIR, LAUNCHER_NAME);
+const EXE_PATH = resolve(OUT_DIR, 'ArtiShellMcp.exe');
+const LEGACY_EXE_PATH = resolve(OUT_DIR, 'JaviServerMcp.exe');
+const LAUNCHER_PATH = resolve(OUT_DIR, 'artishell-mcp-bridge');
+const LEGACY_LAUNCHER_PATH = resolve(OUT_DIR, 'javiserver-mcp-bridge');
 
 const args = new Set(process.argv.slice(2));
 const buildSea = args.has('--sea');
@@ -51,6 +51,7 @@ async function bundle() {
     minify: false,
     legalComments: 'none',
     define: {
+      'process.env.ARTISHELL_BRIDGE_VERSION': JSON.stringify(version),
       'process.env.JAVISERVER_BRIDGE_VERSION': JSON.stringify(version),
     },
     external: [],
@@ -67,13 +68,15 @@ function writeLauncherScript() {
   // un mensaje claro.
   const script = `#!/usr/bin/env bash
 if ! command -v node &> /dev/null; then
-  echo "[javiserver-mcp-bridge] ERROR: node no encontrado en PATH. Instala Node.js 20+." >&2
+  echo "[artishell-mcp-bridge] ERROR: node no encontrado en PATH. Instala Node.js 20+." >&2
   exit 1
 fi
 exec node "$(dirname "$0")/bridge.cjs" "$@"
 `;
   writeFileSync(LAUNCHER_PATH, script, { mode: 0o755 });
   console.log(`[launcher] OK -> ${LAUNCHER_PATH}`);
+  writeFileSync(LEGACY_LAUNCHER_PATH, script, { mode: 0o755 });
+  console.log(`[launcher] alias compatible -> ${LEGACY_LAUNCHER_PATH}`);
 }
 
 function buildSeaExe() {
@@ -123,6 +126,8 @@ function buildSeaExe() {
   }
 
   console.log(`[sea] OK -> ${EXE_PATH}`);
+  copyFileSync(EXE_PATH, LEGACY_EXE_PATH);
+  console.log(`[sea] alias compatible -> ${LEGACY_EXE_PATH}`);
 }
 
 ;(async () => {

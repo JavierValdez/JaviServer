@@ -7,9 +7,15 @@ import type { ReadableStream as NodeReadableStream } from 'node:stream/web';
 import { app, shell } from 'electron';
 import { autoUpdater, type UpdateInfo, type UpdateFileInfo } from 'electron-updater';
 import type { AppUpdateState } from '../src/types/updater';
+import {
+  checkWithUpdateSourceFallback,
+  resolveUpdateAssetUrl,
+  UPDATE_SOURCE_CONFIGS,
+  UPDATE_SOURCE_LABELS,
+} from './services/updateSources';
+import type { UpdateSourceId } from './services/updateSources';
 
 const UPDATE_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
-const RELEASES_BASE_URL = 'https://storage.googleapis.com/artictools-releases/javiserver/releases';
 
 export interface UpdateController {
   getState: () => AppUpdateState;
@@ -35,6 +41,7 @@ let updateState: AppUpdateState = {
 };
 
 let latestUpdateInfo: UpdateInfo | null = null;
+let latestUpdateSource: UpdateSourceId | null = null;
 let checkPromise: Promise<AppUpdateState> | null = null;
 let downloadPromise: Promise<AppUpdateState> | null = null;
 
@@ -51,21 +58,6 @@ function setState(partial: Partial<AppUpdateState>): AppUpdateState {
   const snapshot = getState();
   stateEmitter.emit('state-changed', snapshot);
   return snapshot;
-}
-
-function encodeAssetPath(assetPath: string): string {
-  return assetPath
-    .split('/')
-    .map((segment) => encodeURIComponent(segment))
-    .join('/');
-}
-
-function getReleaseAssetUrl(assetUrl: string): string {
-  if (/^https?:\/\//.test(assetUrl)) {
-    return assetUrl;
-  }
-
-  return `${RELEASES_BASE_URL}/${encodeAssetPath(assetUrl.replace(/^\/+/, ''))}`;
 }
 
 function selectInstallerAsset(updateInfo: UpdateInfo): UpdateFileInfo | null {
@@ -161,27 +153,36 @@ async function checkForUpdates(): Promise<AppUpdateState> {
   checkPromise = (async () => {
     setState({
       status: 'checking',
-      message: 'Buscando actualizaciones...',
+      message: 'Buscando actualizaciones en GitHub...',
       downloadProgress: null,
     });
 
     try {
-      const result = await autoUpdater.checkForUpdates();
-      if (!result) {
-        return setState({
-          status: 'error',
-          message: 'No fue posible consultar actualizaciones en este momento.',
-          checkedAt: new Date().toISOString(),
-        });
-      }
+      latestUpdateSource = null;
+      const { result, source } = await checkWithUpdateSourceFallback(
+        async (candidateSource) => {
+          autoUpdater.setFeedURL(UPDATE_SOURCE_CONFIGS[candidateSource]);
+          console.info(`[updater] Consultando ${UPDATE_SOURCE_LABELS[candidateSource]}...`);
+          return autoUpdater.checkForUpdates();
+        },
+        (githubError) => {
+          console.warn('[updater] GitHub no esta disponible; usando Cloud Storage.', githubError);
+          setState({
+            status: 'checking',
+            message: 'GitHub no respondio. Buscando en Cloud Storage...',
+          });
+        },
+      );
 
       latestUpdateInfo = result.updateInfo;
+      latestUpdateSource = source;
+      const sourceLabel = UPDATE_SOURCE_LABELS[source];
 
       if (!result.isUpdateAvailable) {
         return setState({
           status: 'up-to-date',
           latestVersion: result.updateInfo.version,
-          message: 'Ya tienes la ultima version.',
+          message: `Ya tienes la ultima version. Fuente: ${sourceLabel}.`,
           checkedAt: new Date().toISOString(),
           downloadProgress: null,
           downloadedInstallerPath: null,
@@ -197,7 +198,7 @@ async function checkForUpdates(): Promise<AppUpdateState> {
       return setState({
         status: 'available',
         latestVersion: result.updateInfo.version,
-        message: `Hay una actualizacion disponible: ${result.updateInfo.version}.`,
+        message: `Hay una actualizacion disponible: ${result.updateInfo.version}. Fuente: ${sourceLabel}.`,
         checkedAt: new Date().toISOString(),
         downloadProgress: null,
         downloadedInstallerPath: null,
@@ -279,7 +280,13 @@ async function downloadInstaller(): Promise<AppUpdateState> {
     });
 
     try {
-      const response = await fetch(getReleaseAssetUrl(installerAsset.url), {
+      const updateTag = (updateInfo as UpdateInfo & { tag?: string }).tag;
+      const response = await fetch(resolveUpdateAssetUrl({
+        assetUrl: installerAsset.url,
+        source: latestUpdateSource ?? 'gcs',
+        version: updateInfo.version,
+        tag: updateTag,
+      }), {
         headers: {
           'User-Agent': `${app.getName()}/${app.getVersion()}`,
           Accept: 'application/octet-stream',
@@ -350,10 +357,7 @@ export function setupAutoUpdater(): UpdateController {
   autoUpdater.autoInstallOnAppQuit = false;
   autoUpdater.allowPrerelease = false;
   autoUpdater.allowDowngrade = false;
-  autoUpdater.setFeedURL({
-    provider: 'generic',
-    url: RELEASES_BASE_URL,
-  });
+  autoUpdater.setFeedURL(UPDATE_SOURCE_CONFIGS.github);
 
   autoUpdater.on('checking-for-update', () => {
     console.info('[updater] Buscando actualizaciones...');

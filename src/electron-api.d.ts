@@ -10,6 +10,7 @@ import type {
   TerminalSuggestionRequest,
 } from './types';
 import type { AppUpdateState } from './types/updater';
+import type { LegacyMigrationStatus } from './types/migration';
 
 interface DirectorySearchMatch {
   line: number;
@@ -128,6 +129,11 @@ interface ElectronApi {
     downloadInstaller: () => Promise<AppUpdateState>;
     revealInstaller: () => Promise<boolean>;
     onStateChange: (listener: (payload: AppUpdateState) => void) => () => void;
+  };
+  legacyMigration: {
+    getStatus: () => Promise<LegacyMigrationStatus>;
+    start: () => Promise<LegacyMigrationStatus>;
+    acknowledge: () => Promise<LegacyMigrationStatus>;
   };
   agentIntegration: {
     getState: () => Promise<AgentIntegrationState>;

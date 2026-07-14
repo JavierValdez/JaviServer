@@ -12,6 +12,7 @@ import {
 } from '../agent/integration';
 import type { CommandPermissionSettings } from '../agent/command-policy';
 import { IPC_CHANNELS } from './channels';
+import type { LegacyMigrationService } from '../services/LegacyMigrationService';
 import { ProfileStore, type ProfileInput } from '../services/ProfileStore';
 import { SSHService, type DownloadProgressPayload } from '../services/SSHService';
 
@@ -20,6 +21,8 @@ export function registerIpcHandlers(
   profileStore: ProfileStore,
   sshService: SSHService,
   updater: UpdateController,
+  legacyMigration: LegacyMigrationService,
+  requestMigrationRelaunch: () => void,
 ): void {
   ipcMain.handle(IPC_CHANNELS.profilesGetAll, () => profileStore.getAll());
   ipcMain.handle(IPC_CHANNELS.profilesGet, (_event, profileId: string) => profileStore.get(profileId) ?? null);
@@ -168,6 +171,15 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC_CHANNELS.updaterCheckForUpdates, () => updater.checkForUpdates());
   ipcMain.handle(IPC_CHANNELS.updaterDownloadInstaller, () => updater.downloadInstaller());
   ipcMain.handle(IPC_CHANNELS.updaterRevealInstaller, () => updater.revealInstaller());
+  ipcMain.handle(IPC_CHANNELS.legacyMigrationGetStatus, () => legacyMigration.getStatus());
+  ipcMain.handle(IPC_CHANNELS.legacyMigrationStart, async () => {
+    const status = await legacyMigration.prepareMigration();
+    if (status.state === 'pending') {
+      setTimeout(requestMigrationRelaunch, 250);
+    }
+    return status;
+  });
+  ipcMain.handle(IPC_CHANNELS.legacyMigrationAcknowledge, () => legacyMigration.acknowledgeCompletion());
 
   ipcMain.handle(IPC_CHANNELS.clipboardReadText, () => clipboard.readText());
   ipcMain.handle(IPC_CHANNELS.clipboardWriteText, (_event, text: string) => clipboard.writeText(text));

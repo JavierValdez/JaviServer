@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { IPC_CHANNELS } from './ipc/channels';
 import type { AppUpdateState } from '../src/types/updater';
+import type { LegacyMigrationStatus } from '../src/types/migration';
 
 const unsubscribeOn = <T>(channel: string, listener: (payload: T) => void) => {
   const wrapped = (_event: Electron.IpcRendererEvent, payload: T) => {
@@ -101,6 +102,11 @@ contextBridge.exposeInMainWorld('api', {
     revealInstaller: () => ipcRenderer.invoke(IPC_CHANNELS.updaterRevealInstaller) as Promise<boolean>,
     onStateChange: (listener: (payload: AppUpdateState) => void) =>
       unsubscribeOn(IPC_CHANNELS.updaterStateChanged, listener),
+  },
+  legacyMigration: {
+    getStatus: () => ipcRenderer.invoke(IPC_CHANNELS.legacyMigrationGetStatus) as Promise<LegacyMigrationStatus>,
+    start: () => ipcRenderer.invoke(IPC_CHANNELS.legacyMigrationStart) as Promise<LegacyMigrationStatus>,
+    acknowledge: () => ipcRenderer.invoke(IPC_CHANNELS.legacyMigrationAcknowledge) as Promise<LegacyMigrationStatus>,
   },
   agentIntegration: {
     getState: () => ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationGetState),

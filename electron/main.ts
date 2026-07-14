@@ -1,4 +1,5 @@
 import path from 'node:path';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { app, BrowserWindow } from 'electron';
 import {
@@ -9,13 +10,18 @@ import {
 import { runMcpServerMode } from './agent/mcp-server';
 import { setupAutoUpdater } from './autoUpdater';
 import { registerIpcHandlers } from './ipc/registerHandlers';
+import { LegacyMigrationService } from './services/LegacyMigrationService';
 import { ProfileStore } from './services/ProfileStore';
 import { SSHService } from './services/SSHService';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const isMcpStdioMode = process.argv.includes('--mcp-stdio') || process.env.JAVISERVER_MCP_STDIO === '1' || !!process.env.JAVISERVER_MCP_TOKEN;
+const isMcpStdioMode = process.argv.includes('--mcp-stdio')
+  || process.env.ARTISHELL_MCP_STDIO === '1'
+  || process.env.JAVISERVER_MCP_STDIO === '1'
+  || !!process.env.ARTISHELL_MCP_TOKEN
+  || !!process.env.JAVISERVER_MCP_TOKEN;
 
-app.name = 'JaviServer';
+app.name = 'ArtiShell';
 
 if (isMcpStdioMode) {
   app.disableHardwareAcceleration();
@@ -38,7 +44,7 @@ function createMainWindow(): BrowserWindow {
     minWidth: 1100,
     minHeight: 720,
     backgroundColor: '#1a1b26',
-    title: 'JaviServer',
+    title: 'ArtiShell',
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
       contextIsolation: true,
@@ -93,7 +99,22 @@ if (!isMcpStdioMode) {
   }
 }
 
-app.whenReady().then(() => {
+function getLegacyUserDataPaths(): string[] {
+  const appData = app.getPath('appData');
+  const candidates = [
+    path.join(appData, 'JaviServer'),
+    path.join(appData, 'javiserver'),
+  ];
+
+  if (process.platform === 'linux') {
+    const dataHome = process.env.XDG_DATA_HOME ?? path.join(os.homedir(), '.local', 'share');
+    candidates.push(path.join(dataHome, 'JaviServer'), path.join(dataHome, 'javiserver'));
+  }
+
+  return candidates;
+}
+
+app.whenReady().then(async () => {
   if (!hasSingleInstanceLock) {
     return;
   }
@@ -104,6 +125,12 @@ app.whenReady().then(() => {
 
   app.setAppUserModelId('com.javierserver.app');
 
+  const legacyMigration = new LegacyMigrationService({
+    targetUserDataPath: app.getPath('userData'),
+    legacyUserDataPaths: getLegacyUserDataPaths(),
+  });
+  await legacyMigration.runPendingMigration();
+
   const profileStore = new ProfileStore();
   const sshService = new SSHService();
   const updater = setupAutoUpdater();
@@ -112,7 +139,17 @@ app.whenReady().then(() => {
   if (!mainWindow || mainWindow.isDestroyed()) {
     mainWindow = createMainWindow();
   }
-  registerIpcHandlers(() => mainWindow, profileStore, sshService, updater);
+  registerIpcHandlers(
+    () => mainWindow,
+    profileStore,
+    sshService,
+    updater,
+    legacyMigration,
+    () => {
+      app.relaunch();
+      app.exit(0);
+    },
+  );
   guiReady = true;
   if (shouldFocusWhenGuiReady) {
     shouldFocusWhenGuiReady = false;
@@ -135,7 +172,7 @@ app.whenReady().then(() => {
 
 if (isMcpStdioMode) {
   void runMcpServerMode().catch((error) => {
-    process.stderr.write(`${error instanceof Error ? error.message : 'No se pudo iniciar el MCP de JaviServer'}\n`);
+    process.stderr.write(`${error instanceof Error ? error.message : 'No se pudo iniciar el MCP de ArtiShell'}\n`);
     app.exit(1);
   });
 }

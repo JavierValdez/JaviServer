@@ -44,7 +44,7 @@ function buildConfigText(config: AgentClientConfig | null): string {
 
   return JSON.stringify({
     mcpServers: {
-      javiserver: config,
+      artishell: config,
     },
   }, null, 2);
 }
@@ -181,7 +181,7 @@ export function AgentIntegrationDialog({ onClose }: AgentIntegrationDialogProps)
 
     if (updates.autoApproveWriteCommands === true && !permissions.autoApproveWriteCommands) {
       const confirmed = globalThis.confirm(
-        'Activar escritura sin confirmacion?\n\nLos clientes MCP podran ejecutar comandos que modifiquen el servidor sin pedir autorizacion en JaviServer.',
+        'Activar escritura sin confirmacion?\n\nLos clientes MCP podran ejecutar comandos que modifiquen el servidor sin pedir autorizacion en ArtiShell.',
       );
       if (!confirmed) {
         return;
@@ -251,7 +251,7 @@ export function AgentIntegrationDialog({ onClose }: AgentIntegrationDialogProps)
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="headline-sm">Permisos MCP</div>
-              <div className="mt-1 body-xs">Controla cuando JaviServer pide confirmacion antes de ejecutar comandos SSH.</div>
+              <div className="mt-1 body-xs">Controla cuando ArtiShell pide confirmacion antes de ejecutar comandos SSH.</div>
             </div>
             <span className={permissions.autoApproveWriteCommands ? 'badge-danger' : 'badge-neutral'}>
               {permissions.autoApproveWriteCommands ? 'Escritura activa' : 'Lectura controlada'}

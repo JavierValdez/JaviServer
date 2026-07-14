@@ -15,7 +15,8 @@ const ThemeContext = createContext<ThemeContextValue>({
   setTheme: () => {},
 });
 
-const STORAGE_KEY = 'javiserver-theme';
+const STORAGE_KEY = 'artishell-theme';
+const LEGACY_STORAGE_KEY = 'javiserver-theme';
 
 function getSystemTheme(): Theme {
   if (typeof window === 'undefined') return 'dark';
@@ -24,7 +25,7 @@ function getSystemTheme(): Theme {
 
 function getStoredTheme(): Theme | null {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
     if (stored === 'dark' || stored === 'light') return stored;
   } catch {
     // localStorage not available

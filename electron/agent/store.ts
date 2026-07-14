@@ -16,12 +16,21 @@ interface AgentIntegrationStoreSchema {
   agentIntegration: StoredAgentIntegration;
 }
 
-const store = new Store<AgentIntegrationStoreSchema>({
-  name: 'agent-integration',
-  defaults: {
-    agentIntegration: {},
-  },
-});
+let store: Store<AgentIntegrationStoreSchema> | null = null;
+
+function getStore(): Store<AgentIntegrationStoreSchema> {
+  // Debe inicializarse despues de que LegacyMigrationService copie los datos.
+  // Este modulo se importa al arrancar Electron, antes de app.whenReady().
+  if (!store) {
+    store = new Store<AgentIntegrationStoreSchema>({
+      name: 'agent-integration',
+      defaults: {
+        agentIntegration: {},
+      },
+    });
+  }
+  return store;
+}
 
 function encryptSecret(value: string): string {
   if (!safeStorage.isEncryptionAvailable()) {
@@ -59,7 +68,7 @@ function persistAgentIntegration(input: {
   token: string | null;
   permissions: CommandPermissionSettings;
 }): void {
-  store.set('agentIntegration', {
+  getStore().set('agentIntegration', {
     enabled: input.enabled,
     permissions: input.permissions,
     ...(input.token ? { tokenEncrypted: encryptSecret(input.token) } : {}),
@@ -71,7 +80,7 @@ export function getAgentIntegrationState(): {
   token: string | null;
   permissions: CommandPermissionSettings;
 } {
-  const stored = store.get('agentIntegration', {});
+  const stored = getStore().get('agentIntegration', {});
   const token = typeof stored.tokenEncrypted === 'string' && stored.tokenEncrypted
     ? decryptSecret(stored.tokenEncrypted)
     : null;

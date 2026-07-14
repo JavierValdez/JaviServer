@@ -25,11 +25,11 @@ const profileIdSchema = {
 
 export function registerTools(server: McpServer, broker: BrokerRequester): void {
   server.registerTool('list_servers', {
-    description: 'List SSH server profiles stored in JaviServer without exposing credentials.',
+    description: 'List SSH server profiles stored in ArtiShell without exposing credentials.',
   }, async () => asTextResult(await broker.request('list_servers')));
 
   server.registerTool('connect_server', {
-    description: 'Connect to a stored SSH server profile using credentials saved in JaviServer.',
+    description: 'Connect to a stored SSH server profile using credentials saved in ArtiShell.',
     inputSchema: z.object(profileIdSchema),
   }, async (args) => asTextResult(await broker.request('connect_server', args)));
 
@@ -95,7 +95,7 @@ export function registerTools(server: McpServer, broker: BrokerRequester): void 
   }, async (args) => asTextResult(await broker.request('file_info', args)));
 
   server.registerTool('run_command', {
-    description: 'Run a non-interactive SSH command. Read-only commands run directly; risky commands require visible confirmation in JaviServer.',
+    description: 'Run a non-interactive SSH command. Read-only commands run directly; risky commands require visible confirmation in ArtiShell.',
     inputSchema: z.object({
       ...profileIdSchema,
       command: z.string().min(1),
@@ -107,7 +107,7 @@ export function registerTools(server: McpServer, broker: BrokerRequester): void 
 }
 
 export function registerResources(server: McpServer, broker: BrokerRequester): void {
-  server.registerResource('servers', 'javiserver://servers', {
+  server.registerResource('servers', 'artishell://servers', {
     title: 'Configured SSH servers',
     mimeType: 'application/json',
   }, async (uri) => ({
@@ -118,12 +118,12 @@ export function registerResources(server: McpServer, broker: BrokerRequester): v
     }],
   }));
 
-  server.registerResource('server-status', new ResourceTemplate('javiserver://servers/{profileId}/status', {
+  server.registerResource('server-status', new ResourceTemplate('artishell://servers/{profileId}/status', {
     list: async () => {
       const servers = await broker.request('resource:servers') as Array<{ id: string; name: string }>;
       return {
         resources: servers.map((serverEntry) => ({
-          uri: `javiserver://servers/${serverEntry.id}/status`,
+          uri: `artishell://servers/${serverEntry.id}/status`,
           name: `${serverEntry.name} status`,
           mimeType: 'application/json',
         })),
@@ -144,12 +144,12 @@ export function registerResources(server: McpServer, broker: BrokerRequester): v
     }],
   }));
 
-  server.registerResource('server-bookmarks', new ResourceTemplate('javiserver://servers/{profileId}/bookmarks', {
+  server.registerResource('server-bookmarks', new ResourceTemplate('artishell://servers/{profileId}/bookmarks', {
     list: async () => {
       const servers = await broker.request('resource:servers') as Array<{ id: string; name: string }>;
       return {
         resources: servers.map((serverEntry) => ({
-          uri: `javiserver://servers/${serverEntry.id}/bookmarks`,
+          uri: `artishell://servers/${serverEntry.id}/bookmarks`,
           name: `${serverEntry.name} bookmarks`,
           mimeType: 'application/json',
         })),

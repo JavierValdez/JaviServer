@@ -1,8 +1,8 @@
 {
-  "name": "javiserver",
+  "name": "artishell",
   "private": true,
-  "version": "2.2.7",
-  "description": "Gestor SSH Multi-servidor para explorar archivos y logs de servidores",
+  "version": "2.3.0",
+  "description": "Cliente SSH visual para administrar servidores, archivos, logs y automatizaciones con IA",
   "author": "jasegura",
   "type": "module",
   "scripts": {
@@ -57,7 +57,7 @@
   "main": "dist-electron/main.js",
   "build": {
     "appId": "com.javiervaldez.javiserver",
-    "productName": "JaviServer",
+    "productName": "ArtiShell",
     "asar": true,
     "directories": {
       "output": "release/${version}"
@@ -69,8 +69,9 @@
     ],
     "publish": [
       {
-        "provider": "generic",
-        "url": "https://storage.googleapis.com/artictools-releases/javiserver/releases"
+        "provider": "github",
+        "owner": "JavierValdez",
+        "repo": "JaviServer"
       }
     ],
     "mac": {
@@ -81,10 +82,20 @@
         "zip"
       ],
       "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+      "extraFiles": [
+        {
+          "from": "build/macos/JaviServer",
+          "to": "MacOS/JaviServer"
+        }
+      ],
       "extraResources": [
         {
           "from": "dist-mcp-bridge/bridge.cjs",
           "to": "bridge/bridge.cjs"
+        },
+        {
+          "from": "dist-mcp-bridge/artishell-mcp-bridge",
+          "to": "bridge/artishell-mcp-bridge"
         },
         {
           "from": "dist-mcp-bridge/javiserver-mcp-bridge",
@@ -129,6 +140,10 @@
       ],
       "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
       "extraFiles": [
+        {
+          "from": "dist-mcp-bridge/ArtiShellMcp.exe",
+          "to": "ArtiShellMcp.exe"
+        },
         {
           "from": "dist-mcp-bridge/JaviServerMcp.exe",
           "to": "JaviServerMcp.exe"
