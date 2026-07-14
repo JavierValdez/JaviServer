@@ -103,9 +103,9 @@ const PATH_FRIENDLY_COMMANDS = new Set([
 const isMacPlatform =
   typeof navigator !== 'undefined' && /(mac|iphone|ipad)/i.test(navigator.platform || navigator.userAgent);
 
-const TERMINAL_CWD_MARKER_PREFIX = '\u001b]633;JaviServerCwd=';
+const TERMINAL_CWD_MARKER_PREFIX = '\u001b]633;ArtiShellCwd=';
 const TERMINAL_CWD_MARKER_SUFFIX = '\u0007';
-const TERMINAL_CWD_PROBE = `; printf '\\033]633;JaviServerCwd=%s\\007' "$PWD"`;
+const TERMINAL_CWD_PROBE = `; printf '\\033]633;ArtiShellCwd=%s\\007' "$PWD"`;
 
 function quoteShellPath(pathValue: string): string {
   if (pathValue === '~') {

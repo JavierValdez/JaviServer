@@ -1,6 +1,6 @@
-# JaviServer
+# ArtiShell
 
-Aplicación de escritorio para gestionar conexiones SSH a servidores, explorar archivos mediante SFTP y analizar logs en tiempo real.
+Cliente SSH visual para gestionar servidores, explorar archivos mediante SFTP, analizar logs en tiempo real e integrarse con agentes de IA mediante MCP.
 
 ## 🚀 Características
 
@@ -20,7 +20,7 @@ Aplicación de escritorio para gestionar conexiones SSH a servidores, explorar a
 
 ```bash
 # Clonar o acceder al directorio
-cd javiserver
+cd <ruta-del-repositorio>
 
 # Instalar dependencias
 npm install
@@ -34,8 +34,9 @@ npm run build
 
 ## 🔄 Actualizaciones automáticas
 
-- La app ahora busca actualizaciones automáticamente al iniciar.
-- Si encuentra una nueva versión publicada en GitHub Releases, la descarga en segundo plano.
+- La app busca actualizaciones automáticamente al iniciar, usando GitHub Releases como fuente principal.
+- Si GitHub devuelve un error o una respuesta inválida, reintenta automáticamente contra Cloud Storage.
+- Si encuentra una nueva versión publicada, permite descargar el instalador desde la fuente seleccionada.
 - Cuando la descarga termina, muestra un diálogo para reiniciar e instalar.
 - En modo empaquetado, vuelve a revisar actualizaciones cada 6 horas.
 
@@ -46,31 +47,38 @@ Importante:
 
 ## Integración IA por MCP
 
-JaviServer incluye una integración MCP local opcional para que agentes de IA puedan consultar y operar los perfiles SSH ya guardados en la app, sin exponer credenciales.
+ArtiShell incluye una integración MCP local opcional para que agentes de IA puedan consultar y operar los perfiles SSH ya guardados en la app, sin exponer credenciales.
 
 1. Abre **Integración IA** desde el pie de la barra lateral.
 2. Activa la integración.
 3. Copia la configuración MCP generada en tu cliente compatible.
-4. Mantén JaviServer disponible; si el cliente inicia el MCP con la app cerrada, JaviServer intentará abrirse automáticamente.
+4. Mantén ArtiShell disponible; si el cliente inicia el MCP con la app cerrada, ArtiShell intentará abrirse automáticamente.
 
 La integración expone operaciones para listar servidores, conectar/desconectar perfiles, listar directorios, leer archivos con límite de bytes, buscar contenido, revisar logs y ejecutar comandos SSH no interactivos. Los comandos claramente de lectura se ejecutan directo; los comandos desconocidos o potencialmente mutables requieren confirmación visible en la app.
 
 Variables usadas por el modo MCP:
 
-- `JAVISERVER_MCP_TOKEN`
-- `JAVISERVER_MCP_DEBUG`
-- `JAVISERVER_MCP_CLIENT_ID`
-- `JAVISERVER_MCP_CLIENT_NAME`
-- `JAVISERVER_MCP_CLIENT_VERSION`
+- `ARTISHELL_MCP_TOKEN`
+- `ARTISHELL_MCP_DEBUG`
+- `ARTISHELL_MCP_CLIENT_ID`
+- `ARTISHELL_MCP_CLIENT_NAME`
+- `ARTISHELL_MCP_CLIENT_VERSION`
+
+Durante la transición también se aceptan las variables equivalentes con prefijo `JAVISERVER_` para no romper configuraciones MCP existentes.
+
+## Migración desde JaviServer
+
+En la primera apertura, ArtiShell detecta automáticamente una instalación anterior de JaviServer y muestra un aviso antes de importar datos. La migración incluye perfiles y credenciales SSH, bookmarks, patrones de logs, preferencias, configuración/token MCP e historial local de actividad. La app se reinicia una vez, deja intactos los datos originales y crea un respaldo si ArtiShell ya contenía datos.
 
 ## 🚀 Releases automáticos
 
-El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que construye instaladores para Windows y macOS al publicar un tag `v*`, y los sube al bucket de Cloud Storage usado por el actualizador:
+El repositorio incluye un workflow en [`.github/workflows/release.yml`](/Users/javier/Documents/GitHub/JaviServer/.github/workflows/release.yml) que construye instaladores para Windows y macOS al publicar un tag `v*`. Cada release se publica primero en GitHub Releases y también se replica en Cloud Storage como respaldo:
 
+- `https://github.com/JavierValdez/JaviServer/releases`
 - `gs://artictools-releases/javiserver/releases/`
 - `https://storage.googleapis.com/artictools-releases/javiserver/releases/`
 
-Los archivos `latest.yml` y `latest-mac.yml` quedan en la raíz de esa ruta. Los instaladores y blockmaps se guardan por versión, por ejemplo `v2.2.3/`. El workflow conserva las 5 versiones más recientes en Cloud Storage y elimina carpetas de versiones anteriores.
+Los archivos `latest.yml` y `latest-mac.yml` se adjuntan al GitHub Release y quedan también en la raíz del respaldo de Cloud Storage. En GCS, los instaladores y blockmaps se guardan por versión, por ejemplo `v2.2.3/`. El workflow conserva las 5 versiones más recientes en Cloud Storage y elimina carpetas de versiones anteriores.
 
 Flujo recomendado:
 
@@ -78,9 +86,9 @@ Flujo recomendado:
 2. Haz commit de los cambios.
 3. Crea y publica un tag con el mismo número de versión, por ejemplo `v1.0.1`.
 4. GitHub Actions construirá y publicará:
-   - `JaviServer-Mac-x.y.z-Installer.dmg`
-   - `JaviServer-Mac-x.y.z-Installer.zip`
-   - `JaviServer-Windows-x.y.z-Setup.exe`
+   - `ArtiShell-Mac-x.y.z-Installer.dmg`
+   - `ArtiShell-Mac-x.y.z-Installer.zip`
+   - `ArtiShell-Windows-x.y.z-Setup.exe`
    - archivos `latest*.yml` y `*.blockmap` para el updater
 
 Comandos:
@@ -109,7 +117,7 @@ Para que macOS quede firmado y el auto-update funcione correctamente, configura 
 ## 📦 Estructura del Proyecto
 
 ```
-javiserver/
+ArtiShell/
 ├── electron/
 │   ├── main.ts              # Proceso principal de Electron
 │   ├── preload.ts           # API expuesta al renderer
@@ -153,9 +161,9 @@ javiserver/
 ## 📝 Notas
 
 - La aplicación está diseñada para acceso de solo lectura
-- Los perfiles se guardan en `%APPDATA%/javiserver/server-profiles.json`
+- Los perfiles se guardan en `%APPDATA%/ArtiShell/server-profiles.json`
 - Compatible con servidores que usan algoritmos MAC: hmac-sha2-256, hmac-sha2-512, hmac-sha1
-- Los releases publicados en Cloud Storage son la fuente del sistema de auto-actualización
+- GitHub Releases es la fuente principal del sistema de auto-actualización; Cloud Storage se usa solamente como fallback
 
 ## 🔐 Seguridad
 

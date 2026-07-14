@@ -1,10 +1,10 @@
 # MCP bridge (Windows)
 
-Standalone Node.js binary that exposes the JaviServer MCP surface over stdio.
+Standalone Node.js binary that exposes the ArtiShell MCP surface over stdio.
 
 ## Why this exists
 
-`JaviServer.exe` is an Electron GUI app (Windows subsystem `WINDOWS_GUI`). On
+`ArtiShell.exe` is an Electron GUI app (Windows subsystem `WINDOWS_GUI`). On
 Windows that has two consequences for MCP stdio:
 
 1. The exe **does not propagate stdin/stdout** functionally to the parent
@@ -26,12 +26,12 @@ A small Node.js program that:
    that the GUI app already exposes when "Integracion IA" is enabled.
 2. Implements an MCP stdio server reusing `electron/agent/broker-client.ts`
    and `electron/agent/mcp-surface.ts`. Same protocol, same tools/resources.
-3. Is packaged as a single Windows console executable (`JaviServerMcp.exe`)
+3. Is packaged as a single Windows console executable (`ArtiShellMcp.exe`)
    using Node SEA (Single Executable Applications). The exe is installed
-   alongside `JaviServer.exe` by the NSIS installer (via `extraFiles` in
+   alongside `ArtiShell.exe` by the NSIS installer (via `extraFiles` in
    `electron-builder.win`).
 
-The GUI app (`JaviServer.exe`) is **unchanged**. It still starts the broker.
+The GUI app (`ArtiShell.exe`) still starts the broker. `JaviServerMcp.exe` is also packaged as a temporary compatibility alias.
 Only the binary that the MCP client invokes from `mcp.json` changes.
 
 ## Build
@@ -46,39 +46,40 @@ npm run build:mcp-bridge
 
 Outputs go to `dist-mcp-bridge/`:
 - `bridge.cjs` — bundled JS (esbuild)
-- `JaviServerMcp.exe` — standalone Windows binary (only when run on Windows)
+- `ArtiShellMcp.exe` — standalone Windows binary (only when run on Windows)
+- `JaviServerMcp.exe` — compatibility alias for existing configurations
 
 The full `npm run build` chain is:
 
 ```
 npm run build:web
-npm run build:mcp-bridge   # generates JaviServerMcp.exe on Windows
+npm run build:mcp-bridge   # generates ArtiShellMcp.exe on Windows
 electron-builder           # NSIS picks it up via win.extraFiles
 ```
 
 ## Test locally
 
 ```powershell
-# Make sure JaviServer.exe is running and "Integracion IA" is enabled.
-$env:JAVISERVER_MCP_TOKEN = "<token from the app's Integracion IA settings>"
-node mcp-bridge\test-client.cjs dist-mcp-bridge\JaviServerMcp.exe
+# Make sure ArtiShell.exe is running and "Integracion IA" is enabled.
+$env:ARTISHELL_MCP_TOKEN = "<token from the app's Integracion IA settings>"
+node mcp-bridge\test-client.cjs dist-mcp-bridge\ArtiShellMcp.exe
 ```
 
 Expected output: `INITIALIZE OK`, `TOOLS LIST OK`, 10 tools listed.
 
 ## mcp.json sample (Windows)
 
-After installation the bridge is at `<install-dir>\JaviServerMcp.exe`. The
+After installation the bridge is at `<install-dir>\ArtiShellMcp.exe`. The
 sample emitted by the app (`getAgentClientConfig`) already points there.
 
 ```json
 {
   "mcpServers": {
-    "javiserver": {
-      "command": "C:\\Users\\<user>\\AppData\\Local\\Programs\\JaviServer\\JaviServerMcp.exe",
+    "artishell": {
+      "command": "C:\\Users\\<user>\\AppData\\Local\\Programs\\ArtiShell\\ArtiShellMcp.exe",
       "args": [],
       "env": {
-        "JAVISERVER_MCP_TOKEN": "<token>"
+        "ARTISHELL_MCP_TOKEN": "<token>"
       }
     }
   }
@@ -92,14 +93,14 @@ Electron.
 
 ```
 +------------------+         stdio (JSON-RPC)        +------------------+
-| MCP client       | <---------------------------->  | JaviServerMcp.exe |
+| MCP client       | <---------------------------->  | ArtiShellMcp.exe  |
 | (Kiro, Claude…)  |                                 |  (Node SEA, CUI) |
 +------------------+                                 +--------+---------+
                                                               |
                                               named pipe      |
                                               (broker)        v
                                                      +---------------------+
-                                                     | JaviServer.exe (GUI)|
+                                                     | ArtiShell.exe (GUI) |
                                                      | broker + tools impl |
                                                      +---------------------+
 ```

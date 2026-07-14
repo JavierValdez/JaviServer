@@ -13,7 +13,7 @@ npm run preview   # Preview production build
 
 ## Architecture
 
-**JaviServer** is an Electron desktop app for managing SSH connections, browsing remote files via SFTP, and streaming logs in real-time.
+**ArtiShell** is an Electron desktop app for managing SSH connections, browsing remote files via SFTP, and streaming logs in real-time.
 
 ### Stack
 - **Electron + Vite** (`vite-plugin-electron`) for desktop packaging

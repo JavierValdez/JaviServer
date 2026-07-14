@@ -64,7 +64,7 @@ export function getAgentBrokerEndpoint(): string {
 
 function getActivityLog(): AgentActivityLog {
   if (!activityLog) {
-    activityLog = new AgentActivityLog(join(app.getPath('userData'), 'javiserver-agent-activity.json'));
+    activityLog = new AgentActivityLog(join(app.getPath('userData'), 'artishell-agent-activity.json'));
   }
 
   return activityLog;
@@ -422,7 +422,7 @@ export function getAgentClientConfig(): {
   const mcpBridgeExePath = (() => {
     if (!app.isPackaged) return undefined;
     if (process.platform === 'darwin' || process.platform === 'linux') {
-      return join(process.resourcesPath, 'bridge', 'javiserver-mcp-bridge');
+      return join(process.resourcesPath, 'bridge', 'artishell-mcp-bridge');
     }
     return undefined;
   })();
@@ -432,14 +432,21 @@ export function getAgentClientConfig(): {
     execPath: process.execPath,
     launchArgs,
     comSpec: process.env.ComSpec,
-    stdioEnvKey: 'JAVISERVER_MCP_STDIO',
-    mcpBridgeExeName: app.isPackaged && process.platform === 'win32' ? 'JaviServerMcp.exe' : undefined,
+    stdioEnvKey: 'ARTISHELL_MCP_STDIO',
+    mcpBridgeExeName: app.isPackaged && process.platform === 'win32' ? 'ArtiShellMcp.exe' : undefined,
     mcpBridgeExePath,
   });
 
   return {
     ...launchConfig,
-    env: { JAVISERVER_MCP_TOKEN: token, JAVISERVER_MCP_STDIO: '1', ELECTRON_RUN_AS_NODE: '' },
+    env: {
+      ARTISHELL_MCP_TOKEN: token,
+      ARTISHELL_MCP_STDIO: '1',
+      // Alias de transición para clientes configurados antes del cambio de nombre.
+      JAVISERVER_MCP_TOKEN: token,
+      JAVISERVER_MCP_STDIO: '1',
+      ELECTRON_RUN_AS_NODE: '',
+    },
   };
 }
 

@@ -4,6 +4,7 @@
 // y la app GUI corriendo localmente, conectándose a su broker.
 
 import { randomUUID } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -12,37 +13,56 @@ import { WINDOWS_AGENT_BROKER_ENDPOINT } from '../../electron/agent/broker-endpo
 import { AgentBrokerClient } from '../../electron/agent/broker-client';
 import { registerResources, registerTools } from '../../electron/agent/mcp-surface';
 
-const SERVER_NAME = 'javiserver';
-const TOKEN_ENV = 'JAVISERVER_MCP_TOKEN';
-const DEBUG_ENV = 'JAVISERVER_MCP_DEBUG';
-const VERSION = process.env.JAVISERVER_BRIDGE_VERSION || '0.0.0';
+const SERVER_NAME = 'artishell';
+const TOKEN_ENV = 'ARTISHELL_MCP_TOKEN';
+const LEGACY_TOKEN_ENV = 'JAVISERVER_MCP_TOKEN';
+const VERSION = process.env.ARTISHELL_BRIDGE_VERSION
+  || process.env.JAVISERVER_BRIDGE_VERSION
+  || '0.0.0';
+
+function getMcpEnv(primary: string, legacy: string): string | undefined {
+  return process.env[primary] || process.env[legacy];
+}
 
 function resolveBrokerEndpoint(): string {
   if (process.platform === 'win32') return WINDOWS_AGENT_BROKER_ENDPOINT;
-  const userData = process.platform === 'darwin'
-    ? path.join(os.homedir(), 'Library', 'Application Support', 'JaviServer')
-    : path.join(process.env.XDG_DATA_HOME ?? path.join(os.homedir(), '.local', 'share'), 'JaviServer');
-  const preferred = path.join(userData, 'javiserver-agent-broker.sock');
-  if (Buffer.byteLength(preferred, 'utf-8') <= 100) return preferred;
-  return path.join(os.tmpdir(), `javiserver-agent-broker-${process.getuid?.() ?? 'u'}.sock`);
+  const userDataCandidates = process.platform === 'darwin'
+    ? [
+        path.join(os.homedir(), 'Library', 'Application Support', 'ArtiShell'),
+        path.join(os.homedir(), 'Library', 'Application Support', 'JaviServer'),
+        path.join(os.homedir(), 'Library', 'Application Support', 'javiserver'),
+      ]
+    : [
+        path.join(process.env.XDG_CONFIG_HOME ?? path.join(os.homedir(), '.config'), 'ArtiShell'),
+        path.join(process.env.XDG_CONFIG_HOME ?? path.join(os.homedir(), '.config'), 'JaviServer'),
+        path.join(process.env.XDG_CONFIG_HOME ?? path.join(os.homedir(), '.config'), 'javiserver'),
+        path.join(process.env.XDG_DATA_HOME ?? path.join(os.homedir(), '.local', 'share'), 'JaviServer'),
+        path.join(process.env.XDG_DATA_HOME ?? path.join(os.homedir(), '.local', 'share'), 'javiserver'),
+      ];
+  const socketCandidates = userDataCandidates
+    .map((userData) => path.join(userData, 'javiserver-agent-broker.sock'))
+    .filter((candidate) => Buffer.byteLength(candidate, 'utf-8') <= 100);
+  return socketCandidates.find((candidate) => existsSync(candidate))
+    ?? socketCandidates[0]
+    ?? path.join(os.tmpdir(), `javiserver-agent-broker-${process.getuid?.() ?? 'u'}.sock`);
 }
 
 const PIPE_ENDPOINT = resolveBrokerEndpoint();
 
 function logDebug(message: string): void {
-  if (process.env[DEBUG_ENV] !== '1') {
+  if (getMcpEnv('ARTISHELL_MCP_DEBUG', 'JAVISERVER_MCP_DEBUG') !== '1') {
     return;
   }
-  process.stderr.write(`[JaviServer MCP bridge] ${new Date().toISOString()} ${message}\n`);
+  process.stderr.write(`[ArtiShell MCP bridge] ${new Date().toISOString()} ${message}\n`);
 }
 
 async function connectBroker(token: string): Promise<AgentBrokerClient> {
   const client = new AgentBrokerClient({
     endpoint: PIPE_ENDPOINT,
     token,
-    clientId: process.env.JAVISERVER_MCP_CLIENT_ID || randomUUID(),
-    clientName: process.env.JAVISERVER_MCP_CLIENT_NAME || 'MCP client',
-    clientVersion: process.env.JAVISERVER_MCP_CLIENT_VERSION,
+    clientId: getMcpEnv('ARTISHELL_MCP_CLIENT_ID', 'JAVISERVER_MCP_CLIENT_ID') || randomUUID(),
+    clientName: getMcpEnv('ARTISHELL_MCP_CLIENT_NAME', 'JAVISERVER_MCP_CLIENT_NAME') || 'MCP client',
+    clientVersion: getMcpEnv('ARTISHELL_MCP_CLIENT_VERSION', 'JAVISERVER_MCP_CLIENT_VERSION'),
   });
 
   // Reintenta varias veces por si la app GUI todavía está arrancando el broker.
@@ -65,7 +85,7 @@ async function connectBroker(token: string): Promise<AgentBrokerClient> {
 }
 
 async function main(): Promise<void> {
-  const token = process.env[TOKEN_ENV];
+  const token = process.env[TOKEN_ENV] || process.env[LEGACY_TOKEN_ENV];
   if (!token) {
     process.stderr.write(`Falta ${TOKEN_ENV} para autenticar el MCP de ${SERVER_NAME}.\n`);
     process.exit(1);

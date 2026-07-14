@@ -1,6 +1,7 @@
 import { type DragEvent as ReactDragEvent, useEffect, useRef, useState } from 'react';
 import { FileExplorer } from './components/FileExplorer/FileExplorer';
 import { LogViewer } from './components/LogViewer/LogViewer';
+import { LegacyMigrationDialog } from './components/LegacyMigrationDialog/LegacyMigrationDialog';
 import { ServerList } from './components/ServerList/ServerList';
 import { Terminal } from './components/Terminal/Terminal';
 import { UpdateStatus } from './components/UpdateStatus/UpdateStatus';
@@ -254,7 +255,7 @@ function App() {
           <div className="min-w-0 flex flex-1 flex-wrap items-center gap-x-3 gap-y-1">
             <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
               <span className="section-label">SSH Workbench</span>
-              <div className="text-base font-semibold tracking-tight text-[var(--text-primary)]">JaviServer</div>
+              <div className="text-base font-semibold tracking-tight text-[var(--text-primary)]">ArtiShell</div>
               <span className={connectionBadgeClass}>{connectionBadgeLabel}</span>
               {selectedProfile ? <span className="badge-neutral max-w-full truncate">{selectedProfile.username}@{selectedProfile.host}</span> : null}
               {selectedProfile ? <span className="body-xs max-w-[14rem] truncate">{selectedProfile.name}</span> : null}
@@ -461,6 +462,7 @@ function App() {
           ) : null}
         </div>
       </div>
+      <LegacyMigrationDialog />
     </div>
   );
 }

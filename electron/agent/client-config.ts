@@ -16,7 +16,7 @@ export function buildAgentClientLaunchConfig(input: {
   comSpec?: string;
   stdioEnvKey?: string;
   // Windows-only: nombre del binario CONSOLE shipeado al lado del execPath
-  // (p.ej. "JaviServerMcp.exe"). Cuando se pasa, en Windows se invoca este
+  // (p.ej. "ArtiShellMcp.exe"). Cuando se pasa, en Windows se invoca este
   // binario en lugar del exe Electron GUI principal. En macOS no se usa.
   mcpBridgeExeName?: string;
   // Override para tests: ruta absoluta al binario bridge.

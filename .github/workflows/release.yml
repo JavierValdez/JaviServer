@@ -95,7 +95,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    name: Publish Cloud Storage release
+    name: Publish GitHub and Cloud Storage release
     needs: build
     runs-on: ubuntu-latest
 
@@ -279,7 +279,7 @@ jobs:
             fi
           done < "${delete_list}"
 
-          mapfile -t legacy_root_assets < <(gcloud storage ls "${destination}/JaviServer-*" 2>/dev/null || true)
+          mapfile -t legacy_root_assets < <(gcloud storage ls "${destination}/JaviServer-*" "${destination}/ArtiShell-*" 2>/dev/null || true)
           if [ "${#legacy_root_assets[@]}" -gt 0 ]; then
             gcloud storage rm "${legacy_root_assets[@]}"
           fi

@@ -59,7 +59,7 @@ export class AgentBrokerClient {
       };
 
       const onError = (error: Error) => cleanupFailedConnect(error);
-      const onCloseBeforeReady = () => cleanupFailedConnect(new Error('Conexion con JaviServer cerrada antes de autenticar'));
+      const onCloseBeforeReady = () => cleanupFailedConnect(new Error('Conexion con ArtiShell cerrada antes de autenticar'));
       const onConnect = () => {
         socket.off('error', onError);
         socket.write(`${JSON.stringify({
@@ -83,7 +83,7 @@ export class AgentBrokerClient {
         const hello = JSON.parse(raw) as BrokerHelloResponse;
         if (!hello.ok) {
           socket.destroy();
-          cleanupFailedConnect(new Error(hello.error || 'No se pudo autenticar con JaviServer'));
+          cleanupFailedConnect(new Error(hello.error || 'No se pudo autenticar con ArtiShell'));
           return;
         }
 
@@ -172,7 +172,7 @@ export class AgentBrokerClient {
     }
 
     for (const pending of this.pending.values()) {
-      pending.reject(new Error('Conexion con JaviServer cerrada'));
+      pending.reject(new Error('Conexion con ArtiShell cerrada'));
     }
     this.pending.clear();
     this.socket = null;
