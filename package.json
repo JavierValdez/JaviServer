@@ -1,7 +1,7 @@
 {
   "name": "artishell",
   "private": true,
-  "version": "2.2.7",
+  "version": "2.3.0",
   "description": "Cliente SSH visual para administrar servidores, archivos, logs y automatizaciones con IA",
   "author": "jasegura",
   "type": "module",
