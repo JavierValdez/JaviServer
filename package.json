@@ -82,6 +82,12 @@
         "zip"
       ],
       "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+      "extraFiles": [
+        {
+          "from": "build/macos/JaviServer",
+          "to": "MacOS/JaviServer"
+        }
+      ],
       "extraResources": [
         {
           "from": "dist-mcp-bridge/bridge.cjs",
