@@ -50,6 +50,7 @@ React Components → Zustand Store → IPC (window.api.*) → Electron Main → 
 ```
 
 ### Key Design Decisions
-- **Read-only by design:** The app only reads remote files; no write operations over SFTP
+- **Read-only by design (UI):** The UI only reads remote files. The MCP tool `upload_file` (2.4.0) is the only SFTP write path and always goes through user confirmation unless write commands are auto-approved.
+- **Secrets for MCP commands:** `run_command_with_secrets` collects values in the renderer (`AgentSecretPrompt`), passes them over stdin (`electron/agent/secret-command.ts`) and redacts them from output; they must never be returned to the MCP client or logged.
 - **Tab system:** Multiple tabs per server (explorer, logs, terminal), managed in Zustand
 - **Bookmarks and log patterns** are stored per `ServerProfile` in `electron-store`

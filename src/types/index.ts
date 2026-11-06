@@ -62,6 +62,23 @@ export interface AgentActivityEntry {
   error?: string;
 }
 
+export interface AgentSecretField {
+  name: string;
+  label: string;
+  sensitive: boolean;
+}
+
+export interface AgentSecretPromptRequest {
+  id: string;
+  clientName: string;
+  server: string;
+  command: string;
+  cwd?: string;
+  reason?: string;
+  fields: AgentSecretField[];
+  cachedFields: string[];
+}
+
 export interface AgentSession {
   id: string;
   clientId: string;

@@ -4,6 +4,7 @@ import type {
   AgentClientConfig,
   AgentIntegrationState,
   AgentPermissionSettings,
+  AgentSecretPromptRequest,
   PathBookmark,
   ServerProfile,
   TerminalSuggestion,
@@ -145,6 +146,13 @@ interface ElectronApi {
     clearActivity: () => Promise<AgentActivityEntry[]>;
     onState: (listener: (payload: AgentIntegrationState) => void) => () => void;
     onActivity: (listener: (payload: AgentActivityEntry[]) => void) => () => void;
+    onSecretPrompt: (listener: (payload: AgentSecretPromptRequest) => void) => () => void;
+    onSecretPromptClosed: (listener: (id: string) => void) => () => void;
+    respondSecretPrompt: (
+      id: string,
+      response: { values: Record<string, string>; remember: boolean } | null,
+    ) => Promise<boolean>;
+    clearRememberedSecrets: () => Promise<boolean>;
   };
 }
 

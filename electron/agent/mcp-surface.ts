@@ -104,6 +104,43 @@ export function registerTools(server: McpServer, broker: BrokerRequester): void 
       maxOutputBytes: z.number().int().positive().max(MAX_COMMAND_OUTPUT_BYTES).default(DEFAULT_COMMAND_OUTPUT_BYTES),
     }),
   }, async (args) => asTextResult(await broker.request('run_command', args)));
+
+  server.registerTool('upload_file', {
+    description:
+      'Upload one file from the local computer to the SSH server through SFTP. ' +
+      'ArtiShell asks the user to confirm unless write commands are auto-approved. ' +
+      'The file is written to a temporary name and renamed, and the result includes SHA-256 of both sides.',
+    inputSchema: z.object({
+      ...profileIdSchema,
+      localPath: z.string().min(1).describe('Absolute path of the local file.'),
+      remotePath: z.string().min(1).describe('Absolute remote destination path, including the file name.'),
+      overwrite: z.boolean().default(false).describe('Replace the remote file if it already exists.'),
+      mode: z.string().regex(/^[0-7]{3,4}$/).optional().describe('Octal permissions for the remote file, e.g. "600".'),
+    }),
+  }, async (args) => asTextResult(await broker.request('upload_file', args)));
+
+  server.registerTool('run_command_with_secrets', {
+    description:
+      'Run an SSH command that needs credentials the user must type (passwords, tokens, usernames). ' +
+      'Declare each secret by environment variable name and label; ArtiShell shows a form where the user ' +
+      'enters the values and sees the command before it runs. Values reach the command as exported ' +
+      'environment variables via stdin, never appear in the command line, are redacted from the output, ' +
+      'and are never returned to the MCP client. The command runs with stdin closed, so it must read ' +
+      'the variables instead of prompting.',
+    inputSchema: z.object({
+      ...profileIdSchema,
+      command: z.string().min(1),
+      secrets: z.array(z.object({
+        name: z.string().regex(/^[A-Z][A-Z0-9_]{0,63}$/).describe('Environment variable name, e.g. XWIKI_PASSWORD.'),
+        label: z.string().min(1).max(120).describe('Label shown to the user.'),
+        sensitive: z.boolean().default(true).describe('Mask the input and redact it from output. Use false for usernames.'),
+      })).min(1).max(8),
+      reason: z.string().max(500).optional().describe('Why the credentials are needed, shown to the user.'),
+      cwd: z.string().optional(),
+      timeoutMs: z.number().int().positive().max(MAX_COMMAND_TIMEOUT_MS).default(DEFAULT_COMMAND_TIMEOUT_MS),
+      maxOutputBytes: z.number().int().positive().max(MAX_COMMAND_OUTPUT_BYTES).default(DEFAULT_COMMAND_OUTPUT_BYTES),
+    }),
+  }, async (args) => asTextResult(await broker.request('run_command_with_secrets', args)));
 }
 
 export function registerResources(server: McpServer, broker: BrokerRequester): void {

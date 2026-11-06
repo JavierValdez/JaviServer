@@ -4,11 +4,14 @@ import { BrowserWindow, clipboard, dialog, ipcMain, type OpenDialogOptions, type
 import type { UpdateController } from '../autoUpdater';
 import {
   clearAgentActivity,
+  clearRememberedSecrets,
   getAgentClientConfig,
   getAgentIntegrationPublicState,
   regenerateAgentIntegrationPublicToken,
   setAgentIntegrationPublicEnabled,
   setAgentIntegrationPublicPermissions,
+  respondSecretPrompt,
+  type SecretPromptResponse,
 } from '../agent/integration';
 import type { CommandPermissionSettings } from '../agent/command-policy';
 import { IPC_CHANNELS } from './channels';
@@ -196,6 +199,24 @@ export function registerIpcHandlers(
   ipcMain.handle(IPC_CHANNELS.agentIntegrationRegenerateToken, () => regenerateAgentIntegrationPublicToken());
   ipcMain.handle(IPC_CHANNELS.agentIntegrationGetActivity, () => getAgentIntegrationPublicState().activity);
   ipcMain.handle(IPC_CHANNELS.agentIntegrationClearActivity, () => clearAgentActivity());
+  ipcMain.handle(
+    IPC_CHANNELS.agentIntegrationSecretPromptRespond,
+    (_event, id: string, response: SecretPromptResponse | null) => respondSecretPrompt(
+      String(id || ''),
+      response && typeof response === 'object'
+        ? {
+          values: Object.fromEntries(
+            Object.entries(response.values || {}).filter(([, value]) => typeof value === 'string'),
+          ) as Record<string, string>,
+          remember: Boolean(response.remember),
+        }
+        : null,
+    ),
+  );
+  ipcMain.handle(IPC_CHANNELS.agentIntegrationClearRememberedSecrets, () => {
+    clearRememberedSecrets();
+    return true;
+  });
 
   sshService.on('connection-closed', (profileId: string) => {
     const mainWindow = getMainWindow();

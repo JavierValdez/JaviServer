@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { promises as fs, createWriteStream } from 'node:fs';
 import { pipeline } from 'node:stream/promises';
@@ -90,6 +90,27 @@ export interface RemoteCommandOptions {
   cwd?: string;
   timeoutMs?: number;
   maxOutputBytes?: number;
+  /** Texto que se escribe en stdin del comando y luego se cierra. */
+  stdin?: string;
+  /** Comando que se informa en el resultado cuando el comando real es un envoltorio. */
+  displayCommand?: string;
+}
+
+export interface UploadFileOptions {
+  overwrite?: boolean;
+  /** Permisos octales del archivo remoto, p. ej. 0o600. */
+  mode?: number;
+}
+
+export interface UploadFileResult {
+  localPath: string;
+  remotePath: string;
+  bytes: number;
+  sha256: string;
+  remoteSha256: string | null;
+  verified: boolean;
+  overwritten: boolean;
+  durationMs: number;
 }
 
 export interface RemoteCommandResult {
@@ -103,6 +124,8 @@ export interface RemoteCommandResult {
   truncated: boolean;
   durationMs: number;
 }
+
+export const MAX_UPLOAD_BYTES = 200 * 1024 * 1024;
 
 const LEGACY_SSH_ALGORITHMS: Algorithms = {
   kex: {
@@ -437,7 +460,7 @@ export class SSHService extends EventEmitter {
           settled = true;
           clearTimeout(timeout);
           resolve({
-            command,
+            command: options.displayCommand ?? command,
             cwd,
             stdout,
             stderr,
@@ -479,8 +502,79 @@ export class SSHService extends EventEmitter {
         stream.on('close', (code?: number, signal?: string) => {
           finish(typeof code === 'number' ? code : 0, signal);
         });
+
+        if (options.stdin !== undefined) {
+          stream.end(options.stdin);
+        }
       });
     });
+  }
+
+  async uploadFile(
+    profileId: string,
+    localPath: string,
+    remotePath: string,
+    options: UploadFileOptions = {},
+  ): Promise<UploadFileResult> {
+    const started = Date.now();
+    const stats = await fs.stat(localPath);
+    if (!stats.isFile()) {
+      throw new Error('La ruta local no es un archivo.');
+    }
+    if (stats.size > MAX_UPLOAD_BYTES) {
+      throw new Error(`El archivo supera el limite de ${Math.round(MAX_UPLOAD_BYTES / 1024 / 1024)} MB.`);
+    }
+
+    const sha256 = createHash('sha256').update(await fs.readFile(localPath)).digest('hex');
+    const sftp = await this.getSftp(profileId);
+
+    const existing = await new Promise<boolean>((resolve) => {
+      sftp.stat(remotePath, (error) => resolve(!error));
+    });
+    if (existing && !options.overwrite) {
+      throw new Error(`El archivo remoto ya existe: ${remotePath}. Usa overwrite para reemplazarlo.`);
+    }
+
+    const tempPath = `${remotePath}.artishell-upload-${randomUUID().slice(0, 8)}`;
+    await new Promise<void>((resolve, reject) => {
+      sftp.fastPut(localPath, tempPath, { mode: options.mode ?? 0o644 }, (error) => {
+        if (error) reject(toPublicError(error));
+        else resolve();
+      });
+    });
+
+    try {
+      if (existing) {
+        await new Promise<void>((resolve, reject) => {
+          sftp.unlink(remotePath, (error) => (error ? reject(toPublicError(error)) : resolve()));
+        });
+      }
+      await new Promise<void>((resolve, reject) => {
+        sftp.rename(tempPath, remotePath, (error) => (error ? reject(toPublicError(error)) : resolve()));
+      });
+    } catch (error) {
+      sftp.unlink(tempPath, () => undefined);
+      throw error;
+    }
+
+    let remoteSha256: string | null = null;
+    try {
+      const output = await this.execCommand(profileId, `sha256sum ${shellQuote(remotePath)}`);
+      remoteSha256 = output.trim().split(/\s+/)[0] || null;
+    } catch {
+      remoteSha256 = null;
+    }
+
+    return {
+      localPath,
+      remotePath,
+      bytes: stats.size,
+      sha256,
+      remoteSha256,
+      verified: remoteSha256 === sha256,
+      overwritten: existing,
+      durationMs: Date.now() - started,
+    };
   }
 
   async downloadFile(

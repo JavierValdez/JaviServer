@@ -56,6 +56,11 @@ ArtiShell incluye una integración MCP local opcional para que agentes de IA pue
 
 La integración expone operaciones para listar servidores, conectar/desconectar perfiles, listar directorios, leer archivos con límite de bytes, buscar contenido, revisar logs y ejecutar comandos SSH no interactivos. Los comandos claramente de lectura se ejecutan directo; los comandos desconocidos o potencialmente mutables requieren confirmación visible en la app.
 
+Desde 2.4.0 hay dos herramientas más:
+
+- `upload_file`: sube un archivo del equipo local al servidor por SFTP. Pide confirmación en la app (salvo que los comandos de escritura estén autoaprobados), escribe primero a un nombre temporal y lo renombra, no reemplaza un archivo existente sin `overwrite`, y devuelve el SHA-256 local y remoto. Límite: 200 MB.
+- `run_command_with_secrets`: ejecuta un comando que necesita credenciales que solo el usuario conoce (por ejemplo, el login de una wiki). El cliente IA declara los nombres de variable y sus etiquetas; ArtiShell muestra un formulario con el servidor y el comando, el usuario escribe los valores y estos llegan al comando como variables de entorno por stdin. Nunca aparecen en la línea de comandos, se ocultan en la salida y no se devuelven al cliente IA. Opcionalmente se recuerdan en memoria mientras la app esté abierta; aun así, cada ejecución se confirma en el formulario.
+
 Variables usadas por el modo MCP:
 
 - `ARTISHELL_MCP_TOKEN`

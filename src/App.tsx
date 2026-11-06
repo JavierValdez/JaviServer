@@ -2,6 +2,7 @@ import { type DragEvent as ReactDragEvent, useEffect, useRef, useState } from 'r
 import { FileExplorer } from './components/FileExplorer/FileExplorer';
 import { LogViewer } from './components/LogViewer/LogViewer';
 import { LegacyMigrationDialog } from './components/LegacyMigrationDialog/LegacyMigrationDialog';
+import { AgentSecretPrompt } from './components/AgentSecretPrompt/AgentSecretPrompt';
 import { ServerList } from './components/ServerList/ServerList';
 import { Terminal } from './components/Terminal/Terminal';
 import { UpdateStatus } from './components/UpdateStatus/UpdateStatus';
@@ -463,6 +464,7 @@ function App() {
         </div>
       </div>
       <LegacyMigrationDialog />
+      <AgentSecretPrompt />
     </div>
   );
 }

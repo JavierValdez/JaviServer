@@ -8,6 +8,16 @@ import { AgentBrokerServer } from './broker';
 import { WINDOWS_AGENT_BROKER_ENDPOINT } from './broker-endpoint';
 import { buildAgentClientLaunchConfig } from './client-config';
 import { classifyCommand, normalizeRunCommandOptions, shouldConfirmCommand } from './command-policy';
+import {
+  buildSecretStdin,
+  buildSecretWrapper,
+  normalizeSecretSpecs,
+  redactSecrets,
+  validateSecretValues,
+} from './secret-command';
+import type { NormalizedSecretSpec } from './secret-command';
+import { isAbsolute } from 'node:path';
+import { randomUUID } from 'node:crypto';
 import type { CommandPermissionSettings } from './command-policy';
 import type { AgentActivityEntry, AgentSession, BrokerRequest } from './protocol';
 import { createActivityEntry } from './protocol';
@@ -171,6 +181,146 @@ async function confirmAgentRunCommand(
   }
 }
 
+export interface SecretPromptRequest {
+  id: string;
+  clientName: string;
+  server: string;
+  command: string;
+  cwd?: string;
+  reason?: string;
+  fields: NormalizedSecretSpec[];
+  cachedFields: string[];
+}
+
+export interface SecretPromptResponse {
+  values: Record<string, string>;
+  remember: boolean;
+}
+
+const SECRET_PROMPT_TIMEOUT_MS = 5 * 60_000;
+const pendingSecretPrompts = new Map<string, {
+  resolve: (response: SecretPromptResponse | null) => void;
+  timer: NodeJS.Timeout;
+}>();
+/** Valores recordados durante la ejecucion de ArtiShell, por perfil y nombre. Solo en memoria. */
+const rememberedSecrets = new Map<string, string>();
+
+function secretCacheKey(profileId: string, name: string): string {
+  return `${profileId}\u0000${name}`;
+}
+
+export function clearRememberedSecrets(): void {
+  rememberedSecrets.clear();
+}
+
+export function respondSecretPrompt(id: string, response: SecretPromptResponse | null): boolean {
+  const pending = pendingSecretPrompts.get(id);
+  if (!pending) {
+    return false;
+  }
+  pendingSecretPrompts.delete(id);
+  clearTimeout(pending.timer);
+  pending.resolve(response);
+  return true;
+}
+
+async function requestSecretsFromUser(
+  session: AgentSession,
+  profile: ServerProfile,
+  command: string,
+  cwd: string | undefined,
+  reason: string | undefined,
+  specs: NormalizedSecretSpec[],
+): Promise<Record<string, string>> {
+  const cached: Record<string, string> = {};
+  for (const spec of specs) {
+    const value = rememberedSecrets.get(secretCacheKey(profile.id, spec.name));
+    if (value !== undefined) {
+      cached[spec.name] = value;
+    }
+  }
+
+  const ownerWindow = getDialogOwnerWindow();
+  if (!ownerWindow) {
+    throw new Error('ArtiShell no tiene una ventana abierta para pedir los secretos al usuario.');
+  }
+  if (ownerWindow.isMinimized()) ownerWindow.restore();
+  ownerWindow.show();
+  ownerWindow.focus();
+
+  const request: SecretPromptRequest = {
+    id: randomUUID(),
+    clientName: session.clientName,
+    server: `${profile.name} (${profile.username}@${profile.host}:${profile.port})`,
+    command,
+    cwd,
+    reason,
+    fields: specs,
+    cachedFields: Object.keys(cached),
+  };
+
+  const response = await new Promise<SecretPromptResponse | null>((resolve) => {
+    const timer = setTimeout(() => {
+      pendingSecretPrompts.delete(request.id);
+      broadcast('agentIntegration:secretPromptClosed', request.id);
+      resolve(null);
+    }, SECRET_PROMPT_TIMEOUT_MS);
+    pendingSecretPrompts.set(request.id, { resolve, timer });
+    broadcast('agentIntegration:secretPrompt', request);
+  });
+
+  if (!response) {
+    throw new Error('El usuario cancelo o no respondio la solicitud de secretos.');
+  }
+
+  const values: Record<string, string> = { ...cached };
+  for (const spec of specs) {
+    const typed = response.values?.[spec.name];
+    if (typeof typed === 'string' && typed.length > 0) {
+      values[spec.name] = typed;
+    }
+  }
+  validateSecretValues(specs, values);
+
+  if (response.remember) {
+    for (const spec of specs) {
+      rememberedSecrets.set(secretCacheKey(profile.id, spec.name), values[spec.name]);
+    }
+  }
+  return values;
+}
+
+async function confirmAgentUpload(
+  session: AgentSession,
+  profile: ServerProfile,
+  localPath: string,
+  remotePath: string,
+  overwrite: boolean,
+): Promise<void> {
+  const options: MessageBoxOptions = {
+    type: 'question',
+    buttons: ['Cancelar', 'Subir archivo'],
+    defaultId: 0,
+    cancelId: 0,
+    title: 'Confirmar subida solicitada por IA',
+    message: 'Un cliente MCP quiere subir un archivo al servidor',
+    detail:
+      `${session.clientName} solicito subir a:\n` +
+      `${profile.name} (${profile.username}@${profile.host}:${profile.port})\n\n` +
+      `Origen local: ${localPath}\n` +
+      `Destino remoto: ${remotePath}\n` +
+      (overwrite ? 'Si el destino existe, se reemplazara.' : 'No se reemplazara un archivo existente.'),
+  };
+  const ownerWindow = getDialogOwnerWindow();
+  const { response } = ownerWindow
+    ? await dialog.showMessageBox(ownerWindow, options)
+    : await dialog.showMessageBox(options);
+
+  if (response !== 1) {
+    throw new Error('Subida cancelada por el usuario');
+  }
+}
+
 async function handleBrokerRequest(
   session: AgentSession,
   request: BrokerRequest,
@@ -267,6 +417,53 @@ async function handleBrokerRequest(
         }
 
         result = await getDependencies().sshService.runCommand(profileId, command, options);
+        break;
+      }
+      case 'upload_file': {
+        const profile = await ensureConnected(profileId);
+        const localPath = String(params.localPath || '').trim();
+        const remotePath = String(params.remotePath || '').trim();
+        if (!isAbsolute(localPath)) {
+          throw new Error('localPath debe ser una ruta absoluta del equipo local.');
+        }
+        if (!remotePath.startsWith('/') || remotePath.endsWith('/')) {
+          throw new Error('remotePath debe ser la ruta absoluta del archivo remoto, incluido su nombre.');
+        }
+        const overwrite = Boolean(params.overwrite);
+        const mode = typeof params.mode === 'string' && /^[0-7]{3,4}$/.test(params.mode)
+          ? parseInt(params.mode, 8)
+          : undefined;
+        if (!getAgentIntegrationState().permissions.autoApproveWriteCommands) {
+          await confirmAgentUpload(session, profile, localPath, remotePath, overwrite);
+        }
+        result = await getDependencies().sshService.uploadFile(profileId, localPath, remotePath, { overwrite, mode });
+        break;
+      }
+      case 'run_command_with_secrets': {
+        const profile = await ensureConnected(profileId);
+        const command = String(params.command || '').trim();
+        if (!command) {
+          throw new Error('El comando es requerido.');
+        }
+        const specs = normalizeSecretSpecs(params.secrets);
+        const options = normalizeRunCommandOptions(params);
+        const reason = typeof params.reason === 'string' ? params.reason.trim().slice(0, 500) : undefined;
+        const values = await requestSecretsFromUser(session, profile, command, options.cwd, reason, specs);
+        const raw = await getDependencies().sshService.runCommand(
+          profileId,
+          buildSecretWrapper(specs, command),
+          {
+            ...options,
+            stdin: buildSecretStdin(specs, values),
+            displayCommand: command,
+          },
+        );
+        result = {
+          ...raw,
+          stdout: redactSecrets(raw.stdout, specs, values),
+          stderr: redactSecrets(raw.stderr, specs, values),
+          secrets: specs.map((spec) => spec.name),
+        };
         break;
       }
       case 'resource:servers':

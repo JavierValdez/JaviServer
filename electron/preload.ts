@@ -121,5 +121,13 @@ contextBridge.exposeInMainWorld('api', {
       unsubscribeOn(IPC_CHANNELS.agentIntegrationState, listener),
     onActivity: (listener: (payload: unknown[]) => void) =>
       unsubscribeOn(IPC_CHANNELS.agentIntegrationActivity, listener),
+    onSecretPrompt: (listener: (payload: unknown) => void) =>
+      unsubscribeOn(IPC_CHANNELS.agentIntegrationSecretPrompt, listener),
+    onSecretPromptClosed: (listener: (payload: string) => void) =>
+      unsubscribeOn(IPC_CHANNELS.agentIntegrationSecretPromptClosed, listener),
+    respondSecretPrompt: (id: string, response: { values: Record<string, string>; remember: boolean } | null) =>
+      ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationSecretPromptRespond, id, response) as Promise<boolean>,
+    clearRememberedSecrets: () =>
+      ipcRenderer.invoke(IPC_CHANNELS.agentIntegrationClearRememberedSecrets) as Promise<boolean>,
   },
 });

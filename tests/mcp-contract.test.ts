@@ -76,6 +76,40 @@ test('MCP surface lists tools and resources and serves responses', async () => {
   assert.equal(invalidLimitResult.isError, true);
   assert.match(JSON.stringify(invalidLimitResult), /timeoutMs/);
 
+  assert.ok(tools.tools.some((tool) => tool.name === 'upload_file'));
+  assert.ok(tools.tools.some((tool) => tool.name === 'run_command_with_secrets'));
+
+  await client.callTool({
+    name: 'upload_file',
+    arguments: { profileId: 'server-1', localPath: '/tmp/a.pdf', remotePath: '/tmp/b.pdf', mode: '600' },
+  });
+  assert.deepEqual(
+    calls.find((call) => call.method === 'upload_file')?.params,
+    { profileId: 'server-1', localPath: '/tmp/a.pdf', remotePath: '/tmp/b.pdf', overwrite: false, mode: '600' },
+  );
+
+  await client.callTool({
+    name: 'run_command_with_secrets',
+    arguments: {
+      profileId: 'server-1',
+      command: 'python3 publicar.py',
+      secrets: [{ name: 'XWIKI_USER', label: 'Usuario', sensitive: false }, { name: 'XWIKI_PASSWORD', label: 'Clave' }],
+    },
+  });
+  assert.deepEqual(
+    calls.find((call) => call.method === 'run_command_with_secrets')?.params?.secrets,
+    [
+      { name: 'XWIKI_USER', label: 'Usuario', sensitive: false },
+      { name: 'XWIKI_PASSWORD', label: 'Clave', sensitive: true },
+    ],
+  );
+
+  const invalidSecretResult = await client.callTool({
+    name: 'run_command_with_secrets',
+    arguments: { profileId: 'server-1', command: 'ls', secrets: [{ name: 'bad name', label: 'x' }] },
+  });
+  assert.equal(invalidSecretResult.isError, true);
+
   const resources = await client.listResources();
   assert.ok(resources.resources.some((resource) => resource.uri === 'artishell://servers'));
   assert.ok(resources.resources.some((resource) => resource.uri === 'artishell://servers/server-1/status'));

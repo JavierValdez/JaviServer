@@ -46,6 +46,10 @@ export const IPC_CHANNELS = {
   agentIntegrationClearActivity: 'agentIntegration:clearActivity',
   agentIntegrationState: 'agentIntegration:state',
   agentIntegrationActivity: 'agentIntegration:activity',
+  agentIntegrationSecretPrompt: 'agentIntegration:secretPrompt',
+  agentIntegrationSecretPromptClosed: 'agentIntegration:secretPromptClosed',
+  agentIntegrationSecretPromptRespond: 'agentIntegration:secretPromptRespond',
+  agentIntegrationClearRememberedSecrets: 'agentIntegration:clearRememberedSecrets',
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
